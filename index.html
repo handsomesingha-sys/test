@@ -1,0 +1,6821 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#102d65">
+<meta name="description" content="FINORA — ระบบจัดการสินเชื่อออนไลน์">
+<title>FINORA | ระบบสินเชื่อออนไลน์</title>
+
+<!-- ฟอนต์และไอคอน -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<style>
+:root {
+--primary: #173b8f;
+--primary-dark: #102d65;
+--primary-light: #eaf1ff;
+--accent: #05a9ed;
+--success: #20b66f;
+--warning: #df9a20;
+--danger: #dc4255;
+--text: #1d2636;
+--muted: #788397;
+--line: #e6eaf1;
+--surface: #ffffff;
+--background: #f4f7fb;
+--radius: 18px;
+--shadow: 0 18px 60px rgba(26, 47, 82, 0.09);
+}
+
+* {
+box-sizing: border-box;
+}
+
+html {
+scroll-behavior: smooth;
+}
+
+body {
+margin: 0;
+min-height: 100vh;
+background: var(--background);
+color: var(--text);
+font-family: "Prompt", "Inter", sans-serif;
+font-size: 14px;
+line-height: 1.6;
+}
+
+body.modal-open {
+overflow: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+font: inherit;
+}
+
+button {
+cursor: pointer;
+}
+
+button:disabled {
+cursor: not-allowed;
+opacity: 0.55;
+}
+
+a {
+color: var(--primary);
+text-decoration: none;
+}
+
+a:hover {
+text-decoration: underline;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+outline: 3px solid rgba(5, 169, 237, 0.35);
+outline-offset: 2px;
+}
+
+.hidden {
+display: none !important;
+}
+
+.muted {
+color: var(--muted);
+}
+
+.small {
+font-size: 12px;
+}
+
+.tiny {
+font-size: 11px;
+}
+
+.text-center {
+text-align: center;
+}
+
+.text-danger {
+color: var(--danger);
+}
+
+.text-success {
+color: var(--success);
+}
+
+.full-width {
+width: 100%;
+}
+
+.brand {
+display: inline-flex;
+align-items: center;
+gap: 10px;
+color: var(--primary-dark);
+font-family: "Inter", "Prompt", sans-serif;
+font-size: 23px;
+font-weight: 800;
+letter-spacing: -0.8px;
+}
+
+.brand-mark {
+display: grid;
+width: 42px;
+height: 42px;
+place-items: center;
+border-radius: 13px;
+color: #fff;
+background: linear-gradient(135deg, #173b8f, #05a9ed);
+box-shadow: 0 7px 18px rgba(23, 59, 143, 0.22);
+}
+
+.brand-subtitle {
+margin-top: 4px;
+color: var(--muted);
+font-size: 12px;
+letter-spacing: 0.4px;
+}
+
+.button {
+display: inline-flex;
+justify-content: center;
+align-items: center;
+gap: 9px;
+min-height: 45px;
+padding: 11px 18px;
+border: 1px solid transparent;
+border-radius: 12px;
+font-weight: 600;
+transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+text-decoration: none;
+}
+
+.button:hover {
+transform: translateY(-1px);
+text-decoration: none;
+}
+
+.button-primary {
+background: linear-gradient(135deg, var(--primary), #2455b7);
+color: #fff;
+box-shadow: 0 8px 18px rgba(23, 59, 143, 0.15);
+}
+
+.button-primary:hover {
+box-shadow: 0 11px 24px rgba(23, 59, 143, 0.22);
+}
+
+.button-secondary {
+background: #fff;
+color: var(--primary);
+border-color: var(--line);
+}
+
+.button-soft {
+background: var(--primary-light);
+color: var(--primary);
+}
+
+.button-danger {
+background: #fff0f2;
+color: #b72f43;
+border-color: #f8d5da;
+}
+
+.button-success {
+background: #eaf9f1;
+color: #128452;
+border-color: #c8efd9;
+}
+
+.button-sm {
+min-height: 34px;
+padding: 7px 11px;
+border-radius: 9px;
+font-size: 12px;
+}
+
+.icon-button {
+display: inline-grid;
+width: 42px;
+height: 42px;
+place-items: center;
+border: 1px solid var(--line);
+border-radius: 12px;
+background: #fff;
+color: var(--muted);
+}
+
+.form-group {
+display: flex;
+flex-direction: column;
+gap: 7px;
+margin-bottom: 16px;
+}
+
+.form-label {
+color: #374258;
+font-size: 13px;
+font-weight: 500;
+}
+
+.required {
+color: var(--danger);
+}
+
+.input-wrap {
+position: relative;
+}
+
+.input-wrap > .field-icon {
+position: absolute;
+top: 50%;
+left: 15px;
+color: #8a95a8;
+transform: translateY(-50%);
+pointer-events: none;
+}
+
+.input-wrap .field {
+padding-left: 43px;
+}
+
+.input-wrap .eye-toggle {
+position: absolute;
+top: 50%;
+right: 12px;
+display: grid;
+width: 34px;
+height: 34px;
+place-items: center;
+border: 0;
+border-radius: 8px;
+background: transparent;
+color: #7c879b;
+transform: translateY(-50%);
+}
+
+.input-wrap.has-eye .field {
+padding-right: 52px;
+}
+
+.field {
+width: 100%;
+min-height: 46px;
+padding: 11px 13px;
+color: var(--text);
+border: 1px solid #dce2ec;
+border-radius: 12px;
+outline: none;
+background: #fff;
+transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field:focus {
+border-color: #6d8bdd;
+box-shadow: 0 0 0 4px rgba(23, 59, 143, 0.08);
+}
+
+.field[readonly],
+.field:disabled {
+color: #788397;
+background: #f0f3f7;
+cursor: not-allowed;
+}
+
+textarea.field {
+min-height: 115px;
+resize: vertical;
+}
+
+.field-hint {
+color: var(--muted);
+font-size: 11px;
+}
+
+.field-error {
+color: var(--danger);
+font-size: 12px;
+}
+
+.check-row {
+display: flex;
+align-items: flex-start;
+gap: 10px;
+color: #465268;
+font-size: 12px;
+}
+
+.check-row input[type="checkbox"] {
+width: 17px;
+height: 17px;
+flex: 0 0 17px;
+margin-top: 3px;
+accent-color: var(--primary);
+}
+
+.separator {
+display: flex;
+align-items: center;
+gap: 14px;
+margin: 19px 0;
+color: #9aa4b5;
+font-size: 11px;
+}
+
+.separator::before,
+.separator::after {
+flex: 1;
+height: 1px;
+background: var(--line);
+content: "";
+}
+
+.powered-by {
+margin-top: 18px;
+color: #9aa3b1;
+font-family: "Inter", "Prompt", sans-serif;
+font-size: 11px;
+text-align: center;
+letter-spacing: 0.7px;
+}
+
+/* =====================================================
+AUTHENTICATION LAYOUT
+===================================================== */
+
+.auth-stage {
+position: relative;
+display: grid;
+min-height: 100vh;
+place-items: center;
+padding: 36px 16px;
+overflow: hidden;
+background:
+radial-gradient(circle at 8% 10%, rgba(5, 169, 237, 0.09), transparent 28%),
+radial-gradient(circle at 93% 92%, rgba(23, 59, 143, 0.10), transparent 27%),
+#f6f8fc;
+}
+
+.auth-stage::before,
+.auth-stage::after {
+position: absolute;
+width: 250px;
+height: 250px;
+border: 1px solid rgba(23, 59, 143, 0.05);
+border-radius: 50%;
+content: "";
+pointer-events: none;
+}
+
+.auth-stage::before {
+top: -110px;
+right: -85px;
+}
+
+.auth-stage::after {
+bottom: -125px;
+left: -85px;
+width: 310px;
+height: 310px;
+}
+
+.auth-card {
+position: relative;
+z-index: 1;
+width: min(100%, 510px);
+padding: 34px;
+border: 1px solid rgba(222, 228, 239, 0.9);
+border-radius: 24px;
+background: rgba(255, 255, 255, 0.97);
+box-shadow: var(--shadow);
+}
+
+.auth-card-wide {
+width: min(100%, 770px);
+}
+
+.auth-brand-row {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 27px;
+}
+
+.auth-heading {
+margin: 0;
+color: var(--primary-dark);
+font-family: "Inter", "Prompt", sans-serif;
+font-size: 30px;
+font-weight: 800;
+letter-spacing: -1px;
+text-align: center;
+}
+
+.auth-intro {
+margin: 5px 0 26px;
+color: var(--muted);
+font-size: 12px;
+text-align: center;
+}
+
+.auth-announcements {
+display: grid;
+gap: 12px;
+margin-top: 20px;
+}
+
+.announcement-card {
+overflow: hidden;
+border: 1px solid var(--line);
+border-radius: 15px;
+background: #fff;
+}
+
+.announcement-card img {
+display: block;
+max-width: 100%;
+height: auto;
+}
+
+.announcement-inner {
+padding: 15px;
+}
+
+.announcement-title {
+margin: 0 0 8px;
+font-size: 14px;
+font-weight: 700;
+}
+
+.announcement-content {
+overflow-wrap: anywhere;
+color: #566177;
+font-size: 12px;
+}
+
+.announcement-content img {
+max-width: 100%;
+height: auto;
+border-radius: 10px;
+}
+
+.announcement-content a {
+overflow-wrap: anywhere;
+}
+
+.auth-foot-links {
+display: flex;
+justify-content: center;
+flex-wrap: wrap;
+gap: 7px;
+margin-top: 23px;
+color: var(--muted);
+font-size: 12px;
+text-align: center;
+}
+
+.auth-foot-links .divider-char {
+color: #c0c8d5;
+}
+
+.signup-grid {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 0 17px;
+}
+
+.span-2 {
+grid-column: 1 / -1;
+}
+
+.verify-email-row {
+display: flex;
+gap: 9px;
+}
+
+.verify-email-row .field {
+min-width: 0;
+}
+
+.verify-email-row .button {
+flex: 0 0 auto;
+white-space: nowrap;
+}
+
+.email-verified-status {
+display: flex;
+align-items: center;
+gap: 8px;
+padding: 11px 13px;
+border: 1px solid #bfe8d1;
+border-radius: 11px;
+background: #edfbf3;
+color: #13844f;
+font-size: 12px;
+}
+
+.password-strength {
+margin-top: 9px;
+}
+
+.strength-track {
+height: 5px;
+overflow: hidden;
+border-radius: 99px;
+background: #e8ecf3;
+}
+
+.strength-fill {
+width: 0;
+height: 100%;
+border-radius: inherit;
+background: #cbd2df;
+transition: width 0.2s ease, background 0.2s ease;
+}
+
+.strength-caption {
+display: flex;
+justify-content: space-between;
+gap: 8px;
+margin-top: 6px;
+color: var(--muted);
+font-size: 10px;
+}
+
+.password-rules {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 5px 10px;
+margin-top: 10px;
+}
+
+.password-rule {
+display: flex;
+align-items: center;
+gap: 6px;
+color: #8a94a6;
+font-size: 10px;
+}
+
+.password-rule.valid {
+color: var(--success);
+}
+
+.password-rule i {
+font-size: 10px;
+}
+
+.password-match {
+min-height: 17px;
+margin-top: 5px;
+font-size: 11px;
+}
+
+.policy-checks {
+display: grid;
+gap: 15px;
+margin: 17px 0 19px;
+padding: 17px;
+border: 1px solid var(--line);
+border-radius: 14px;
+background: #fbfcfe;
+}
+
+.policy-checks .check-row {
+font-size: 12px;
+line-height: 1.8;
+}
+
+/* =====================================================
+EMAIL WAITING VIEW
+===================================================== */
+
+.waiting-box {
+padding: 12px 2px 5px;
+text-align: center;
+}
+
+.waiting-circle {
+display: grid;
+width: 110px;
+height: 110px;
+place-items: center;
+margin: 0 auto 26px;
+border: 1px solid #e5ebf7;
+border-radius: 50%;
+background: #f7f9fe;
+color: var(--primary);
+}
+
+.waiting-title {
+margin: 0 0 9px;
+font-size: 22px;
+font-weight: 700;
+}
+
+.waiting-email {
+margin: 15px 0;
+padding: 11px;
+border-radius: 10px;
+background: #f0f4fc;
+color: var(--primary);
+font-weight: 600;
+overflow-wrap: anywhere;
+}
+
+/* =====================================================
+FOUR COLOR LOADING SPINNER
+===================================================== */
+
+.loading-overlay {
+position: fixed;
+z-index: 10000;
+inset: 0;
+display: grid;
+place-items: center;
+padding: 22px;
+background: rgba(246, 248, 252, 0.88);
+backdrop-filter: blur(5px);
+}
+
+.loading-content {
+width: min(100%, 330px);
+padding: 30px 24px;
+border: 1px solid rgba(222, 228, 239, 0.85);
+border-radius: 21px;
+background: #fff;
+box-shadow: 0 20px 60px rgba(25, 43, 76, 0.10);
+text-align: center;
+}
+
+.four-dot-spinner {
+position: relative;
+width: 86px;
+height: 78px;
+margin: 0 auto 16px;
+}
+
+.four-dot-spinner span {
+position: absolute;
+display: block;
+border-radius: 50%;
+animation: dotPulse 1.1s ease-in-out infinite;
+}
+
+.four-dot-spinner span:nth-child(1) {
+top: 5px;
+left: 8px;
+width: 34px;
+height: 34px;
+background: #05a9ed;
+animation-delay: 0s;
+}
+
+.four-dot-spinner span:nth-child(2) {
+top: 10px;
+right: 8px;
+width: 25px;
+height: 25px;
+background: #ff5b65;
+animation-delay: 0.12s;
+}
+
+.four-dot-spinner span:nth-child(3) {
+bottom: 4px;
+left: 19px;
+width: 24px;
+height: 24px;
+background: #cb64f0;
+animation-delay: 0.24s;
+}
+
+.four-dot-spinner span:nth-child(4) {
+right: 0;
+bottom: 0;
+width: 44px;
+height: 44px;
+background: #8dcf20;
+animation-delay: 0.36s;
+}
+
+@keyframes dotPulse {
+0%, 100% {
+transform: scale(1);
+opacity: 1;
+}
+50% {
+transform: scale(0.83);
+opacity: 0.65;
+}
+}
+
+.loading-message {
+margin: 0;
+color: var(--text);
+font-weight: 600;
+}
+
+.loading-submessage {
+margin: 4px 0 0;
+color: var(--muted);
+font-size: 11px;
+}
+
+.inline-spinner {
+width: 15px;
+height: 15px;
+border: 2px solid #d5e0fa;
+border-top-color: var(--primary);
+border-radius: 50%;
+animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+to {
+transform: rotate(360deg);
+}
+}
+
+/* =====================================================
+CENTER MODALS
+===================================================== */
+
+.modal-overlay {
+position: fixed;
+z-index: 11000;
+inset: 0;
+display: grid;
+place-items: center;
+padding: 18px;
+background: rgba(17, 27, 45, 0.53);
+backdrop-filter: blur(4px);
+}
+
+.modal-card {
+display: flex;
+width: min(100%, 550px);
+max-height: min(85vh, 800px);
+flex-direction: column;
+overflow: hidden;
+border: 1px solid rgba(255, 255, 255, 0.55);
+border-radius: 20px;
+background: #fff;
+box-shadow: 0 28px 90px rgba(9, 20, 39, 0.25);
+animation: modalIn 0.2s ease-out;
+}
+
+.modal-card.modal-large {
+width: min(100%, 760px);
+}
+
+@keyframes modalIn {
+from {
+transform: translateY(9px) scale(0.98);
+opacity: 0;
+}
+to {
+transform: translateY(0) scale(1);
+opacity: 1;
+}
+}
+
+.modal-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 10px;
+padding: 19px 22px;
+border-bottom: 1px solid var(--line);
+}
+
+.modal-title {
+margin: 0;
+font-size: 17px;
+font-weight: 700;
+}
+
+.modal-close {
+display: grid;
+width: 33px;
+height: 33px;
+place-items: center;
+flex: 0 0 33px;
+border: 0;
+border-radius: 9px;
+background: #f1f4f9;
+color: #68758a;
+}
+
+.modal-body {
+overflow-y: auto;
+padding: 22px;
+overscroll-behavior: contain;
+}
+
+.modal-footer {
+display: flex;
+justify-content: flex-end;
+flex-wrap: wrap;
+gap: 9px;
+padding: 16px 22px;
+border-top: 1px solid var(--line);
+background: #fbfcfe;
+}
+
+.modal-icon {
+display: grid;
+width: 57px;
+height: 57px;
+place-items: center;
+margin: 0 auto 16px;
+border-radius: 50%;
+font-size: 23px;
+}
+
+.modal-icon.success {
+color: #fff;
+background: #62df77;
+box-shadow: inset 0 -5px 0 rgba(23, 138, 64, 0.13);
+}
+
+.modal-icon.error {
+color: #fff;
+background: #e95e70;
+}
+
+.modal-icon.info {
+color: var(--primary);
+background: var(--primary-light);
+}
+
+.success-check {
+display: inline-block;
+width: 23px;
+height: 12px;
+border-left: 4px solid #fff;
+border-bottom: 4px solid #fff;
+opacity: 0;
+transform: rotate(-45deg) scale(0.3);
+transform-origin: 30% 50%;
+animation: drawCheck 0.7s ease 0.18s forwards;
+}
+
+@keyframes drawCheck {
+0% {
+opacity: 0;
+transform: rotate(-45deg) scale(0.3);
+}
+65% {
+opacity: 1;
+transform: rotate(-45deg) scale(1.12);
+}
+100% {
+opacity: 1;
+transform: rotate(-45deg) scale(1);
+}
+}
+
+.policy-body {
+color: #465268;
+font-size: 12px;
+line-height: 1.95;
+}
+
+.policy-body h3 {
+margin: 20px 0 7px;
+color: var(--primary-dark);
+font-size: 14px;
+}
+
+.policy-body h3:first-child {
+margin-top: 0;
+}
+
+.policy-warning {
+margin: 15px 0 0;
+color: var(--danger);
+font-size: 12px;
+font-weight: 600;
+text-align: center;
+}
+
+/* =====================================================
+APP SHELL
+===================================================== */
+
+.app-shell {
+min-height: 100vh;
+}
+
+.app-topbar {
+position: sticky;
+z-index: 500;
+top: 0;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 18px;
+padding: 14px 28px;
+border-bottom: 1px solid rgba(224, 230, 239, 0.9);
+background: rgba(255, 255, 255, 0.93);
+backdrop-filter: blur(12px);
+}
+
+.topbar-left,
+.topbar-right {
+display: flex;
+align-items: center;
+gap: 13px;
+}
+
+.topbar-user {
+display: flex;
+align-items: center;
+gap: 10px;
+min-width: 0;
+}
+
+.avatar {
+display: grid;
+width: 41px;
+height: 41px;
+flex: 0 0 41px;
+place-items: center;
+border-radius: 14px;
+background: #eaf1ff;
+color: var(--primary);
+font-weight: 700;
+}
+
+.user-info {
+min-width: 0;
+}
+
+.user-info strong {
+display: block;
+max-width: 190px;
+overflow: hidden;
+color: #26334a;
+font-size: 12px;
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+
+.user-info span {
+display: block;
+color: var(--muted);
+font-size: 10px;
+}
+
+.app-layout {
+display: grid;
+grid-template-columns: 245px minmax(0, 1fr);
+min-height: calc(100vh - 70px);
+}
+
+.sidebar {
+position: sticky;
+top: 71px;
+align-self: start;
+height: calc(100vh - 71px);
+overflow-y: auto;
+padding: 22px 14px;
+border-right: 1px solid var(--line);
+background: #fff;
+}
+
+.sidebar-label {
+padding: 8px 12px;
+color: #a0a9b8;
+font-size: 10px;
+font-weight: 600;
+letter-spacing: 0.8px;
+}
+
+.sidebar-menu {
+display: grid;
+gap: 4px;
+}
+
+.sidebar-link {
+display: flex;
+align-items: center;
+gap: 12px;
+width: 100%;
+min-height: 43px;
+padding: 11px 13px;
+border: 0;
+border-radius: 12px;
+background: transparent;
+color: #68758a;
+font-size: 12px;
+text-align: left;
+transition: all 0.15s ease;
+}
+
+.sidebar-link i {
+width: 18px;
+font-size: 15px;
+text-align: center;
+}
+
+.sidebar-link:hover {
+background: #f5f7fc;
+color: var(--primary);
+}
+
+.sidebar-link.active {
+background: var(--primary-light);
+color: var(--primary);
+font-weight: 600;
+}
+
+.sidebar-footer {
+margin-top: 22px;
+padding: 15px 12px;
+border: 1px solid #e7edf9;
+border-radius: 13px;
+background: #f8faff;
+color: #738099;
+font-size: 10px;
+line-height: 1.8;
+}
+
+.main-content {
+min-width: 0;
+padding: 28px;
+}
+
+.page-heading {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+gap: 15px;
+margin-bottom: 22px;
+}
+
+.page-heading h1 {
+margin: 0;
+color: #182a4d;
+font-size: 23px;
+font-weight: 700;
+}
+
+.page-heading p {
+margin: 4px 0 0;
+color: var(--muted);
+font-size: 12px;
+}
+
+.section-panel {
+display: none;
+animation: sectionIn 0.18s ease;
+}
+
+.section-panel.active {
+display: block;
+}
+
+@keyframes sectionIn {
+from {
+opacity: 0;
+transform: translateY(4px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+.panel-card {
+padding: 21px;
+border: 1px solid var(--line);
+border-radius: var(--radius);
+background: #fff;
+box-shadow: 0 5px 20px rgba(20, 40, 80, 0.025);
+}
+
+.panel-heading {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 12px;
+margin: 0 0 14px;
+}
+
+.panel-heading h2 {
+margin: 0;
+color: #22324d;
+font-size: 15px;
+font-weight: 700;
+}
+
+.panel-heading .muted {
+font-size: 11px;
+}
+
+.dashboard-banner {
+position: relative;
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 18px;
+min-height: 170px;
+margin-bottom: 23px;
+padding: 27px 30px;
+overflow: hidden;
+border-radius: 21px;
+background: linear-gradient(115deg, #102d65 0%, #19459d 64%, #087eca 100%);
+color: #fff;
+}
+
+.dashboard-banner::after {
+position: absolute;
+top: -85px;
+right: -30px;
+width: 250px;
+height: 250px;
+border: 1px solid rgba(255, 255, 255, 0.15);
+border-radius: 50%;
+box-shadow: 0 0 0 32px rgba(255, 255, 255, 0.025),
+0 0 0 66px rgba(255, 255, 255, 0.025);
+content: "";
+pointer-events: none;
+}
+
+.dashboard-banner h2 {
+position: relative;
+z-index: 1;
+margin: 0;
+font-size: 22px;
+font-weight: 700;
+}
+
+.dashboard-banner p {
+position: relative;
+z-index: 1;
+margin: 7px 0 0;
+color: #dae7ff;
+font-size: 12px;
+}
+
+.dashboard-banner .banner-tag {
+position: relative;
+z-index: 1;
+display: inline-block;
+margin-bottom: 9px;
+color: #b9d5ff;
+font-family: "Inter", sans-serif;
+font-size: 10px;
+letter-spacing: 1.1px;
+}
+
+.banner-icon {
+position: relative;
+z-index: 1;
+display: grid;
+width: 77px;
+height: 77px;
+flex: 0 0 77px;
+place-items: center;
+border: 1px solid rgba(255, 255, 255, 0.21);
+border-radius: 23px;
+background: rgba(255, 255, 255, 0.12);
+font-size: 31px;
+}
+
+.stats-grid {
+display: grid;
+grid-template-columns: repeat(4, minmax(0, 1fr));
+gap: 15px;
+margin-bottom: 22px;
+}
+
+.stat-card {
+min-width: 0;
+padding: 18px;
+border: 1px solid var(--line);
+border-radius: 16px;
+background: #fff;
+}
+
+.stat-card-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 8px;
+margin-bottom: 12px;
+color: var(--muted);
+font-size: 11px;
+}
+
+.stat-icon {
+display: grid;
+width: 37px;
+height: 37px;
+flex: 0 0 37px;
+place-items: center;
+border-radius: 12px;
+background: var(--primary-light);
+color: var(--primary);
+font-size: 15px;
+}
+
+.stat-number {
+overflow-wrap: anywhere;
+color: #1b2b4c;
+font-family: "Inter", "Prompt", sans-serif;
+font-size: 21px;
+font-weight: 800;
+letter-spacing: -0.5px;
+}
+
+.stat-foot {
+margin-top: 5px;
+color: #9aa4b3;
+font-size: 10px;
+}
+
+.content-grid {
+display: grid;
+grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+gap: 18px;
+}
+
+.quick-actions {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 11px;
+}
+
+.quick-action {
+display: flex;
+align-items: center;
+gap: 11px;
+padding: 13px;
+border: 1px solid var(--line);
+border-radius: 13px;
+background: #fff;
+text-align: left;
+}
+
+.quick-action:hover {
+border-color: #c8d6fa;
+background: #fbfcff;
+}
+
+.quick-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 39px;
+  height: 39px;
+  min-width: 39px;
+  flex: 0 0 39px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: var(--primary-light);
+  color: var(--primary);
+  line-height: 1;
+}
+
+.quick-action-icon i {
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  text-align: center;
+  }
+
+.quick-action strong {
+display: block;
+color: #34425a;
+font-size: 11px;
+}
+
+.quick-action > span:not(.quick-action-icon),
+.quick-action > span > span {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.empty-state {
+display: grid;
+place-items: center;
+padding: 38px 18px;
+color: var(--muted);
+text-align: center;
+}
+
+.empty-state i {
+margin-bottom: 15px;
+color: #b6c1d4;
+font-size: 33px;
+}
+
+.empty-state strong {
+color: #4a5870;
+font-size: 13px;
+}
+
+.empty-state p {
+margin: 5px 0 0;
+font-size: 11px;
+}
+
+.status-badge {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+padding: 5px 9px;
+border-radius: 99px;
+background: #edf1f7;
+color: #5e6b80;
+font-size: 10px;
+font-weight: 600;
+white-space: nowrap;
+}
+
+.status-badge.success {
+background: #e8f8ef;
+color: #14834f;
+}
+
+.status-badge.warning {
+background: #fff5de;
+color: #9a6700;
+}
+
+.status-badge.danger {
+background: #fff0f2;
+color: #b72f43;
+}
+
+.loan-list {
+display: grid;
+gap: 15px;
+}
+
+.loan-card {
+overflow: hidden;
+border: 1px solid var(--line);
+border-radius: 16px;
+background: #fff;
+}
+
+.loan-card-top {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+gap: 15px;
+padding: 19px;
+}
+
+.loan-product {
+color: #243650;
+font-size: 14px;
+font-weight: 700;
+}
+
+.loan-number {
+margin-top: 4px;
+color: var(--muted);
+font-size: 10px;
+overflow-wrap: anywhere;
+}
+
+.loan-amount {
+margin-top: 12px;
+color: var(--primary);
+font-family: "Inter", "Prompt", sans-serif;
+font-size: 22px;
+font-weight: 800;
+}
+
+.loan-meta {
+display: grid;
+grid-template-columns: repeat(3, minmax(0, 1fr));
+gap: 10px;
+margin-top: 13px;
+}
+
+.loan-meta-item span {
+display: block;
+color: var(--muted);
+font-size: 10px;
+}
+
+.loan-meta-item strong {
+display: block;
+margin-top: 3px;
+color: #34435c;
+font-size: 11px;
+overflow-wrap: anywhere;
+}
+
+.loan-card-bottom {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 12px;
+padding: 13px 19px;
+border-top: 1px solid var(--line);
+background: #fbfcfe;
+}
+
+.installment-table-wrap {
+overflow-x: auto;
+padding: 0 19px 17px;
+}
+
+.table {
+width: 100%;
+border-collapse: collapse;
+font-size: 11px;
+}
+
+.table th {
+padding: 11px 10px;
+background: #f5f7fb;
+color: #657189;
+font-weight: 600;
+text-align: left;
+white-space: nowrap;
+}
+
+.table td {
+padding: 11px 10px;
+border-bottom: 1px solid #edf0f5;
+color: #4b5870;
+white-space: nowrap;
+}
+
+.table tr:last-child td {
+border-bottom: 0;
+}
+
+.table input[type="checkbox"] {
+width: 15px;
+height: 15px;
+accent-color: var(--primary);
+}
+
+.toolbar {
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 13px;
+margin-bottom: 17px;
+}
+
+.toolbar-left,
+.toolbar-right {
+display: flex;
+align-items: center;
+flex-wrap: wrap;
+gap: 9px;
+}
+
+.inline-field {
+min-height: 39px;
+padding: 8px 11px;
+border: 1px solid var(--line);
+border-radius: 10px;
+background: #fff;
+color: #39475f;
+font-size: 12px;
+}
+
+.form-grid {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 0 16px;
+}
+
+.payment-row,
+.ticket-row {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+gap: 13px;
+padding: 16px 0;
+border-bottom: 1px solid var(--line);
+}
+
+.payment-row:last-child,
+.ticket-row:last-child {
+border-bottom: 0;
+}
+
+.payment-row strong,
+.ticket-row strong {
+display: block;
+color: #34425a;
+font-size: 12px;
+}
+
+.payment-row span,
+.ticket-row span {
+display: block;
+margin-top: 4px;
+color: var(--muted);
+font-size: 10px;
+}
+
+.payment-amount {
+color: #203b7d;
+font-family: "Inter", sans-serif;
+font-size: 14px;
+font-weight: 700;
+white-space: nowrap;
+}
+
+.qr-layout {
+display: grid;
+grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+gap: 20px;
+align-items: start;
+}
+
+.qr-image {
+display: block;
+width: min(100%, 290px);
+margin: 0 auto;
+padding: 10px;
+border: 1px solid var(--line);
+border-radius: 15px;
+background: #fff;
+}
+
+.file-drop {
+display: grid;
+place-items: center;
+padding: 22px 15px;
+border: 1px dashed #c5cee0;
+border-radius: 14px;
+background: #fafcff;
+color: #63718a;
+text-align: center;
+cursor: pointer;
+}
+
+.file-drop i {
+margin-bottom: 9px;
+font-size: 26px;
+color: var(--primary);
+}
+
+.file-drop span {
+font-size: 11px;
+}
+
+.profile-card {
+display: flex;
+align-items: center;
+gap: 15px;
+margin-bottom: 20px;
+padding: 18px;
+border: 1px solid var(--line);
+border-radius: 16px;
+background: #fff;
+}
+
+.profile-avatar {
+display: grid;
+width: 64px;
+height: 64px;
+flex: 0 0 64px;
+place-items: center;
+border-radius: 19px;
+background: #eaf1ff;
+color: var(--primary);
+font-size: 25px;
+}
+
+.profile-card h2 {
+margin: 0;
+font-size: 16px;
+}
+
+.profile-card p {
+margin: 4px 0 0;
+color: var(--muted);
+font-size: 11px;
+overflow-wrap: anywhere;
+}
+
+.profile-info-grid {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 14px;
+}
+
+.profile-info {
+padding: 14px;
+border: 1px solid var(--line);
+border-radius: 13px;
+background: #fff;
+}
+
+.profile-info span {
+display: block;
+color: var(--muted);
+font-size: 10px;
+}
+
+.profile-info strong {
+display: block;
+margin-top: 4px;
+color: #39465c;
+font-size: 12px;
+overflow-wrap: anywhere;
+}
+
+.app-footer {
+margin-top: 26px;
+color: #9aa4b3;
+font-size: 10px;
+text-align: center;
+}
+
+/* =====================================================
+RESPONSIVE
+===================================================== */
+
+@media (max-width: 1120px) {
+.stats-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.app-layout {
+grid-template-columns: 220px minmax(0, 1fr);
+}
+
+.main-content {
+padding: 22px;
+}
+}
+
+@media (max-width: 850px) {
+.app-layout {
+display: block;
+}
+
+.sidebar {
+position: fixed;
+z-index: 480;
+top: auto;
+right: 0;
+bottom: 0;
+left: 0;
+display: flex;
+align-items: stretch;
+justify-content: space-around;
+height: 68px;
+padding: 7px 6px calc(7px + env(safe-area-inset-bottom));
+overflow: visible;
+border-top: 1px solid var(--line);
+border-right: 0;
+background: rgba(255, 255, 255, 0.96);
+backdrop-filter: blur(14px);
+}
+
+.sidebar-label,
+.sidebar-footer {
+display: none;
+}
+
+.sidebar-menu {
+display: flex;
+width: 100%;
+align-items: stretch;
+justify-content: space-around;
+gap: 4px;
+}
+
+.sidebar-link {
+display: flex;
+min-width: 0;
+min-height: 0;
+flex: 1;
+flex-direction: column;
+justify-content: center;
+gap: 3px;
+padding: 5px 2px;
+border-radius: 11px;
+font-size: 9px;
+text-align: center;
+}
+
+.sidebar-link i {
+width: auto;
+font-size: 16px;
+}
+
+.main-content {
+padding: 21px 15px 94px;
+}
+
+.app-topbar {
+padding: 11px 15px;
+}
+
+.content-grid {
+grid-template-columns: minmax(0, 1fr);
+}
+
+.stats-grid {
+gap: 10px;
+}
+
+.stat-card {
+padding: 14px;
+}
+
+.stat-number {
+font-size: 18px;
+}
+
+.dashboard-banner {
+padding: 22px;
+}
+
+.banner-icon {
+width: 59px;
+height: 59px;
+flex-basis: 59px;
+font-size: 23px;
+}
+
+.qr-layout {
+grid-template-columns: minmax(0, 1fr);
+}
+}
+
+@media (max-width: 560px) {
+body {
+font-size: 13px;
+}
+
+.auth-stage {
+display: block;
+min-height: 100vh;
+padding: 14px 10px;
+}
+
+.auth-card,
+.auth-card-wide {
+width: 100%;
+margin: 0 auto;
+padding: 23px 17px;
+border-radius: 20px;
+}
+
+.auth-brand-row {
+margin-bottom: 21px;
+}
+
+.brand {
+font-size: 21px;
+}
+
+.auth-heading {
+font-size: 27px;
+}
+
+.signup-grid {
+grid-template-columns: minmax(0, 1fr);
+}
+
+.signup-grid .span-2 {
+grid-column: auto;
+}
+
+.verify-email-row {
+flex-direction: column;
+}
+
+.password-rules {
+grid-template-columns: minmax(0, 1fr);
+}
+
+.page-heading {
+margin-bottom: 16px;
+}
+
+.page-heading h1 {
+font-size: 20px;
+}
+
+.dashboard-banner {
+min-height: 144px;
+padding: 18px;
+}
+
+.dashboard-banner h2 {
+font-size: 18px;
+}
+
+.banner-icon {
+display: none;
+}
+
+.stat-card-header {
+align-items: flex-start;
+}
+
+.stat-icon {
+width: 31px;
+height: 31px;
+flex-basis: 31px;
+font-size: 12px;
+}
+
+.stat-number {
+font-size: 16px;
+}
+
+.stat-card {
+padding: 12px;
+}
+
+.quick-actions {
+grid-template-columns: minmax(0, 1fr);
+}
+
+.panel-card {
+padding: 15px;
+}
+
+.loan-card-top {
+padding: 15px;
+}
+
+.loan-card-bottom {
+align-items: stretch;
+flex-direction: column;
+padding: 12px 15px;
+}
+
+.loan-card-bottom .button {
+width: 100%;
+}
+
+.loan-meta {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.modal-overlay {
+padding: 10px;
+}
+
+.modal-card {
+max-height: 90vh;
+border-radius: 17px;
+}
+
+.modal-header {
+padding: 15px 16px;
+}
+
+.modal-body {
+padding: 17px;
+}
+
+.modal-footer {
+padding: 13px 16px;
+}
+
+.modal-footer .button {
+flex: 1;
+}
+
+.form-grid,
+.profile-info-grid {
+grid-template-columns: minmax(0, 1fr);
+}
+
+.topbar-user .user-info {
+display: none;
+}
+
+.topbar-right {
+gap: 7px;
+}
+
+.topbar-left .brand {
+font-size: 18px;
+}
+
+.topbar-left .brand-mark {
+width: 36px;
+height: 36px;
+}
+
+.toolbar {
+align-items: stretch;
+}
+
+.toolbar-left,
+.toolbar-right {
+width: 100%;
+}
+
+.toolbar .button {
+flex: 1;
+}
+}
+
+@media (prefers-reduced-motion: reduce) {
+*,
+*::before,
+*::after {
+scroll-behavior: auto !important;
+animation-duration: 0.01ms !important;
+animation-iteration-count: 1 !important;
+transition-duration: 0.01ms !important;
+}
+}
+
+.supplemental-section { margin: 0 0 16px; padding: 18px; border: 1px solid var(--line); border-radius: 15px; background: #fff; }
+.supplemental-section h2 { margin: 0 0 5px; color: var(--primary-dark); font-size: 15px; }
+.supplemental-section .section-desc { margin: 0 0 15px; color: var(--muted); font-size: 11px; }
+.supplemental-section-number { display: inline-grid; width: 29px; height: 29px; place-items: center; margin-right: 7px; border-radius: 9px; background: var(--primary-light); color: var(--primary); font-weight: 700; }
+.supplemental-summary { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+.supplemental-summary-item { padding: 12px; border: 1px solid var(--line); border-radius: 11px; background: #f9fbff; min-width: 0; }
+.supplemental-summary-item span { display: block; color: var(--muted); font-size: 10px; }
+.supplemental-summary-item strong { display: block; margin-top: 4px; overflow-wrap: anywhere; }
+.supplemental-alert { padding: 12px 14px; border: 1px solid #f1d9ad; border-radius: 12px; background: #fff9ed; color: #7a550b; font-size: 11px; }
+.document-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; align-items: end; margin: 10px 0; padding: 12px; border: 1px dashed #ccd6e7; border-radius: 12px; }
+.document-list { display: grid; gap: 7px; margin-top: 12px; }
+.document-list-item { display: flex; align-items: flex-start; gap: 9px; padding: 10px; border-radius: 10px; background: #f5f8fd; color: #45536b; font-size: 11px; }
+.signature-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 13px; }
+.signature-card { min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: #fbfcff; }
+.signature-card label { display: block; margin-bottom: 8px; color: #35445c; font-size: 12px; font-weight: 600; }
+.signature-canvas { display: block; width: 100%; height: 150px; border: 1px dashed #96a8c4; border-radius: 9px; background: #fff; touch-action: none; cursor: crosshair; }
+.signature-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
+.bank-brand-preview { display: flex; align-items: center; gap: 9px; min-height: 44px; margin-bottom: 12px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 11px; background: #f8faff; color: #3e4c65; }
+.bank-brand-mark { display: inline-grid; width: 36px; height: 36px; place-items: center; border-radius: 10px; background: var(--primary-light); color: var(--primary); font-family: Inter,sans-serif; font-size: 10px; font-weight: 800; }
+.supplemental-actions { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-top: 18px; }
+@media (max-width: 650px) { .supplemental-summary { grid-template-columns: repeat(2,minmax(0,1fr)); } .document-row, .signature-grid { grid-template-columns: minmax(0,1fr); } .supplemental-actions .button { width: 100%; } }
+
+
+
+
+/* FINORA long-ID display: mask long IDs until the eye button is pressed. */
+.finora-id-wrap {
+  display: inline-flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-width: 0;
+  max-width: 100%;
+  vertical-align: middle;
+}
+.finora-id-text {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.finora-id-wrap.is-revealed {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: flex-start;
+}
+.finora-id-wrap.is-revealed .finora-id-text {
+  flex: 1 1 100%;
+}
+.finora-id-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 25px;
+  min-height: 22px;
+  padding: 2px 5px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--primary, #173b8f);
+  cursor: pointer;
+  line-height: 1;
+}
+.finora-id-toggle:hover {
+  background: rgba(23, 59, 143, .08);
+}
+.finora-id-toggle:focus-visible {
+  outline: 2px solid var(--primary, #173b8f);
+  outline-offset: 2px;
+}
+
+
+/* Temporary maintenance page */
+.maintenance-page {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  background: radial-gradient(circle at top right, rgba(29,154,231,.12), transparent 42%), #f3f7fd;
+}
+.maintenance-card {
+  width: min(820px, 100%); padding: clamp(22px, 5vw, 42px);
+  border: 1px solid #dce7f6; border-radius: 24px; background: #fff;
+  box-shadow: 0 22px 70px rgba(16,45,101,.09); text-align: center;
+}
+.maintenance-brand { display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:24px; color:#173b8f; font-size:25px; font-weight:800; }
+.maintenance-brand .brand-mark { display:inline-flex; }
+.maintenance-image { display:block; width:100%; max-height:330px; object-fit:cover; border-radius:16px; margin:0 auto 24px; }
+.maintenance-heading { margin:0 0 12px; color:#173b8f; font-size:clamp(24px,4vw,34px); line-height:1.35; }
+.maintenance-message { max-width:690px; margin:0 auto; color:#526581; font-size:15px; line-height:1.85; overflow-wrap:anywhere; text-align:left; }
+.maintenance-message img { max-width:100%; height:auto; border-radius:12px; }
+.maintenance-return-time { margin:24px 0 0; padding:13px 16px; border-radius:12px; background:#f2f7ff; color:#31527c; font-size:13px; }
+@media (max-width:520px) { .maintenance-page { padding:12px; align-items:flex-start; } .maintenance-card { padding:22px 16px; border-radius:18px; margin-top:16px; } }
+
+</style>
+</head>
+
+<body>
+
+<!-- ==========================================================
+GLOBAL LOADING OVERLAY
+========================================================== -->
+<div id="loadingOverlay" class="loading-overlay hidden" role="status" aria-live="polite">
+<div class="loading-content">
+<div class="four-dot-spinner" aria-hidden="true">
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+</div>
+<p id="loadingMessage" class="loading-message">กำลังโหลดข้อมูลระบบ</p>
+<p id="loadingSubmessage" class="loading-submessage">กรุณารอสักครู่</p>
+</div>
+</div>
+
+<!-- ==========================================================
+CENTER MODAL
+========================================================== -->
+<div id="modalOverlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+<div id="modalCard" class="modal-card">
+<div class="modal-header">
+<h2 id="modalTitle" class="modal-title">แจ้งเตือน</h2>
+<button id="modalClose" class="modal-close" type="button" aria-label="ปิดหน้าต่าง">
+<i class="fa-solid fa-xmark"></i>
+</button>
+</div>
+<div id="modalBody" class="modal-body"></div>
+<div id="modalFooter" class="modal-footer"></div>
+</div>
+</div>
+
+<!-- ==========================================================
+LOGIN
+========================================================== -->
+<!-- TEMPORARY MAINTENANCE VIEW (shown before Login when system is closed) -->
+<main id="maintenanceView" class="maintenance-page hidden">
+  <section class="maintenance-card">
+    <div class="maintenance-brand"><span class="brand-mark"><i class="fa-solid fa-wallet"></i></span><span>FINORA</span></div>
+    <img id="maintenanceImage" class="maintenance-image hidden" alt="ประกาศปิดปรับปรุงระบบ">
+    <h1 id="maintenanceHeading" class="maintenance-heading">ระบบกำลังปรับปรุงชั่วคราว</h1>
+    <div id="maintenanceMessage" class="maintenance-message"><p>ขออภัยในความไม่สะดวก ระบบอยู่ระหว่างการปรับปรุง กรุณากลับมาใช้งานอีกครั้งภายหลัง</p></div>
+    <p id="maintenanceReturnTime" class="maintenance-return-time">ระบบจะกลับมาเปิดให้บริการตามเวลาที่กำหนด</p>
+  </section>
+</main>
+
+<main id="loginView" class="auth-stage hidden">
+<section class="auth-card">
+<div class="auth-brand-row">
+<div class="brand">
+<span class="brand-mark"><i class="fa-solid fa-wallet"></i></span>
+<span>FINORA</span>
+</div>
+</div>
+
+<h1 class="auth-heading">Login</h1>
+<p class="auth-intro">เข้าสู่ระบบเพื่อจัดการสินเชื่อของคุณ</p>
+
+<form id="loginForm" novalidate>
+<div class="form-group">
+<label class="form-label" for="loginIdentifier">ชื่อผู้ใช้หรืออีเมล</label>
+<div class="input-wrap">
+<i class="fa-regular fa-user field-icon"></i>
+<input id="loginIdentifier" class="field" type="text" autocomplete="username" placeholder="กรอกชื่อผู้ใช้หรืออีเมล" required>
+</div>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="loginPassword">รหัสผ่าน</label>
+<div class="input-wrap has-eye">
+<i class="fa-solid fa-lock field-icon"></i>
+<input id="loginPassword" class="field" type="password" autocomplete="current-password" placeholder="กรอกรหัสผ่าน" required>
+<button class="eye-toggle" type="button" data-toggle-password="loginPassword" aria-label="แสดงหรือซ่อนรหัสผ่าน">
+<i class="fa-regular fa-eye"></i>
+</button>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 20px;">
+<label class="check-row" style="align-items:center;">
+<input id="rememberMe" type="checkbox">
+<span>จดจำการเข้าสู่ระบบ</span>
+</label>
+<a href="#" id="goForgotPassword">ลืมรหัสผ่านใช่หรือไม่?</a>
+</div>
+
+<button id="loginButton" class="button button-primary full-width" type="submit">
+<i class="fa-solid fa-arrow-right-to-bracket"></i>
+เข้าสู่ระบบ
+</button>
+</form>
+
+<div class="separator">FINORA</div>
+
+<div class="text-center muted" style="font-size:12px;">
+ยังไม่มีบัญชีใช่หรือไม่?
+<a href="#" id="goSignup" style="font-weight:600;">สมัครเลย</a>
+</div>
+
+<div id="loginAnnouncements" class="auth-announcements"></div>
+
+<div class="powered-by">Powered by FINORA</div>
+<div class="text-center tiny muted" style="margin-top:7px;">
+ระบบจัดการสินเชื่อออนไลน์
+</div>
+</section>
+</main>
+
+<!-- ==========================================================
+SIGN UP
+========================================================== -->
+<main id="signupView" class="auth-stage hidden">
+<section class="auth-card auth-card-wide">
+<div class="auth-brand-row">
+<div class="brand">
+<span class="brand-mark"><i class="fa-solid fa-wallet"></i></span>
+<span>FINORA</span>
+</div>
+<button id="backToLoginFromSignup" class="button button-secondary button-sm" type="button">
+<i class="fa-solid fa-arrow-left"></i>
+กลับหน้า Login
+</button>
+</div>
+
+<h1 class="auth-heading">Sign up</h1>
+<p class="auth-intro">สร้างบัญชี FINORA เพื่อเริ่มต้นใช้งานระบบ</p>
+
+<form id="signupForm" novalidate>
+<div class="signup-grid">
+<div class="form-group">
+<label class="form-label" for="signupPrefix">คำนำหน้า <span class="required">*</span></label>
+<select id="signupPrefix" class="field" required>
+<option value="">เลือกคำนำหน้า</option>
+<option value="เด็กหญิง">เด็กหญิง</option>
+<option value="เด็กชาย">เด็กชาย</option>
+<option value="นาย">นาย</option>
+<option value="นาง">นาง</option>
+<option value="นางสาว">นางสาว</option>
+</select>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="signupFullName">ชื่อ - สกุล <span class="required">*</span></label>
+<input id="signupFullName" class="field" type="text" maxlength="150" autocomplete="name" placeholder="กรอกชื่อและนามสกุล" required>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="signupDob">วัน/เดือน/ปีเกิด <span class="required">*</span></label>
+<input id="signupDob" class="field" type="date" required>
+<span class="field-hint">เลือกวันเกิดจากปฏิทิน</span>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="signupNationalId">หมายเลขบัตรประชาชน <span class="required">*</span></label>
+<input id="signupNationalId" class="field" type="text" inputmode="numeric" maxlength="13" autocomplete="off" placeholder="เลขประจำตัว 13 หลัก" required>
+<span id="nationalIdHint" class="field-hint">กรอกตัวเลข 13 หลักตามบัตรประชาชน</span>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="signupPhone">หมายเลขโทรศัพท์มือถือ <span class="required">*</span></label>
+<input id="signupPhone" class="field" type="tel" inputmode="numeric" maxlength="10" autocomplete="tel" placeholder="0XXXXXXXXX" required>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="signupEmail">อีเมล <span class="required">*</span></label>
+<input id="signupEmail" class="field" type="email" maxlength="254" autocomplete="email" placeholder="name@example.com" required>
+
+<button id="sendVerifyEmail" class="button button-soft full-width" type="button">
+<i class="fa-regular fa-envelope"></i>
+ยืนยันอีเมล
+</button>
+
+<div id="emailVerifiedStatus" class="email-verified-status hidden">
+<i class="fa-solid fa-circle-check"></i>
+<span>ยืนยันอีเมลสำเร็จ</span>
+</div>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="signupPassword">ตั้งรหัสผ่าน <span class="required">*</span></label>
+<div class="input-wrap has-eye">
+<input id="signupPassword" class="field" type="password" autocomplete="new-password" maxlength="128" placeholder="ตั้งรหัสผ่านที่ปลอดภัย" required>
+<button class="eye-toggle" type="button" data-toggle-password="signupPassword" aria-label="แสดงหรือซ่อนรหัสผ่าน">
+<i class="fa-regular fa-eye"></i>
+</button>
+</div>
+
+<div class="password-strength">
+<div class="strength-track">
+<div id="passwordStrengthFill" class="strength-fill"></div>
+</div>
+<div class="strength-caption">
+<span>ความปลอดภัยของรหัสผ่าน</span>
+<strong id="passwordStrengthLabel">ยังไม่ได้กรอก</strong>
+</div>
+</div>
+
+<div class="password-rules">
+<div id="ruleLength" class="password-rule"><i class="fa-regular fa-circle"></i> อย่างน้อย 12 ตัวอักษร</div>
+<div id="ruleLower" class="password-rule"><i class="fa-regular fa-circle"></i> ตัวพิมพ์เล็ก a-z</div>
+<div id="ruleUpper" class="password-rule"><i class="fa-regular fa-circle"></i> ตัวพิมพ์ใหญ่ A-Z</div>
+<div id="ruleNumber" class="password-rule"><i class="fa-regular fa-circle"></i> ตัวเลข 0-9</div>
+<div id="ruleSpecial" class="password-rule"><i class="fa-regular fa-circle"></i> อักขระพิเศษ</div>
+</div>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="signupConfirmPassword">ยืนยันรหัสผ่าน <span class="required">*</span></label>
+<div class="input-wrap has-eye">
+<input id="signupConfirmPassword" class="field" type="password" autocomplete="new-password" maxlength="128" placeholder="กรอกรหัสผ่านอีกครั้ง" required>
+<button class="eye-toggle" type="button" data-toggle-password="signupConfirmPassword" aria-label="แสดงหรือซ่อนรหัสผ่าน">
+<i class="fa-regular fa-eye"></i>
+</button>
+</div>
+<div id="passwordMatchMessage" class="password-match muted">กรอกรหัสผ่านทั้งสองช่องเพื่อตรวจสอบ</div>
+</div>
+</div>
+
+<div class="policy-checks">
+<label class="check-row">
+<input id="termsCheckbox" type="checkbox">
+<span>
+ข้าพเจ้าได้อ่านและยอมรับ
+<a href="#" id="openTermsLink">ข้อกำหนดและเงื่อนไขการใช้บริการ FINORA</a>
+แล้ว <span class="required">*</span>
+</span>
+</label>
+
+<label class="check-row">
+<input id="privacyCheckbox" type="checkbox">
+<span>
+ข้าพเจ้าได้อ่าน
+<a href="#" id="openPrivacyLink">ประกาศความเป็นส่วนตัว (Privacy Notice)</a>
+และรับทราบวิธีการเก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคล
+<span class="required">*</span>
+</span>
+</label>
+
+<p class="tiny muted" style="margin:0;">
+การติ๊กช่องยินยอมจะเกิดขึ้นหลังจากอ่านเอกสารและกดปุ่มยินยอมในหน้าต่างแสดงรายละเอียดแล้ว
+</p>
+</div>
+
+<button id="signupButton" class="button button-primary full-width" type="submit">
+<i class="fa-solid fa-user-plus"></i>
+สมัครสมาชิก
+</button>
+</form>
+
+<div class="auth-foot-links">
+<span>มีบัญชี FINORA อยู่แล้ว?</span>
+<a href="#" id="goLoginFromSignup">เข้าสู่ระบบ</a>
+</div>
+
+<div id="signupAnnouncements" class="auth-announcements"></div>
+
+<div class="powered-by">Powered by FINORA</div>
+</section>
+</main>
+
+<!-- ==========================================================
+EMAIL WAITING
+========================================================== -->
+<main id="waitingEmailView" class="auth-stage hidden">
+<section class="auth-card">
+<div class="auth-brand-row">
+<div class="brand">
+<span class="brand-mark"><i class="fa-solid fa-wallet"></i></span>
+<span>FINORA</span>
+</div>
+</div>
+
+<div class="waiting-box">
+<div class="waiting-circle">
+<div class="four-dot-spinner" aria-hidden="true" style="margin-bottom:0;">
+<span></span><span></span><span></span><span></span>
+</div>
+</div>
+
+<h1 class="waiting-title">กำลังรอการยืนยันจากอีเมล</h1>
+
+<p class="muted" style="margin:0;">
+เราได้ส่งลิงก์ยืนยันอีเมลให้คุณแล้ว
+</p>
+
+<div id="waitingEmailAddress" class="waiting-email">—</div>
+
+<p class="muted small">
+โปรดเปิดอีเมลจาก FINORA แล้วกดปุ่ม
+<strong>Confirm email address</strong>
+เพื่อยืนยันอีเมล
+</p>
+
+<div class="email-verified-status" id="waitingVerifiedStatus" style="justify-content:center;margin:18px 0;">
+<span class="inline-spinner" aria-hidden="true"></span>
+<span>กำลังตรวจสอบสถานะอีเมล</span>
+</div>
+
+<button id="cancelWaitingEmail" class="button button-secondary full-width" type="button">
+กลับไปหน้าลงทะเบียน
+</button>
+
+<div class="powered-by">Powered by FINORA</div>
+</div>
+</section>
+</main>
+
+<!-- ==========================================================
+FORGOT PASSWORD
+========================================================== -->
+<main id="forgotPasswordView" class="auth-stage hidden">
+<section class="auth-card">
+<div class="auth-brand-row">
+<div class="brand">
+<span class="brand-mark"><i class="fa-solid fa-wallet"></i></span>
+<span>FINORA</span>
+</div>
+<button id="backToLoginFromForgot" class="icon-button" type="button" aria-label="กลับไปหน้า Login">
+<i class="fa-solid fa-arrow-left"></i>
+</button>
+</div>
+
+<h1 class="auth-heading" style="font-size:25px;">รีเซ็ตรหัสผ่าน</h1>
+<p class="auth-intro">
+กรอกอีเมลที่ใช้สมัครสมาชิก เราจะส่งลิงก์สำหรับตั้งรหัสผ่านใหม่ให้คุณ
+</p>
+
+<form id="forgotPasswordForm" novalidate>
+<div class="form-group">
+<label class="form-label" for="forgotEmail">อีเมลที่สมัครสมาชิก</label>
+<div class="input-wrap">
+<i class="fa-regular fa-envelope field-icon"></i>
+<input id="forgotEmail" class="field" type="email" maxlength="254" autocomplete="email" placeholder="name@example.com" required>
+</div>
+</div>
+
+<button class="button button-primary full-width" type="submit">
+<i class="fa-regular fa-paper-plane"></i>
+ส่งลิงก์รีเซ็ตรหัสผ่าน
+</button>
+</form>
+
+<div class="powered-by">Powered by FINORA</div>
+</section>
+</main>
+
+<!-- ==========================================================
+RESET PASSWORD
+========================================================== -->
+<main id="resetPasswordView" class="auth-stage hidden">
+<section class="auth-card">
+<div class="auth-brand-row">
+<div class="brand">
+<span class="brand-mark"><i class="fa-solid fa-wallet"></i></span>
+<span>FINORA</span>
+</div>
+</div>
+
+<h1 class="auth-heading" style="font-size:25px;">ตั้งรหัสผ่านใหม่</h1>
+<p class="auth-intro">
+สร้างรหัสผ่านใหม่ที่ปลอดภัยสำหรับบัญชี FINORA
+</p>
+
+<div id="resetTokenStatus" class="email-verified-status hidden" style="margin-bottom:18px;">
+<i class="fa-solid fa-circle-check"></i>
+<span>ลิงก์รีเซ็ตรหัสผ่านถูกต้อง</span>
+</div>
+
+<form id="resetPasswordForm" novalidate>
+<div class="form-group">
+<label class="form-label" for="resetNewPassword">รหัสผ่านใหม่</label>
+<div class="input-wrap has-eye">
+<input id="resetNewPassword" class="field" type="password" autocomplete="new-password" maxlength="128" placeholder="ตั้งรหัสผ่านใหม่" required>
+<button class="eye-toggle" type="button" data-toggle-password="resetNewPassword" aria-label="แสดงหรือซ่อนรหัสผ่าน">
+<i class="fa-regular fa-eye"></i>
+</button>
+</div>
+<span class="field-hint">อย่างน้อย 12 ตัวอักษร มีพิมพ์เล็ก พิมพ์ใหญ่ ตัวเลข และอักขระพิเศษ</span>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="resetConfirmPassword">ยืนยันรหัสผ่านใหม่</label>
+<div class="input-wrap has-eye">
+<input id="resetConfirmPassword" class="field" type="password" autocomplete="new-password" maxlength="128" placeholder="กรอกรหัสผ่านใหม่อีกครั้ง" required>
+<button class="eye-toggle" type="button" data-toggle-password="resetConfirmPassword" aria-label="แสดงหรือซ่อนรหัสผ่าน">
+<i class="fa-regular fa-eye"></i>
+</button>
+</div>
+<div id="resetPasswordMatchMessage" class="password-match muted"></div>
+</div>
+
+<button id="resetPasswordButton" class="button button-primary full-width" type="submit" disabled>
+<i class="fa-solid fa-key"></i>
+บันทึกรหัสผ่านใหม่
+</button>
+</form>
+
+<div class="powered-by">Powered by FINORA</div>
+</section>
+</main>
+
+<!-- ==========================================================
+BORROWER APPLICATION
+========================================================== -->
+<div id="appView" class="app-shell hidden">
+<header class="app-topbar">
+<div class="topbar-left">
+<div class="brand">
+<span class="brand-mark"><i class="fa-solid fa-wallet"></i></span>
+<span>FINORA</span>
+</div>
+</div>
+
+<div class="topbar-right">
+<button id="refreshDashboardButton" class="icon-button" type="button" aria-label="รีเฟรชข้อมูล">
+<i class="fa-solid fa-rotate"></i>
+</button>
+
+<div class="topbar-user">
+<div id="userAvatar" class="avatar">F</div>
+<div class="user-info">
+<strong id="topbarUserName">ผู้ใช้งาน</strong>
+<span>บัญชีผู้กู้</span>
+</div>
+</div>
+
+<button id="logoutButton" class="button button-secondary button-sm" type="button">
+<i class="fa-solid fa-arrow-right-from-bracket"></i>
+ออกจากระบบ
+</button>
+</div>
+</header>
+
+<div class="app-layout">
+<aside class="sidebar">
+<div class="sidebar-label">MAIN MENU</div>
+
+<nav class="sidebar-menu" aria-label="เมนูผู้กู้">
+<button class="sidebar-link active" type="button" data-tab="home">
+<i class="fa-solid fa-house"></i>
+<span>หน้าหลัก</span>
+</button>
+
+<button class="sidebar-link" type="button" data-tab="loans">
+<i class="fa-solid fa-wallet"></i>
+<span>สินเชื่อของฉัน</span>
+</button>
+
+<button class="sidebar-link" type="button" data-tab="apply">
+<i class="fa-solid fa-file-circle-plus"></i>
+<span>สมัครสินเชื่อ</span>
+</button>
+
+<button class="sidebar-link" type="button" data-tab="payments">
+<i class="fa-solid fa-calendar-check"></i>
+<span>ชำระเงิน</span>
+</button>
+
+<button class="sidebar-link" type="button" data-tab="announcements">
+<i class="fa-solid fa-bullhorn"></i>
+<span>ประกาศ</span>
+</button>
+
+<button class="sidebar-link" type="button" data-tab="support">
+<i class="fa-solid fa-headset"></i>
+<span>ศูนย์ช่วยเหลือ</span>
+</button>
+
+<button class="sidebar-link" type="button" data-tab="profile">
+<i class="fa-solid fa-user"></i>
+<span>บัญชีของฉัน</span>
+</button>
+</nav>
+
+<div class="sidebar-footer">
+<i class="fa-solid fa-shield-halved"></i>
+<strong>FINORA Security</strong>
+<br>
+กรุณาออกจากระบบทุกครั้งเมื่อใช้อุปกรณ์สาธารณะ
+</div>
+</aside>
+
+<main class="main-content">
+
+<!-- HOME TAB -->
+<section id="tab-home" class="section-panel active">
+<div class="page-heading">
+<div>
+<h1>ภาพรวมบัญชี</h1>
+<p>ภาพรวมสินเชื่อและรายการที่ต้องดำเนินการ</p>
+</div>
+<button class="button button-primary button-sm" type="button" data-open-tab="apply">
+<i class="fa-solid fa-plus"></i>
+สมัครสินเชื่อ
+</button>
+</div>
+
+<div class="dashboard-banner">
+<div>
+<span class="banner-tag">FINORA FINANCIAL</span>
+<h2>ยินดีต้อนรับ <span id="dashboardWelcomeName">คุณลูกค้า</span></h2>
+<p>จัดการสินเชื่อและติดตามภาระชำระของคุณได้ในที่เดียว</p>
+</div>
+<div class="banner-icon"><i class="fa-solid fa-chart-line"></i></div>
+</div>
+
+<div class="stats-grid">
+<div class="stat-card">
+<div class="stat-card-header">
+<span>สินเชื่อทั้งหมด</span>
+<div class="stat-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+</div>
+<div id="statTotalLoans" class="stat-number">—</div>
+<div class="stat-foot">บัญชีสินเชื่อ</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-card-header">
+<span>สินเชื่อที่กำลังใช้งาน</span>
+<div class="stat-icon"><i class="fa-solid fa-wallet"></i></div>
+</div>
+<div id="statActiveLoans" class="stat-number">—</div>
+<div class="stat-foot">บัญชีที่จ่ายเงินแล้ว</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-card-header">
+<span>ยอดค้างชำระรวม</span>
+<div class="stat-icon"><i class="fa-solid fa-coins"></i></div>
+</div>
+<div id="statDueTotal" class="stat-number">฿0.00</div>
+<div class="stat-foot">อ้างอิงข้อมูลตารางหนี้</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-card-header">
+<span>สถานะบัญชี</span>
+<div class="stat-icon"><i class="fa-solid fa-shield-heart"></i></div>
+</div>
+<div id="statAccountStatus" class="stat-number" style="font-size:17px;">ปกติ</div>
+<div class="stat-foot">ข้อมูลจากระบบบัญชี</div>
+</div>
+</div>
+
+<div id="homeAnnouncements" class="auth-announcements" style="margin:0 0 22px;"></div>
+
+<div class="content-grid">
+<div class="panel-card">
+<div class="panel-heading">
+<h2>สินเชื่อล่าสุด</h2>
+<button class="button button-secondary button-sm" type="button" data-open-tab="loans">ดูทั้งหมด</button>
+</div>
+<div id="homeRecentLoans"></div>
+</div>
+
+<div class="panel-card">
+<div class="panel-heading">
+<h2>เมนูทางลัด</h2>
+</div>
+
+<div class="quick-actions">
+<button class="quick-action" type="button" data-open-tab="apply">
+<span class="quick-action-icon"><i class="fa-solid fa-file-circle-plus"></i></span>
+<span>
+<strong>สมัครสินเชื่อ</strong>
+<span>ส่งคำขอใหม่</span>
+</span>
+</button>
+
+<button class="quick-action" type="button" data-open-tab="loans">
+<span class="quick-action-icon"><i class="fa-solid fa-list-check"></i></span>
+<span>
+<strong>ตารางผ่อน</strong>
+<span>ดูวันครบกำหนด</span>
+</span>
+</button>
+
+<button class="quick-action" type="button" data-open-tab="payments">
+<span class="quick-action-icon"><i class="fa-solid fa-qrcode"></i></span>
+<span>
+<strong>ชำระเงิน</strong>
+<span>QR และส่งสลิป</span>
+</span>
+</button>
+
+<button class="quick-action" type="button" data-open-tab="support">
+<span class="quick-action-icon"><i class="fa-solid fa-headset"></i></span>
+<span>
+<strong>ติดต่อเจ้าหน้าที่</strong>
+<span>ส่งคำร้องขอความช่วยเหลือ</span>
+</span>
+</button>
+</div>
+
+<div class="separator">ข้อมูลการใช้งาน</div>
+
+<p class="muted small" style="margin:0;">
+โปรดตรวจสอบยอดและวันครบกำหนดจากตารางชำระเงินจริงของแต่ละบัญชี
+หากพบความคลาดเคลื่อน ให้ติดต่อศูนย์ช่วยเหลือก่อนชำระเงินซ้ำ
+</p>
+</div>
+</div>
+</section>
+
+<!-- LOANS TAB -->
+<section id="tab-loans" class="section-panel">
+<div class="page-heading">
+<div>
+<h1>สินเชื่อของฉัน</h1>
+<p>ตรวจสอบคำขอ วงเงิน สถานะ และตารางชำระของแต่ละบัญชี</p>
+</div>
+<button class="button button-primary button-sm" type="button" data-open-tab="apply">
+<i class="fa-solid fa-plus"></i>
+สมัครสินเชื่อ
+</button>
+</div>
+
+<div class="toolbar">
+<div class="toolbar-left">
+<select id="loanStatusFilter" class="inline-field">
+<option value="">ทุกสถานะ</option>
+<option value="PENDING_REVIEW">รอตรวจสอบ</option>
+<option value="APPROVED_PENDING_ACCEPTANCE">รอยืนยันข้อเสนอ</option>
+<option value="ACCEPTED_PENDING_DISBURSEMENT">รอจ่ายเงิน</option>
+<option value="DISBURSED">กำลังชำระ</option>
+<option value="REJECTED">ไม่อนุมัติ</option>
+<option value="PAID_OFF">ปิดบัญชีแล้ว</option>
+</select>
+</div>
+<div class="toolbar-right">
+<button id="refreshLoansButton" class="button button-secondary button-sm" type="button">
+<i class="fa-solid fa-rotate"></i>
+รีเฟรช
+</button>
+</div>
+</div>
+
+<div id="loansList" class="loan-list">
+<div class="panel-card">
+<div class="empty-state">
+<span class="inline-spinner" aria-hidden="true"></span>
+<strong style="margin-top:12px;">กำลังโหลดสินเชื่อ</strong>
+</div>
+</div>
+</div>
+</section>
+
+<!-- APPLY TAB -->
+<section id="tab-apply" class="section-panel">
+<div class="page-heading">
+<div>
+<h1>สมัครสินเชื่อ</h1>
+<p>เลือกผลิตภัณฑ์ วงเงิน และรอบชำระที่รองรับ</p>
+</div>
+</div>
+
+<div class="panel-card">
+<div id="productsLoadingMessage" class="muted small" style="margin-bottom:17px;">
+กำลังโหลดผลิตภัณฑ์สินเชื่อ...
+</div>
+
+<form id="applyLoanForm" novalidate>
+<div class="form-grid">
+<div class="form-group">
+<label class="form-label" for="applyProduct">ผลิตภัณฑ์สินเชื่อ <span class="required">*</span></label>
+<select id="applyProduct" class="field" required>
+<option value="">เลือกผลิตภัณฑ์</option>
+</select>
+<span id="productDescription" class="field-hint"></span>
+</div>
+
+<div class="form-group span-2">
+<label class="form-label" for="applyPurpose">วัตถุประสงค์ในการกู้ <span class="required">*</span></label>
+<select id="applyPurpose" class="field" required>
+<option value="">เลือกวัตถุประสงค์ในการกู้</option>
+<option value="LIVING_EXPENSES">ค่าใช้จ่ายจำเป็นในชีวิตประจำวัน</option>
+<option value="MEDICAL">ค่ารักษาพยาบาล</option>
+<option value="EDUCATION">ค่าเล่าเรียน/การศึกษา</option>
+<option value="TRAVEL">ค่าเดินทาง</option>
+<option value="BUSINESS">ประกอบอาชีพ/ธุรกิจ</option>
+<option value="EMERGENCY">เหตุฉุกเฉิน</option>
+<option value="OTHER">อื่น ๆ</option>
+</select>
+<span class="field-hint">ระบุเหตุผลตามจริงเพื่อประกอบการพิจารณา ไม่ใช่การรับประกันอนุมัติ</span>
+</div>
+<div id="applyPurposeOtherGroup" class="form-group span-2 hidden">
+<label class="form-label" for="applyPurposeOther">ระบุวัตถุประสงค์อื่น ๆ <span class="required">*</span></label>
+<textarea id="applyPurposeOther" class="field" rows="2" maxlength="1000" placeholder="อธิบายวัตถุประสงค์ของการกู้" ></textarea>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="applyAmount">จำนวนเงินที่ต้องการกู้ (บาท) <span class="required">*</span></label>
+<input id="applyAmount" class="field" type="number" min="1" step="0.01" placeholder="เช่น 10000" required>
+<span id="amountHint" class="field-hint">เลือกผลิตภัณฑ์เพื่อดูช่วงวงเงิน</span>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="applyFrequency">รอบชำระเงิน <span class="required">*</span></label>
+<select id="applyFrequency" class="field" required>
+<option value="">เลือกรอบชำระ</option>
+<option value="DAILY">รายวัน</option>
+<option value="WEEKLY">รายสัปดาห์</option>
+<option value="MONTHLY">รายเดือน</option>
+</select>
+</div>
+
+<div id="dailyModeGroup" class="form-group hidden">
+<label class="form-label" for="applyDailyMode">รูปแบบชำระรายวัน</label>
+<select id="applyDailyMode" class="field">
+<option value="CALENDAR">ทุกวันตามปฏิทิน</option>
+<option value="BUSINESS">เฉพาะวันทำการ</option>
+</select>
+</div>
+
+<div id="weeklyDayGroup" class="form-group hidden">
+<label class="form-label" for="applyWeeklyDay">ชำระทุกวัน</label>
+<select id="applyWeeklyDay" class="field">
+<option value="MONDAY">จันทร์</option>
+<option value="TUESDAY">อังคาร</option>
+<option value="WEDNESDAY">พุธ</option>
+<option value="THURSDAY">พฤหัสบดี</option>
+<option value="FRIDAY" selected>ศุกร์</option>
+<option value="SATURDAY">เสาร์</option>
+<option value="SUNDAY">อาทิตย์</option>
+</select>
+</div>
+
+<div id="monthlyDayGroup" class="form-group hidden">
+<label class="form-label" for="applyMonthlyDay">ชำระทุกวันที่ของเดือน</label>
+<select id="applyMonthlyDay" class="field">
+<option value="">เลือกวันที่ชำระ</option>
+</select>
+<span class="field-hint">วันที่ไม่มีในบางเดือนจะเลื่อนไปใช้วันสุดท้ายของเดือนตามกติกาตารางชำระ</span>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="applyInstallments">จำนวนงวด <span class="required">*</span></label>
+<input id="applyInstallments" class="field" type="number" min="1" step="1" placeholder="จำนวนงวด" required>
+<span id="installmentsHint" class="field-hint">เลือกผลิตภัณฑ์เพื่อดูจำนวนงวดที่รองรับ</span>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="applyFirstDueDate">วันที่ชำระงวดแรก <span class="required">*</span></label>
+<input id="applyFirstDueDate" class="field" type="date" required>
+<span class="field-hint">ต้องเป็นวันที่ในอนาคตและตรงกับรอบชำระที่เลือก</span>
+</div>
+</div>
+
+<div class="panel-card" style="background:#f8faff;margin:8px 0 18px;padding:15px;">
+<div style="display:flex;align-items:flex-start;gap:10px;">
+<i class="fa-solid fa-circle-info" style="color:var(--primary);margin-top:3px;"></i>
+<div class="small muted">
+การส่งคำขอไม่ใช่การอนุมัติสินเชื่อ ระบบจะตรวจสอบข้อมูลและความสามารถในการชำระหนี้ก่อนเสนอเงื่อนไขให้คุณพิจารณา
+ตรวจสอบดอกเบี้ย ค่าธรรมเนียม ยอดชำระรวม และสัญญาก่อนยอมรับข้อเสนอทุกครั้ง
+</div>
+</div>
+</div>
+
+<button id="applyLoanButton" class="button button-primary" type="submit">
+<i class="fa-solid fa-paper-plane"></i>
+ส่งคำขอสินเชื่อ
+</button>
+</form>
+</div>
+</section>
+
+<!-- LOAN SUPPLEMENTAL FORM -->
+<section id="tab-supplemental" class="section-panel">
+  <div class="page-heading">
+    <div>
+      <h1>ข้อมูลเพิ่มเติมสำหรับสินเชื่อ</h1>
+      <p>กรอกข้อมูลและส่งเอกสารประกอบเพื่อให้เจ้าหน้าที่ตรวจสอบ</p>
+    </div>
+    <button id="backFromSupplementalButton" class="button button-secondary button-sm" type="button"><i class="fa-solid fa-arrow-left"></i> กลับสินเชื่อของฉัน</button>
+  </div>
+  <div id="supplementalReturnedAlert" class="supplemental-alert hidden" style="margin-bottom:15px;"></div>
+  <form id="supplementalForm" novalidate>
+    <input id="supplementalLoanId" type="hidden">
+    <div class="supplemental-section">
+      <h2><span class="supplemental-section-number">1</span>ข้อมูลคำขอสินเชื่อ</h2>
+      <p class="section-desc">ข้อมูลจากคำขอเดิม แสดงเพื่อให้ตรวจสอบเท่านั้น ไม่สามารถแก้ไขจากฟอร์มนี้</p>
+      <div id="supplementalLoanSummary" class="supplemental-summary"><div class="muted small">กำลังโหลดข้อมูลสินเชื่อ…</div></div>
+    </div>
+    <div class="supplemental-section">
+      <h2><span class="supplemental-section-number">2</span>ข้อมูลส่วนบุคคล</h2>
+      <p class="section-desc">ชื่อ วันเกิด และอีเมลดึงจากข้อมูลบัญชี FINORA ส่วนเอกสารประจำตัวและที่อยู่ต้องตรวจสอบให้ถูกต้อง</p>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label" for="suppLegalName">ชื่อและนามสกุลตามบัญชี</label><input id="suppLegalName" class="field" readonly></div>
+        <div class="form-group"><label class="form-label" for="suppBirthDate">วันเดือนปีเกิด</label><input id="suppBirthDate" class="field" readonly></div>
+        <div class="form-group"><label class="form-label" for="suppEmail">อีเมลบัญชี FINORA</label><input id="suppEmail" class="field" type="email" readonly></div>
+        <div class="form-group"><label class="form-label" for="suppPhone">เบอร์โทรศัพท์ที่ติดต่อได้ <span class="required">*</span></label><input id="suppPhone" class="field" type="tel" inputmode="numeric" maxlength="10" required placeholder="0XXXXXXXXX"></div>
+        <div class="form-group"><label class="form-label" for="suppIdType">ประเภทเอกสารประจำตัว <span class="required">*</span></label><select id="suppIdType" class="field" required><option value="">เลือกประเภทเอกสาร</option><option value="THAI_ID_CARD">บัตรประจำตัวประชาชน</option><option value="PASSPORT">พาสปอร์ต</option></select></div>
+        <div class="form-group"><label class="form-label" for="suppIdNumber">เลขประจำตัวตามเอกสาร <span class="required">*</span></label><input id="suppIdNumber" class="field" maxlength="20" required autocomplete="off" placeholder="กรอกเลขตามเอกสาร"><span id="suppIdNumberHint" class="field-hint">เมื่อเลือกประเภทเอกสาร ระบบจะแสดงรูปแบบที่ต้องกรอก</span></div>
+        <div class="form-group span-2"><label class="form-label" for="suppIdentityFiles">รูปถ่ายเอกสารประจำตัว <span class="required">*</span></label><input id="suppIdentityFiles" class="field" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" multiple data-supplemental-file="IDENTITY_DOCUMENT"><span class="field-hint">รองรับ JPG, PNG, WebP หรือ PDF ขนาดไม่เกิน 3 MiB ต่อไฟล์ อัปโหลดเข้าโฟลเดอร์ Google Drive ที่จำกัดสิทธิ์</span></div>
+        <div class="form-group span-2"><label class="form-label" for="suppRegisteredAddress">ที่อยู่ตามทะเบียนบ้าน <span class="required">*</span></label><textarea id="suppRegisteredAddress" class="field" rows="2" required maxlength="2000" placeholder="บ้านเลขที่ หมู่ ถนน ตำบล/แขวง อำเภอ/เขต จังหวัด รหัสไปรษณีย์"></textarea></div>
+        <div class="form-group span-2"><label class="form-label" for="suppCurrentAddress">ที่อยู่ปัจจุบัน <span class="required">*</span></label><textarea id="suppCurrentAddress" class="field" rows="2" required maxlength="2000" placeholder="ที่อยู่ที่สามารถติดต่อหรือตรวจสอบได้"></textarea></div>
+        <div class="form-group"><label class="form-label" for="suppResidenceDuration">ระยะเวลาที่พักอาศัย <span class="required">*</span></label><input id="suppResidenceDuration" class="field" maxlength="100" required placeholder="เช่น 3 ปี 6 เดือน"></div>
+        <div class="form-group"><label class="form-label" for="suppMaritalStatus">สถานภาพสมรส <span class="required">*</span></label><select id="suppMaritalStatus" class="field" required><option value="">เลือกสถานภาพ</option><option value="SINGLE">โสด</option><option value="MARRIED">สมรส</option><option value="DIVORCED">หย่าร้าง</option><option value="WIDOWED">หม้าย</option><option value="OTHER">อื่น ๆ</option></select></div>
+      </div>
+    </div>
+    <div class="supplemental-section">
+      <h2><span class="supplemental-section-number">3</span>อาชีพและรายได้</h2>
+      <p class="section-desc">กรอกข้อมูลรายได้ตามจริง และเตรียมหลักฐานรายได้ที่ตรวจสอบได้</p>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label" for="suppOccupationType">ประเภทอาชีพ <span class="required">*</span></label><select id="suppOccupationType" class="field" required><option value="">เลือกอาชีพ</option><option value="EMPLOYED">พนักงานประจำ</option><option value="BUSINESS">ธุรกิจส่วนตัว</option><option value="FREELANCE">อาชีพอิสระ</option><option value="OTHER">อื่น ๆ</option></select></div>
+        <div id="suppOccupationOtherGroup" class="form-group hidden"><label class="form-label" for="suppOccupationOther">ระบุอาชีพอื่น ๆ <span class="required">*</span></label><input id="suppOccupationOther" class="field" maxlength="150" placeholder="ระบุประเภทอาชีพ"></div>
+        <div class="form-group"><label class="form-label" for="suppEmployerName">ชื่อบริษัทหรือสถานที่ทำงาน <span class="required">*</span></label><input id="suppEmployerName" class="field" maxlength="300" required></div>
+        <div class="form-group"><label class="form-label" for="suppJobTitle">ตำแหน่งงานหรือประเภทธุรกิจ <span class="required">*</span></label><input id="suppJobTitle" class="field" maxlength="300" required></div>
+        <div class="form-group"><label class="form-label" for="suppWorkDuration">อายุงาน/ระยะเวลาประกอบอาชีพ <span class="required">*</span></label><input id="suppWorkDuration" class="field" maxlength="100" required placeholder="เช่น 2 ปี"></div>
+        <div class="form-group"><label class="form-label" for="suppMonthlyIncome">รายได้ต่อเดือน (บาท) <span class="required">*</span></label><input id="suppMonthlyIncome" class="field" type="number" min="0.01" step="0.01" required></div>
+        <div class="form-group"><label class="form-label" for="suppAdditionalIncome">รายได้เสริมต่อเดือน (บาท)</label><input id="suppAdditionalIncome" class="field" type="number" min="0" step="0.01" value="0"></div>
+        <div class="form-group"><label class="form-label" for="suppPayDate">วันที่ได้รับรายได้ประจำ (ถ้ามี)</label><input id="suppPayDate" class="field" maxlength="100" placeholder="เช่น ทุกวันที่ 25 ของเดือน"></div>
+      </div>
+    </div>
+    <div class="supplemental-section">
+      <h2><span class="supplemental-section-number">4</span>รายจ่ายและภาระหนี้</h2>
+      <p class="section-desc">ให้ข้อมูลตามจริงเพื่อประเมินความสามารถในการชำระคืน</p>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label" for="suppMonthlyExpenses">ค่าใช้จ่ายจำเป็นต่อเดือน (บาท) <span class="required">*</span></label><input id="suppMonthlyExpenses" class="field" type="number" min="0" step="0.01" value="0" required></div>
+        <div class="form-group"><label class="form-label" for="suppMonthlyDebtPayment">ค่างวดหนี้ที่ต้องชำระต่อเดือน (บาท) <span class="required">*</span></label><input id="suppMonthlyDebtPayment" class="field" type="number" min="0" step="0.01" value="0" required></div>
+        <div class="form-group span-2"><label class="form-label" for="suppOtherDebtDetails">รายละเอียดภาระบัตรเครดิตหรือสินเชื่ออื่น (ถ้ามี)</label><textarea id="suppOtherDebtDetails" class="field" rows="2" maxlength="2000" placeholder="ระบุประเภทหนี้ ยอดคงเหลือ หรือรายละเอียดที่เกี่ยวข้อง หากไม่มีให้เว้นว่าง"></textarea></div>
+        <div class="form-group"><label class="form-label" for="suppFamilySupport">ภาระค่าเลี้ยงดูครอบครัวต่อเดือน (บาท) <span class="required">*</span></label><input id="suppFamilySupport" class="field" type="number" min="0" step="0.01" value="0" required></div>
+        <div class="form-group"><label class="form-label" for="suppDisposableIncome">เงินคงเหลือโดยประมาณ (บาท/เดือน)</label><input id="suppDisposableIncome" class="field" readonly value="0.00"><span class="field-hint">คำนวณจากรายได้รวมลบรายจ่าย ภาระหนี้ และภาระครอบครัว ไม่ใช่ผลอนุมัติสินเชื่อ</span></div>
+      </div>
+    </div>
+    <div class="supplemental-section">
+      <h2><span class="supplemental-section-number">5</span>เอกสารประกอบคำขอ</h2>
+      <p class="section-desc">อัปโหลดสลิปเงินเดือน หนังสือรับรองรายได้ หรือเอกสารที่เกี่ยวข้องตามประเภทอาชีพ</p>
+      <div class="form-group"><label class="form-label" for="suppIncomeProofFiles">สลิปเงินเดือนหรือหนังสือรับรองรายได้ (ถ้ามี)</label><input id="suppIncomeProofFiles" class="field" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" multiple data-supplemental-file="INCOME_PROOF"></div>
+      <button id="addSupplementalDocumentButton" class="button button-secondary button-sm" type="button"><i class="fa-solid fa-plus"></i> เพิ่มเอกสาร</button>
+      <div id="supplementalExtraDocuments"></div>
+      <div class="document-list" id="supplementalUploadedDocuments"></div>
+      <div class="supplemental-alert" style="margin-top:13px;"><strong>โปรดทราบ:</strong> เอกสารที่เกี่ยวข้องและครบถ้วนช่วยให้เจ้าหน้าที่ตรวจสอบข้อมูลได้สะดวกขึ้น แต่ไม่ได้รับประกันการอนุมัติสินเชื่อ</div>
+    </div>
+    <div class="supplemental-section">
+      <h2><span class="supplemental-section-number">6</span>บัญชีรับเงิน</h2>
+      <p class="section-desc">กรอกบัญชีที่ใช้รับเงินกู้ตามเงื่อนไขของระบบ ชื่อเจ้าของบัญชีต้องตรงกับบัญชี FINORA</p>
+      <div class="bank-brand-preview"><span id="suppBankLogoPreview" class="bank-brand-mark">BANK</span><span id="suppBankNamePreview">เลือกธนาคารที่ต้องการใช้รับเงิน</span></div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label" for="suppBankName">ธนาคาร <span class="required">*</span></label><select id="suppBankName" class="field" required>
+          <option value="">เลือกธนาคาร</option><option value="ธนาคารกรุงเทพ">BBL · ธนาคารกรุงเทพ</option><option value="ธนาคารกสิกรไทย">KBANK · ธนาคารกสิกรไทย</option><option value="ธนาคารกรุงไทย">KTB · ธนาคารกรุงไทย</option><option value="ธนาคารไทยพาณิชย์">SCB · ธนาคารไทยพาณิชย์</option><option value="ธนาคารกรุงศรีอยุธยา">BAY · ธนาคารกรุงศรีอยุธยา</option><option value="ธนาคารทหารไทยธนชาต">TTB · ธนาคารทหารไทยธนชาต</option><option value="ธนาคารออมสิน">GSB · ธนาคารออมสิน</option><option value="ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร">BAAC · ธ.ก.ส.</option><option value="ธนาคารอาคารสงเคราะห์">GHB · ธนาคารอาคารสงเคราะห์</option><option value="ธนาคารซีไอเอ็มบี ไทย">CIMB · ธนาคารซีไอเอ็มบี ไทย</option><option value="ธนาคารยูโอบี">UOB · ธนาคารยูโอบี</option><option value="ธนาคารเกียรตินาคินภัทร">KKP · ธนาคารเกียรตินาคินภัทร</option><option value="ธนาคารทิสโก้">TISCO · ธนาคารทิสโก้</option><option value="ธนาคารแลนด์ แอนด์ เฮ้าส์">LH Bank · ธนาคารแลนด์ แอนด์ เฮ้าส์</option><option value="ธนาคารอิสลามแห่งประเทศไทย">ไอแบงก์ · ธนาคารอิสลามแห่งประเทศไทย</option><option value="อื่น ๆ">อื่น ๆ (ระบุชื่อธนาคาร)</option></select></div>
+        <div id="suppBankOtherGroup" class="form-group hidden"><label class="form-label" for="suppBankOtherName">ระบุชื่อธนาคาร <span class="required">*</span></label><input id="suppBankOtherName" class="field" maxlength="150" placeholder="ชื่อธนาคาร"></div>
+        <div class="form-group"><label class="form-label" for="suppBankAccountType">ประเภทบัญชี <span class="required">*</span></label><select id="suppBankAccountType" class="field" required><option value="">เลือกประเภทบัญชี</option><option value="SAVINGS">ออมทรัพย์</option><option value="CURRENT">กระแสรายวัน</option></select></div>
+        <div class="form-group"><label class="form-label" for="suppBankAccountName">ชื่อเจ้าของบัญชี <span class="required">*</span></label><input id="suppBankAccountName" class="field" maxlength="200" required><span class="field-hint">ระบบจะเทียบชื่อกับข้อมูลบัญชี FINORA แต่ไม่ได้ยืนยันเจ้าของบัญชีกับธนาคารโดยอัตโนมัติ</span></div>
+        <div class="form-group"><label class="form-label" for="suppBankAccountNumber">เลขที่บัญชี <span class="required">*</span></label><input id="suppBankAccountNumber" class="field" inputmode="numeric" maxlength="20" required autocomplete="off"></div>
+      </div>
+    </div>
+    <div class="supplemental-section">
+      <h2><span class="supplemental-section-number">7</span>ตรวจสอบและยืนยัน</h2>
+      <p class="section-desc">ตรวจสอบตัวเลขและเงื่อนไขจากข้อมูลสินเชื่อที่ระบบแสดง ตัวเลขด้านล่างเป็นการประมาณเพื่อประกอบการตรวจทานเท่านั้น</p>
+      <div class="supplemental-summary" style="margin-bottom:15px;">
+        <div class="supplemental-summary-item"><span>วงเงินที่เสนอ</span><strong id="suppEstimateAmount">—</strong></div>
+        <div class="supplemental-summary-item"><span>ระยะเวลาผ่อน</span><strong id="suppEstimateTenor">—</strong></div>
+        <div class="supplemental-summary-item"><span>อัตราดอกเบี้ยต่อปี</span><strong id="suppEstimateInterest">—</strong></div>
+        <div class="supplemental-summary-item"><span>ค่าธรรมเนียมโดยประมาณ</span><strong id="suppEstimateFees">—</strong></div>
+        <div class="supplemental-summary-item"><span>ยอดชำระรวมโดยประมาณ</span><strong id="suppEstimateTotal">—</strong></div>
+        <div class="supplemental-summary-item"><span>เฉลี่ยต่อหนึ่งงวดโดยประมาณ</span><strong id="suppEstimateInstallment">—</strong></div>
+      </div>
+      <div class="callout" style="margin-bottom:14px;"><i class="fa-solid fa-circle-info"></i><div>ยอดชำระจริงให้ยึดตามข้อเสนอ สัญญา ตารางชำระ และเงื่อนไขที่ระบบยืนยันก่อนทำสัญญา หากค่าธรรมเนียมหรือวิธีคำนวณยังไม่ได้รับการยืนยัน ห้ามใช้ตัวเลขประมาณนี้แทนสัญญา</div></div>
+      <label class="check-row" style="margin:12px 0;"><input id="suppPrivacyAcknowledged" type="checkbox" required><span>ข้าพเจ้าได้รับทราบประกาศความเป็นส่วนตัวและวิธีที่ FINORA ใช้ข้อมูลส่วนบุคคลแล้ว</span></label>
+      <label class="check-row" style="margin:12px 0;"><input id="suppDataProcessingConsent" type="checkbox" required><span>ข้าพเจ้ายืนยันการใช้ข้อมูลที่จำเป็นเพื่อประมวลผลและตรวจสอบคำขอนี้ตามประกาศที่แจ้งไว้</span></label>
+      <label class="check-row" style="margin:12px 0;"><input id="suppCreditCheckConsent" type="checkbox" required><span>ข้าพเจ้ายินยอมให้ตรวจสอบข้อมูลรายได้ ภาระหนี้ และข้อมูลเครดิตเท่าที่จำเป็นและได้รับอนุญาตตามกฎหมาย</span></label>
+      <label class="check-row" style="margin:12px 0;"><input id="suppElectronicSignatureConsent" type="checkbox" required><span>ข้าพเจ้ายืนยันว่าลายมือชื่อที่วาดด้านล่างเป็นของข้าพเจ้า และยอมรับให้ระบบบันทึกเป็นหลักฐานการยืนยันข้อมูลนี้</span></label>
+      <label class="check-row" style="margin:12px 0;"><input id="suppAccuracyConfirm" type="checkbox" required><span>ข้าพเจ้าได้ตรวจสอบข้อมูล เอกสาร และคำตอบทั้งหมดแล้ว และยืนยันว่าเป็นข้อมูลจริงตามที่ทราบ</span></label>
+    </div>
+    <div class="supplemental-section">
+      <h2><span class="supplemental-section-number">8</span>ลงลายมือชื่อ</h2>
+      <p class="section-desc">ใช้เมาส์หรือปลายนิ้ววาดลายมือชื่อทั้งสองช่องให้เหมือนกับที่ใช้ลงนามเอกสาร หากต้องการเริ่มใหม่ให้กดล้างลายมือชื่อ</p>
+      <div class="signature-grid">
+        <div class="signature-card"><label for="suppSignaturePrimary">ลงลายมือชื่อ <span class="required">*</span></label><canvas id="suppSignaturePrimary" class="signature-canvas" aria-label="ช่องลงลายมือชื่อ"></canvas><div class="signature-actions"><button type="button" class="button button-secondary button-sm" data-clear-signature="suppSignaturePrimary">ล้างลายมือชื่อ</button></div></div>
+        <div class="signature-card"><label for="suppSignatureConfirmation">ยืนยันลายมือชื่ออีกครั้ง <span class="required">*</span></label><canvas id="suppSignatureConfirmation" class="signature-canvas" aria-label="ช่องยืนยันลายมือชื่อ"></canvas><div class="signature-actions"><button type="button" class="button button-secondary button-sm" data-clear-signature="suppSignatureConfirmation">ล้างลายมือชื่อ</button></div></div>
+      </div>
+      <div id="supplementalSignatureNotice" class="field-hint" style="margin-top:10px;">ระบบจะบันทึกลายมือชื่อเป็นไฟล์ส่วนตัวเพื่อประกอบหลักฐานการยืนยันข้อมูล ไม่ใช่การรับรองว่ามีสัญญาเงินกู้สมบูรณ์แล้ว</div>
+    </div>
+    <div class="supplemental-actions">
+      <button id="saveSupplementalDraftButton" class="button button-secondary" type="button"><i class="fa-solid fa-floppy-disk"></i> บันทึกแบบร่าง</button>
+      <button id="submitSupplementalButton" class="button button-primary" type="submit"><i class="fa-solid fa-paper-plane"></i> ยืนยันข้อมูลและส่งให้เจ้าหน้าที่</button>
+    </div>
+  </form>
+</section>
+
+<!-- PAYMENTS TAB -->
+<section id="tab-payments" class="section-panel">
+<div class="page-heading">
+<div>
+<h1>ชำระเงิน</h1>
+<p>เลือกงวดที่ต้องการชำระ สร้าง QR และส่งสลิปให้ระบบตรวจสอบ</p>
+</div>
+</div>
+
+<div class="panel-card" style="margin-bottom:18px;">
+<div class="panel-heading">
+<h2>งวดที่ต้องชำระ</h2>
+<span class="muted">อ้างอิงตารางชำระจริง</span>
+</div>
+<div id="paymentDueList"></div>
+</div>
+
+<div class="panel-card">
+<div class="panel-heading">
+<h2>ประวัติการชำระเงิน</h2>
+<button id="refreshPaymentsButton" class="button button-secondary button-sm" type="button">
+<i class="fa-solid fa-rotate"></i>
+รีเฟรช
+</button>
+</div>
+<div id="paymentsHistory"></div>
+</div>
+</section>
+
+<!-- ANNOUNCEMENTS TAB -->
+<section id="tab-announcements" class="section-panel">
+<div class="page-heading">
+<div>
+<h1>ประกาศจาก FINORA</h1>
+<p>ข่าวสารและข้อมูลที่เกี่ยวข้องกับบริการ</p>
+</div>
+</div>
+<div id="dashboardAnnouncements" class="auth-announcements"></div>
+</section>
+
+<!-- SUPPORT TAB -->
+<section id="tab-support" class="section-panel">
+<div class="page-heading">
+<div>
+<h1>ศูนย์ช่วยเหลือ</h1>
+<p>ส่งคำถาม แจ้งปัญหาการชำระเงิน หรือยื่นข้อร้องเรียน</p>
+</div>
+</div>
+
+<div class="content-grid">
+<div class="panel-card">
+<div class="panel-heading">
+<h2>สร้างคำร้องใหม่</h2>
+</div>
+
+<form id="supportForm" novalidate>
+<div class="form-group">
+<label class="form-label" for="supportSubject">หัวข้อ</label>
+<input id="supportSubject" class="field" type="text" maxlength="200" placeholder="ระบุหัวข้อที่ต้องการติดต่อ" required>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="supportCategory">ประเภทคำร้อง</label>
+<select id="supportCategory" class="field">
+<option value="GENERAL">สอบถามทั่วไป</option>
+<option value="LOAN">คำขอสินเชื่อ</option>
+<option value="PAYMENT">ชำระเงิน / สลิป</option>
+<option value="ACCOUNT">บัญชีผู้ใช้</option>
+<option value="COMPLAINT">ร้องเรียน</option>
+<option value="DEBT_ASSISTANCE">ขอความช่วยเหลือด้านหนี้</option>
+<option value="PRIVACY">ข้อมูลส่วนบุคคล</option>
+</select>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="supportMessage">รายละเอียด</label>
+<textarea id="supportMessage" class="field" maxlength="10000" placeholder="อธิบายปัญหาหรือคำถามของคุณ" required></textarea>
+</div>
+
+<button class="button button-primary full-width" type="submit">
+<i class="fa-regular fa-paper-plane"></i>
+ส่งคำร้อง
+</button>
+</form>
+</div>
+
+<div class="panel-card">
+<div class="panel-heading">
+<h2>คำร้องของฉัน</h2>
+<button id="refreshTicketsButton" class="button button-secondary button-sm" type="button">รีเฟรช</button>
+</div>
+<div id="myTicketsList"></div>
+</div>
+</div>
+</section>
+
+<!-- PROFILE TAB -->
+<section id="tab-profile" class="section-panel">
+<div class="page-heading">
+<div>
+<h1>บัญชีของฉัน</h1>
+<p>ข้อมูลบัญชีและความปลอดภัย</p>
+</div>
+</div>
+
+<div id="profileContent"></div>
+
+<div class="panel-card" style="margin-top:18px;">
+<div class="panel-heading">
+<h2>ความปลอดภัยของบัญชี</h2>
+</div>
+
+<div style="display:grid;gap:13px;">
+<div style="display:flex;align-items:flex-start;gap:11px;">
+<div class="stat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+<div>
+<strong style="font-size:12px;">การยืนยันอีเมล</strong>
+<div class="muted small">บัญชีของคุณต้องยืนยันอีเมลก่อนใช้งานระบบ</div>
+</div>
+</div>
+
+<div style="display:flex;align-items:flex-start;gap:11px;">
+<div class="stat-icon"><i class="fa-solid fa-key"></i></div>
+<div>
+<strong style="font-size:12px;">รหัสผ่านและเซสชัน</strong>
+<div class="muted small">ออกจากระบบทันทีเมื่อสงสัยว่ามีผู้อื่นเข้าถึงบัญชี</div>
+</div>
+</div>
+
+<div style="display:flex;align-items:flex-start;gap:11px;">
+<div class="stat-icon"><i class="fa-solid fa-user-shield"></i></div>
+<div>
+<strong style="font-size:12px;">ข้อมูลส่วนบุคคล</strong>
+<div class="muted small">ติดต่อศูนย์ช่วยเหลือเพื่อสอบถามสิทธิและการจัดการข้อมูลส่วนบุคคล</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<footer class="app-footer">
+FINORA · ระบบจัดการสินเชื่อออนไลน์
+<br>
+</footer>
+</main>
+</div>
+</div>
+
+<script>
+"use strict";
+
+/* ==========================================================
+1. APPLICATION CONFIGURATION
+========================================================== */
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbyWJroEmS5AA-sRgn-P6SXoUpqNaSTRIb8w9PSr_sNOLXCUf5PaqvEABpnOkB8_aUQuLA/exec";
+
+const TOKEN_KEY = "finora_access_token";
+const SESSION_TOKEN_KEY = "finora_session_token";
+const PENDING_EMAIL_KEY = "finora_pending_email";
+const VERIFIED_EMAIL_KEY = "finora_verified_email";
+const APP_NAME = "FINORA";
+
+const state = {
+view: "login",
+user: null,
+dashboard: null,
+loans: [],
+payments: [],
+products: [],
+announcements: [],
+tickets: [],
+resetToken: "",
+emailVerified: false,
+pendingVerificationEmail: "",
+waitingPollTimer: null,
+waitingPollCount: 0,
+selectedLoan: null,
+paymentQr: null,
+supplemental: { loanId: "", record: null, loan: null, user: null, productTerms: {}, formData: {}, documents: [], signatures: [] },
+supplementalExtraRows: 0,
+maintenanceTimer: null,
+publicConfig: {
+minAge: 20,
+termsVersion: "1.0",
+privacyVersion: "1.0"
+}
+};
+
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+
+function escapeHtml(value) {
+  return String(value === undefined || value === null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function displaySensitiveId(value) {
+  const full = String(value === undefined || value === null ? "" : value);
+  if (!full || full === "—" || full.length <= 18) return escapeHtml(full || "—");
+
+  const masked = full.slice(0, 12) + "*******";
+  return (
+    '<span class="finora-id-wrap" data-finora-id-full="' + escapeHtml(full) +
+    '" data-finora-id-mask="' + escapeHtml(masked) + '">' +
+      '<span class="finora-id-text">' + escapeHtml(masked) + '</span>' +
+      '<button type="button" class="finora-id-toggle" data-finora-id-toggle ' +
+        'aria-expanded="false" aria-label="แสดงรหัสเต็ม" title="แสดงรหัสเต็ม">' +
+        '<i class="fa-solid fa-eye" aria-hidden="true"></i>' +
+      '</button>' +
+    '</span>'
+  );
+}
+
+document.addEventListener("click", function (event) {
+  const button = event.target && event.target.closest
+    ? event.target.closest("[data-finora-id-toggle]")
+    : null;
+  if (!button) return;
+
+  const widget = button.closest(".finora-id-wrap");
+  const text = widget && widget.querySelector(".finora-id-text");
+  if (!widget || !text) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  const reveal = button.getAttribute("aria-expanded") !== "true";
+  text.textContent = reveal
+    ? (widget.getAttribute("data-finora-id-full") || "")
+    : (widget.getAttribute("data-finora-id-mask") || "");
+  widget.classList.toggle("is-revealed", reveal);
+  button.setAttribute("aria-expanded", String(reveal));
+  button.setAttribute("aria-label", reveal ? "ซ่อนรหัสเต็ม" : "แสดงรหัสเต็ม");
+  button.title = reveal ? "ซ่อนรหัสเต็ม" : "แสดงรหัสเต็ม";
+  button.innerHTML = reveal
+    ? '<i class="fa-solid fa-eye-slash" aria-hidden="true"></i>'
+    : '<i class="fa-solid fa-eye" aria-hidden="true"></i>';
+});
+
+function formatMoney(value) {
+const number = Number(value || 0);
+return new Intl.NumberFormat("th-TH", {
+minimumFractionDigits: 2,
+maximumFractionDigits: 2
+}).format(Number.isFinite(number) ? number : 0);
+}
+
+function formatDate(value) {
+if (!value) return "—";
+
+const text = String(value);
+const date = /^\d{4}-\d{2}-\d{2}$/.test(text)
+? new Date(text + "T12:00:00")
+: new Date(text);
+
+if (Number.isNaN(date.getTime())) return escapeHtml(text);
+
+return new Intl.DateTimeFormat("th-TH", {
+day: "numeric",
+month: "short",
+year: "numeric"
+}).format(date);
+}
+
+function formatDateTime(value) {
+if (!value) return "—";
+
+const date = new Date(value);
+
+if (Number.isNaN(date.getTime())) {
+return escapeHtml(value);
+}
+
+return new Intl.DateTimeFormat("th-TH", {
+dateStyle: "medium",
+timeStyle: "short"
+}).format(date);
+}
+
+function getToken() {
+return localStorage.getItem(TOKEN_KEY) ||
+sessionStorage.getItem(SESSION_TOKEN_KEY) ||
+"";
+}
+
+function storeToken(token, rememberMe) {
+clearToken();
+
+if (rememberMe) {
+localStorage.setItem(TOKEN_KEY, token);
+} else {
+sessionStorage.setItem(SESSION_TOKEN_KEY, token);
+}
+}
+
+function clearToken() {
+localStorage.removeItem(TOKEN_KEY);
+sessionStorage.removeItem(SESSION_TOKEN_KEY);
+}
+
+function clearWaitingPoll() {
+if (state.waitingPollTimer) {
+clearTimeout(state.waitingPollTimer);
+state.waitingPollTimer = null;
+}
+}
+
+/* ==========================================================
+2. API TRANSPORT
+========================================================== */
+
+async function api(action, parameters = {}, options = {}) {
+const silent = options.silent === true;
+const loadingText = options.loadingText || "กำลังโหลดข้อมูลระบบ";
+
+if (!silent) {
+showLoading(true, loadingText);
+}
+
+try {
+const response = await fetch(API_URL, {
+method: "POST",
+mode: "cors",
+redirect: "follow",
+headers: {
+"Content-Type": "text/plain;charset=UTF-8"
+},
+body: JSON.stringify({
+action,
+...parameters
+}),
+cache: "no-store"
+});
+
+if (!response.ok) {
+throw new Error(
+"เซิร์ฟเวอร์ตอบกลับด้วยสถานะ HTTP " + response.status
+);
+}
+
+const rawText = await response.text();
+let result;
+
+try {
+result = JSON.parse(rawText);
+} catch (parseError) {
+throw new Error(
+"รูปแบบข้อมูลตอบกลับไม่ใช่ JSON ที่ถูกต้อง"
+);
+}
+
+if (!result || result.ok !== true) {
+const apiError = new Error(
+result && result.message
+? result.message
+: "ระบบไม่สามารถดำเนินการได้"
+);
+
+apiError.code = result && result.code
+? result.code
+: "API_ERROR";
+
+throw apiError;
+}
+
+return result;
+
+} catch (error) {
+if (error instanceof TypeError) {
+throw new Error(
+"ไม่สามารถอ่านคำตอบจาก API ได้ อาจเกิดจากข้อจำกัด CORS หรือการตั้งค่า Web App " +
+"โปรดตรวจสอบว่า Deploy Apps Script แล้ว และทดลอง API จาก GitHub Pages อีกครั้ง"
+);
+}
+
+throw error;
+
+} finally {
+if (!silent) {
+showLoading(false);
+}
+}
+}
+
+/* ==========================================================
+3. LOADING OVERLAY
+========================================================== */
+
+function showLoading(show, message = "กำลังโหลดข้อมูลระบบ", submessage = "กรุณารอสักครู่") {
+const overlay = $("#loadingOverlay");
+
+if (show) {
+$("#loadingMessage").textContent = message; 
+
+$("#loadingSubmessage").textContent = submessage;
+overlay.classList.remove("hidden");
+} else {
+overlay.classList.add("hidden");
+}
+}
+
+/* ==========================================================
+4. CENTRAL MODAL SYSTEM
+========================================================== */
+
+let modalCloseCallback = null;
+
+function openModal(options = {}) {
+const overlay = $("#modalOverlay"); const card = 
+
+$("#modalCard");
+
+$("#modalTitle").textContent = options.title || "แจ้งเตือน"; 
+
+$("#modalBody").innerHTML = options.body || "";
+$("#modalFooter").innerHTML = "";
+
+card.classList.toggle("modal-large", options.large === true);
+
+modalCloseCallback = typeof options.onClose === "function"
+? options.onClose
+: null;
+
+const buttons = Array.isArray(options.buttons)
+? options.buttons
+: [
+{
+label: "ตกลง",
+className: "button-primary",
+onClick: closeModal
+}
+ ];
+
+buttons.forEach((buttonConfig) => {
+const button = document.createElement("button");
+
+button.type = "button";
+button.className =
+"button " +
+(buttonConfig.className || "button-primary");
+
+if (buttonConfig.html) {
+button.innerHTML = buttonConfig.html;
+} else {
+button.textContent = buttonConfig.label || "ตกลง";
+}
+
+button.disabled = buttonConfig.disabled === true;
+
+if (buttonConfig.id) {
+button.id = buttonConfig.id;
+}
+
+button.addEventListener("click", async () => {
+if (typeof buttonConfig.onClick === "function") {
+await buttonConfig.onClick();
+} else {
+closeModal();
+}
+});
+
+$("#modalFooter").appendChild(button);
+});
+
+overlay.classList.remove("hidden");
+document.body.classList.add("modal-open");
+}
+
+function closeModal() {
+$("#modalOverlay").classList.add("hidden");
+document.body.classList.remove("modal-open");
+
+if (typeof modalCloseCallback === "function") {
+const callback = modalCloseCallback;
+modalCloseCallback = null;
+callback();
+} else {
+modalCloseCallback = null;
+}
+}
+
+function showMessage(title, message, kind = "info", buttonText = "ตกลง") {
+let iconHtml = '<i class="fa-solid fa-circle-info"></i>';
+
+if (kind === "success") {
+iconHtml = '<span class="success-check" aria-hidden="true"></span>';
+} else if (kind === "error") {
+iconHtml = '<i class="fa-solid fa-xmark"></i>';
+}
+
+openModal({
+title,
+body:
+'<div class="text-center">' +
+'<div class="modal-icon ' + escapeHtml(kind) + '">' +
+iconHtml +
+'</div>' +
+'<div style="font-size:13px;line-height:1.85;color:#536078;">' +
+escapeHtml(message).replace(/\n/g, "<br>") +
+'</div>' +
+'</div>',
+buttons: [
+{
+label: buttonText,
+className: "button-primary",
+onClick: closeModal
+}
+ ]
+});
+}
+
+function showApiError(error, title = "ดำเนินการไม่สำเร็จ") {
+const message = error && error.message
+? error.message
+: String(error || "เกิดข้อผิดพลาด");
+
+showMessage(title, message, "error");
+}
+
+$("#modalClose").addEventListener("click", closeModal);
+
+$("#modalOverlay").addEventListener("click", (event) => { if (event.target === 
+
+$("#modalOverlay")) {
+closeModal();
+}
+});
+
+document.addEventListener("keydown", (event) => {
+if (event.key === "Escape" && !$("#modalOverlay").classList.contains("hidden")) {
+closeModal();
+}
+});
+
+/* ==========================================================
+5. PAGE VIEW ROUTING
+========================================================== */
+
+const allViews = [
+"loginView",
+"signupView",
+"waitingEmailView",
+"forgotPasswordView",
+"resetPasswordView",
+"appView",
+"maintenanceView"
+ ];
+
+function showView(viewName) {
+clearWaitingPoll();
+
+allViews.forEach((id) => {
+$("#" + id).classList.add("hidden");
+});
+
+const viewMap = {
+login: "loginView",
+signup: "signupView",
+waitingEmail: "waitingEmailView",
+forgotPassword: "forgotPasswordView",
+resetPassword: "resetPasswordView",
+app: "appView",
+maintenance: "maintenanceView"
+};
+
+const elementId = viewMap[viewName];
+
+if (!elementId) {
+return;
+}
+
+$("#" + elementId).classList.remove("hidden");
+state.view = viewName;
+
+window.scrollTo({
+top: 0,
+behavior: "auto"
+});
+}
+
+function showMaintenanceView(data) {
+const config = data || {};
+const heading = $("#maintenanceHeading");
+const message = $("#maintenanceMessage");
+const image = $("#maintenanceImage");
+const schedule = $("#maintenanceReturnTime");
+heading.textContent = String(config.title || "ระบบกำลังปรับปรุงชั่วคราว");
+const html = String(config.messageHtml || "").trim();
+message.innerHTML = html || "<p>ขออภัยในความไม่สะดวก ระบบอยู่ระหว่างการปรับปรุง กรุณากลับมาใช้งานอีกครั้งภายหลัง</p>";
+const imageUrl = String(config.imageUrl || "").trim();
+if (/^https:\/\/\S+$/i.test(imageUrl)) {
+  image.src = imageUrl;
+  image.alt = String(config.imageAlt || config.title || "ประกาศปิดปรับปรุงระบบ");
+  image.classList.remove("hidden");
+} else {
+  image.removeAttribute("src");
+  image.classList.add("hidden");
+}
+const endAt = String(config.endAt || "").trim();
+if (endAt && !Number.isNaN(new Date(endAt).getTime())) {
+  schedule.textContent = "กำหนดเปิดให้บริการอีกครั้ง: " + new Date(endAt).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" });
+} else {
+  schedule.textContent = "ระบบจะกลับมาเปิดให้บริการโดยอัตโนมัติเมื่อถึงเวลาที่กำหนด";
+}
+showView("maintenance");
+}
+
+function startMaintenanceMonitor() {
+if (state.maintenanceTimer) return;
+state.maintenanceTimer = window.setInterval(async () => {
+  try {
+    const status = await api("getMaintenanceStatus", {}, { silent: true });
+    if (status.maintenanceActive) {
+      if (state.view !== "maintenance") {
+        showMaintenanceView(status);
+        showLoading(false);
+      }
+      return;
+    }
+    if (state.view === "maintenance") {
+      const restored = await restoreSession();
+      if (!restored) showLoginView();
+    }
+  } catch (error) {
+    // Do not show internal details for transient status-check failures.
+  }
+}, 30000);
+}
+
+function showLoginView() {
+showView("login");
+loadAnnouncements("LOGIN", "loginAnnouncements").catch(() => {});
+}
+
+function showSignupView() {
+showView("signup");
+loadAnnouncements("SIGNUP", "signupAnnouncements").catch(() => {});
+refreshEmailVerificationUI();
+}
+
+function clearVerificationDraft() {
+localStorage.removeItem(PENDING_EMAIL_KEY);
+localStorage.removeItem(VERIFIED_EMAIL_KEY);
+
+state.pendingVerificationEmail = "";
+state.emailVerified = false;
+}
+
+function normalizeEmail(email) {
+return String(email || "").trim().toLowerCase();
+}
+
+function validateEmail(email) {
+  const value = normalizeEmail(email);
+  if (value.length < 6 || value.length > 254) return false;
+  return /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$/i.test(value);
+}
+
+function validatePhone(phone) {
+return /^0[0-9]{9}$/.test(String(phone || ""));
+}
+
+function validateNationalId(id) {
+const value = String(id || "");
+
+if (!/^\d{13}$/.test(value)) {
+return false;
+}
+
+let sum = 0;
+
+for (let i = 0; i < 12; i++) {
+sum += Number(value.charAt(i)) * (13 - i);
+}
+
+const checkDigit = (11 - (sum % 11)) % 10;
+
+return checkDigit === Number(value.charAt(12));
+}
+
+function dateDifferenceInYears(dateString) {
+if (!/^\d{4}-\d{2}-\d{2}$/.test(String(dateString || ""))) {
+return -1;
+}
+
+const birthDate = new Date(dateString + "T00:00:00");
+const today = new Date();
+
+if (Number.isNaN(birthDate.getTime()) || birthDate > today) {
+return -1;
+}
+
+let age = today.getFullYear() - birthDate.getFullYear();
+
+const hasBirthdayPassed =
+today.getMonth() > birthDate.getMonth() ||
+(
+today.getMonth() === birthDate.getMonth() &&
+today.getDate() >= birthDate.getDate()
+);
+
+if (!hasBirthdayPassed) {
+age--;
+}
+
+return age;
+}
+
+function getDateOffset(days) {
+const date = new Date();
+date.setDate(date.getDate() + days);
+
+const year = date.getFullYear();
+const month = String(date.getMonth() + 1).padStart(2, "0");
+const day = String(date.getDate()).padStart(2, "0");
+
+return year + "-" + month + "-" + day;
+}
+
+function initDateInputs() {
+const dob = $("#signupDob");
+
+dob.max = getDateOffset(-365 * Number(state.publicConfig.minAge || 20));
+
+$("#applyFirstDueDate").min = getDateOffset(1); $("#applyFirstDueDate").value = getDateOffset(7);
+
+const monthlySelect = $("#applyMonthlyDay");
+
+for (let day = 1; day <= 31; day++) {
+const option = document.createElement("option");
+
+option.value = String(day);
+option.textContent = "วันที่ " + day + " ของทุกเดือน";
+
+monthlySelect.appendChild(option);
+}
+
+monthlySelect.value = "5";
+}
+
+/* ==========================================================
+6. PASSWORD VISIBILITY
+========================================================== */
+
+document.addEventListener("click", (event) => {
+const toggleButton = event.target.closest("[data-toggle-password]");
+
+if (!toggleButton) {
+return;
+}
+
+const inputId = toggleButton.getAttribute("data-toggle-password");
+const input = $("#" + inputId);
+
+if (!input) {
+return;
+}
+
+const showing = input.type === "text";
+
+input.type = showing ? "password" : "text";
+
+const icon = $("i", toggleButton);
+
+if (icon) {
+icon.className = showing
+? "fa-regular fa-eye"
+: "fa-regular fa-eye-slash";
+}
+});
+
+/* ==========================================================
+7. PASSWORD STRENGTH AND CONFIRMATION
+========================================================== */
+
+function getPasswordStrength(password) {
+const checks = {
+length: password.length >= 12,
+lower: /[a-z]/.test(password),
+upper: /[A-Z]/.test(password),
+number: /[0-9]/.test(password),
+special: /[^A-Za-z0-9]/.test(password)
+};
+
+const score = Object.values(checks).filter(Boolean).length;
+
+return {
+checks,
+score,
+strong: score === 5 && password.length <= 128
+};
+}
+
+function updatePasswordStrength() {
+const password = $("#signupPassword").value;
+const result = getPasswordStrength(password);
+
+const rules = [
+["length", "ruleLength"],
+["lower", "ruleLower"],
+["upper", "ruleUpper"],
+["number", "ruleNumber"],
+["special", "ruleSpecial"]
+];
+
+rules.forEach(([key, id]) => {
+const element = $("#" + id); const icon = $("i", element);
+
+element.classList.toggle("valid", result.checks[key]);
+
+icon.className = result.checks[key]
+? "fa-solid fa-circle-check"
+: "fa-regular fa-circle";
+});
+
+const fill = $("#passwordStrengthFill"); const label = $("#passwordStrengthLabel");
+
+fill.style.width = (result.score * 20) + "%";
+
+if (!password) {
+fill.style.width = "0";
+fill.style.background = "#cbd2df";
+label.textContent = "ยังไม่ได้กรอก";
+} else if (result.score <= 2) {
+fill.style.background = "#e05563";
+label.textContent = "อ่อน";
+} else if (result.score <= 4) {
+fill.style.background = "#df9a20";
+label.textContent = "ปานกลาง";
+} else {
+fill.style.background = "#20b66f";
+label.textContent = "แข็งแรง";
+}
+
+updatePasswordMatch();
+}
+
+function updatePasswordMatch() {
+const password = $("#signupPassword").value; const confirmPassword = $("#signupConfirmPassword").value;
+const message = $("#passwordMatchMessage");
+
+if (!confirmPassword) {
+message.textContent = "กรอกรหัสผ่านทั้งสองช่องเพื่อตรวจสอบ";
+message.className = "password-match muted";
+return;
+}
+
+if (password === confirmPassword) {
+message.textContent = "รหัสผ่านตรงกัน";
+message.className = "password-match text-success";
+} else {
+message.textContent = "รหัสผ่านไม่ตรงกัน";
+message.className = "password-match text-danger";
+}
+}
+
+function updateResetPasswordMatch() {
+const password = $("#resetNewPassword").value; const confirmPassword = 
+
+$("#resetConfirmPassword").value;
+const message = $("#resetPasswordMatchMessage");
+
+if (!confirmPassword) {
+message.textContent = "";
+message.className = "password-match muted";
+return;
+}
+
+if (password === confirmPassword) {
+message.textContent = "รหัสผ่านตรงกัน";
+message.className = "password-match text-success";
+} else {
+message.textContent = "รหัสผ่านไม่ตรงกัน";
+message.className = "password-match text-danger";
+}
+}
+
+$("#signupPassword").addEventListener("input", updatePasswordStrength); $("#signupConfirmPassword").addEventListener("input", updatePasswordMatch);
+$("#resetNewPassword").addEventListener("input", updateResetPasswordMatch); $("#resetConfirmPassword").addEventListener("input", updateResetPasswordMatch);
+
+$("#signupNationalId").addEventListener("input", (event) => {
+event.target.value = event.target.value.replace(/\D/g, "").slice(0, 13);
+
+const hint = $("#nationalIdHint");
+
+if (!event.target.value) {
+hint.textContent = "กรอกตัวเลข 13 หลักตามบัตรประชาชน";
+hint.className = "field-hint";
+} else if (event.target.value.length < 13) {
+hint.textContent = "กรุณากรอกตัวเลขให้ครบ 13 หลัก";
+hint.className = "field-hint";
+} else if (validateNationalId(event.target.value)) {
+hint.textContent = "รูปแบบหมายเลขผ่านการตรวจสอบเบื้องต้น";
+hint.className = "field-hint text-success";
+} else {
+hint.textContent = "หมายเลขบัตรประชาชนไม่ถูกต้อง";
+hint.className = "field-hint text-danger";
+}
+});
+
+$("#signupPhone").addEventListener("input", (event) => {
+event.target.value = event.target.value.replace(/\D/g, "").slice(0, 10);
+});
+
+/* ==========================================================
+8. TERMS AND PRIVACY MODALS
+========================================================== */
+
+const TERMS_HTML = `
+<div class="policy-body">
+<h3>ข้อกำหนดและเงื่อนไขการใช้บริการ FINORA</h3>
+<p>
+เอกสารฉบับนี้กำหนดหลักเกณฑ์การเข้าใช้เว็บไซต์และบริการอิเล็กทรอนิกส์ของ FINORA
+ผู้ใช้บริการควรอ่านรายละเอียดให้ครบถ้วนก่อนกดยอมรับ การสมัครบัญชีไม่ได้หมายความว่า
+FINORA ได้อนุมัติสินเชื่อหรือมีภาระต้องให้สินเชื่อแก่ผู้สมัคร
+</p>
+
+<h3>1. คุณสมบัติและการสมัครสมาชิก</h3>
+<p>
+ผู้สมัครต้องให้ข้อมูลที่ถูกต้อง ครบถ้วน เป็นปัจจุบัน และเป็นข้อมูลของตนเอง
+รวมถึงข้อมูลยืนยันตัวตน ช่องทางติดต่อ อาชีพ และรายได้ตามที่ระบบร้องขอ
+ผู้สมัครต้องมีคุณสมบัติตามเกณฑ์ของผลิตภัณฑ์และกฎหมายที่เกี่ยวข้อง
+และต้องไม่แอบอ้างบุคคลอื่นหรือใช้เอกสารอันเป็นเท็จ
+</p>
+
+<h3>2. ความปลอดภัยของบัญชี</h3>
+<p>
+ผู้ใช้บริการต้องเก็บรักษารหัสผ่าน ลิงก์ยืนยันตัวตน และข้อมูลการเข้าสู่ระบบเป็นความลับ
+ไม่เปิดเผยแก่บุคคลอื่น และแจ้ง FINORA เมื่อทราบหรือสงสัยว่าบัญชีถูกใช้โดยไม่ได้รับอนุญาต
+FINORA อาจจำกัดหรือระงับการใช้บัญชีชั่วคราวเมื่อมีเหตุอันควรเกี่ยวกับความปลอดภัย
+การทุจริต หรือการปฏิบัติตามกฎหมาย
+</p>
+
+<h3>3. การยื่นคำขอและการพิจารณาสินเชื่อ</h3>
+<p>
+การยื่นคำขอเป็นเพียงการแสดงความประสงค์ขอรับการพิจารณา FINORA หรือผู้ให้สินเชื่อที่เกี่ยวข้อง
+อาจตรวจสอบข้อมูล เอกสาร รายได้ ภาระหนี้ และข้อมูลที่จำเป็นตามกฎหมายและนโยบายสินเชื่อ
+ผลการพิจารณา วงเงิน อัตราดอกเบี้ย ค่าธรรมเนียม ระยะเวลา และเงื่อนไข
+จะเป็นไปตามผลิตภัณฑ์ ข้อเสนอ และสัญญาที่มีผลใช้บังคับ
+</p>
+
+<h3>4. ข้อเสนอสินเชื่อและสัญญา</h3>
+<p>
+ผู้ใช้บริการต้องตรวจสอบเงินต้น อัตราดอกเบี้ย วิธีคำนวณดอกเบี้ย ค่าธรรมเนียม
+ยอดผ่อนชำระทั้งหมด วันครบกำหนด เงื่อนไขผิดนัด การชำระก่อนกำหนด และเงื่อนไขอื่น
+ก่อนยอมรับข้อเสนอ การกดสมัครหรือรับทราบสถานะคำขอไม่ถือเป็นการลงนามในสัญญาสินเชื่อ
+เว้นแต่จะดำเนินการตามขั้นตอนการทำสัญญาที่แสดงไว้อย่างชัดเจน
+</p>
+
+<h3>5. การชำระเงิน</h3>
+<p>
+ผู้ใช้บริการต้องชำระเงินตามจำนวน วันครบกำหนด และช่องทางที่ระบุในสัญญาหรือเอกสารเรียกเก็บ
+การอัปโหลดสลิปเพียงอย่างเดียวไม่ถือเป็นการยืนยันว่าได้รับชำระแล้ว
+FINORA จะตรวจสอบรายการกับผู้ให้บริการที่เกี่ยวข้องก่อนเปลี่ยนสถานะรายการ
+ผู้ใช้บริการต้องเก็บหลักฐานการชำระเงินและแจ้งเมื่อพบยอดผิดพลาดหรือรายการซ้ำ
+</p>
+
+<h3>6. การใช้บริการอย่างสุจริต</h3>
+<p>
+ห้ามใช้ระบบเพื่อฉ้อโกง ปลอมแปลงเอกสาร แทรกแซงระบบ เข้าถึงข้อมูลของผู้อื่นโดยไม่มีสิทธิ
+รบกวนการให้บริการ หรือใช้บริการเพื่อวัตถุประสงค์ที่ผิดกฎหมาย
+ผู้ใช้บริการต้องไม่ส่งข้อมูลที่เป็นเท็จหรือทำให้บุคคลอื่นเข้าใจผิด
+</p>
+
+<h3>7. การแจ้งเตือนและการติดต่อ</h3>
+<p>
+ผู้ใช้บริการควรรักษาข้อมูลติดต่อให้ถูกต้อง FINORA อาจส่งข้อความที่จำเป็นต่อบัญชี
+คำขอสินเชื่อ การชำระเงิน ความปลอดภัย หรือการให้บริการ ผ่านช่องทางที่กำหนด
+ข้อความประชาสัมพันธ์จะเป็นไปตามความยินยอมหรือฐานทางกฎหมายที่เกี่ยวข้อง
+</p>
+
+<h3>8. การระงับบัญชีและการรักษาความปลอดภัย</h3>
+<p>
+FINORA อาจจำกัดการเข้าถึงเมื่อมีเหตุอันควรเกี่ยวกับความปลอดภัย การทุจริต
+การละเมิดข้อกำหนด หรือข้อบังคับทางกฎหมาย โดยจะดำเนินการตามความเหมาะสม
+และแจ้งข้อมูลที่สามารถเปิดเผยได้ตามกฎหมาย
+</p>
+
+<h3>9. ข้อมูลส่วนบุคคล</h3>
+<p>
+การเก็บรวบรวม ใช้ หรือเปิดเผยข้อมูลส่วนบุคคลเป็นไปตามประกาศความเป็นส่วนตัว
+และกฎหมายคุ้มครองข้อมูลส่วนบุคคลที่เกี่ยวข้อง การยอมรับข้อกำหนดนี้ไม่แทนที่
+การให้ความยินยอมเฉพาะกรณีซึ่งกฎหมายกำหนดให้ต้องขอแยกต่างหาก
+</p>
+
+<h3>10. การเปลี่ยนแปลงบริการ</h3>
+<p>
+FINORA อาจปรับปรุงระบบเพื่อความปลอดภัย ความถูกต้อง และการปฏิบัติตามกฎหมาย
+การเปลี่ยนแปลงที่มีผลต่อสิทธิหรือหน้าที่ตามสัญญาจะต้องเป็นไปตามกฎหมายและเงื่อนไขสัญญา
+ไม่ใช่การเปลี่ยนแปลงย้อนหลังโดยอัตโนมัติ
+</p>
+
+<h3>11. ช่องทางร้องเรียน</h3>
+<p>
+ผู้ใช้บริการสามารถติดต่อผ่านศูนย์ช่วยเหลือในระบบเพื่อสอบถาม แจ้งข้อผิดพลาด
+ขอความช่วยเหลือเรื่องการชำระเงิน หรือส่งข้อร้องเรียน FINORA จะพิจารณาเรื่องตามกระบวนการ
+ที่เหมาะสมและกฎหมายที่ใช้บังคับ
+</p>
+
+<h3>12. กฎหมายที่ใช้บังคับ</h3>
+<p>
+การใช้บริการอยู่ภายใต้กฎหมายไทยเท่าที่เกี่ยวข้อง ทั้งนี้ เอกสารนี้เป็นข้อความตั้งต้น
+สำหรับการออกแบบระบบ ต้องได้รับการตรวจทานโดยผู้เชี่ยวชาญด้านกฎหมายและใบอนุญาต
+ของผู้ประกอบธุรกิจจริงก่อนนำไปใช้เป็นข้อกำหนดที่มีผลผูกพัน
+</p>
+
+<p><strong>เวอร์ชันเอกสาร:</strong> <span id="termsVersionLabel">1.0</span></p>
+</div>
+`;
+
+const PRIVACY_HTML = `
+<div class="policy-body">
+<h3>ประกาศความเป็นส่วนตัว (Privacy Notice)</h3>
+<p>
+FINORA ให้ความสำคัญกับการคุ้มครองข้อมูลส่วนบุคคล ประกาศฉบับนี้อธิบายประเภทข้อมูล
+วัตถุประสงค์ในการประมวลผล กลุ่มผู้รับข้อมูล ระยะเวลาเก็บรักษา และสิทธิของเจ้าของข้อมูล
+ข้อความนี้เป็นแม่แบบตั้งต้นที่ต้องปรับให้ตรงกับนิติบุคคล ผู้ควบคุมข้อมูล ผู้ประมวลผลข้อมูล
+ระบบที่ใช้งานจริง และข้อกำหนดทางกฎหมายก่อนเผยแพร่
+</p>
+
+<h3>1. ผู้ควบคุมข้อมูลส่วนบุคคล</h3>
+<p>
+ผู้ควบคุมข้อมูลต้องระบุชื่อนิติบุคคล ที่อยู่ ช่องทางติดต่อ และช่องทางติดต่อเจ้าหน้าที่คุ้มครองข้อมูล
+(หากมีหน้าที่แต่งตั้ง) ให้ชัดเจนก่อนเปิดบริการจริง
+</p>
+
+<h3>2. ประเภทข้อมูลที่อาจเก็บรวบรวม</h3>
+<p>
+ข้อมูลระบุตัวตน เช่น คำนำหน้า ชื่อ วันเกิด และข้อมูลที่จำเป็นสำหรับการยืนยันตัวตน
+ข้อมูลติดต่อ เช่น เบอร์โทรศัพท์และอีเมล ข้อมูลบัญชีผู้ใช้ ข้อมูลการสมัครและประวัติการใช้บริการ
+ข้อมูลอาชีพและรายได้ ข้อมูลธุรกรรมการชำระเงิน ข้อมูลอุปกรณ์หรือบันทึกเหตุการณ์ด้านความปลอดภัย
+และข้อมูลอื่นที่จำเป็นตามกฎหมายและวัตถุประสงค์ที่แจ้งไว้
+</p>
+
+<h3>3. วัตถุประสงค์ในการประมวลผล</h3>
+<p>
+ใช้เพื่อสร้างและรักษาบัญชี ตรวจสอบอีเมล ยืนยันตัวตน ป้องกันการทุจริต
+รับและพิจารณาคำขอสินเชื่อ จัดการสัญญาและตารางชำระ ดำเนินการรับชำระเงิน
+ให้บริการลูกค้า ตรวจสอบความปลอดภัย ปฏิบัติตามกฎหมาย และดำเนินการตามสิทธิเรียกร้องที่เกี่ยวข้อง
+การใช้ข้อมูลเพื่อวัตถุประสงค์อื่นจะต้องมีฐานกฎหมายที่เหมาะสมและแจ้งตามที่กฎหมายกำหนด
+</p>
+
+<h3>4. ฐานทางกฎหมาย</h3>
+<p>
+การประมวลผลแต่ละประเภทอาจอาศัยฐานการปฏิบัติตามสัญญา การดำเนินการก่อนเข้าทำสัญญา
+หน้าที่ตามกฎหมาย ประโยชน์โดยชอบด้วยกฎหมาย หรือความยินยอม แล้วแต่กรณี
+ผู้ควบคุมข้อมูลต้องประเมินฐานที่เหมาะสมเป็นรายวัตถุประสงค์
+การยืนยันว่าอ่านประกาศนี้แล้วไม่ถือเป็นความยินยอมสำหรับทุกวัตถุประสงค์โดยอัตโนมัติ
+</p>
+
+<h3>5. การเปิดเผยข้อมูลแก่บุคคลอื่น</h3>
+<p>
+อาจเปิดเผยข้อมูลแก่ผู้ให้บริการระบบเทคโนโลยี ผู้ให้บริการยืนยันตัวตนหรืออีเมล
+ผู้ให้บริการชำระเงิน ผู้ให้บริการตรวจสอบสลิป ผู้ให้สินเชื่อที่เกี่ยวข้อง
+ผู้สอบบัญชี ที่ปรึกษาวิชาชีพ หรือหน่วยงานรัฐที่มีอำนาจตามกฎหมาย
+โดยจำกัดข้อมูลให้เท่าที่จำเป็นและดำเนินการตามข้อตกลงและกฎหมายที่เกี่ยวข้อง
+</p>
+
+<h3>6. การโอนข้อมูลไปต่างประเทศ</h3>
+<p>
+หากระบบหรือผู้ให้บริการประมวลผลข้อมูลจากต่างประเทศ ผู้ควบคุมข้อมูลต้องตรวจสอบ
+หลักเกณฑ์การโอนข้อมูลส่วนบุคคลข้ามประเทศและใช้มาตรการคุ้มครองที่กฎหมายกำหนด
+</p>
+
+<h3>7. ระยะเวลาเก็บรักษา</h3>
+<p>
+เก็บรักษาข้อมูลเท่าที่จำเป็นตามวัตถุประสงค์ อายุความ หน้าที่ตามกฎหมาย
+และข้อกำหนดของธุรกิจ เมื่อหมดความจำเป็นจะลบ ทำลาย หรือทำให้ไม่สามารถระบุตัวบุคคลได้
+ตามกระบวนการที่เหมาะสม เว้นแต่กฎหมายกำหนดให้ต้องเก็บต่อ
+</p>
+
+<h3>8. มาตรการรักษาความปลอดภัย</h3>
+<p>
+ผู้ควบคุมข้อมูลต้องใช้มาตรการทางเทคนิคและองค์กรที่เหมาะสม เช่น การควบคุมสิทธิ์
+การเข้ารหัสหรือการปกปิดข้อมูล การบันทึกเหตุการณ์ การสำรองข้อมูล
+การจัดการเหตุละเมิดข้อมูล และการประเมินความเสี่ยงตามลักษณะข้อมูลและระบบจริง
+</p>
+
+<h3>9. สิทธิของเจ้าของข้อมูล</h3>
+<p>
+สิทธิที่กฎหมายกำหนดอาจรวมถึงการขอเข้าถึงและรับสำเนาข้อมูล ขอแก้ไขข้อมูล
+ขอให้ลบหรือทำลาย ขอให้ระงับการใช้ ขอคัดค้านการประมวลผล ขอรับหรือโอนข้อมูล
+และถอนความยินยอมเมื่อประมวลผลด้วยฐานความยินยอม โดยสิทธิบางประการมีเงื่อนไขหรือข้อยกเว้นตามกฎหมาย
+</p>
+
+<h3>10. คุกกี้และข้อมูลทางเทคนิค</h3>
+<p>
+เว็บไซต์อาจใช้ข้อมูลทางเทคนิคเพื่อรักษาเซสชัน ป้องกันการโจมตี และจดจำการตั้งค่าที่จำเป็น
+หากมีการใช้คุกกี้วิเคราะห์หรือโฆษณา ต้องแจ้งประเภท วัตถุประสงค์ ผู้รับข้อมูล
+และขอความยินยอมในกรณีที่จำเป็นตามกฎหมาย
+</p>
+
+<h3>11. การติดต่อเกี่ยวกับข้อมูลส่วนบุคคล</h3>
+<p>
+ควรระบุอีเมล หมายเลขโทรศัพท์ หรือช่องทางของผู้ควบคุมข้อมูล/เจ้าหน้าที่คุ้มครองข้อมูล
+ให้ครบถ้วนก่อนใช้งานจริง ขณะนี้ผู้ใช้บริการสามารถส่งคำร้องผ่านเมนูศูนย์ช่วยเหลือในระบบได้
+โดยต้องตรวจสอบว่าช่องทางดังกล่าวได้รับการดูแลจริง
+</p>
+
+<h3>12. การปรับปรุงประกาศ</h3>
+<p>
+อาจปรับปรุงประกาศเพื่อให้สอดคล้องกับการเปลี่ยนแปลงของบริการหรือกฎหมาย
+โดยระบุเวอร์ชันและวันที่มีผลใช้บังคับ รวมถึงแจ้งเจ้าของข้อมูลเมื่อกฎหมายกำหนด
+</p>
+
+<p><strong>เวอร์ชันเอกสาร:</strong> <span id="privacyVersionLabel">1.0</span></p>
+</div>
+`;
+
+function openPolicyModal(type) {
+const isTerms = type === "terms";
+const title = isTerms
+? "ข้อกำหนดและเงื่อนไขการใช้บริการ FINORA"
+: "ประกาศความเป็นส่วนตัว (Privacy Notice)";
+
+const content = isTerms ? TERMS_HTML : PRIVACY_HTML;
+
+openModal({
+title,
+large: true,
+body:
+'<div id="policyScrollableContent" style="max-height:55vh;overflow-y:auto;padding:2px 7px 2px 1px;">' +
+content +
+'</div>' +
+'<p class="policy-warning">กรุณาเลื่อนลงด้านล่างสุดและกดยินยอม</p>',
+buttons: [
+{
+label: "ยกเลิก",
+className: "button-secondary",
+onClick: () => {
+closeModal();
+}
+},
+{
+label: "ยินยอม",
+className: "button-primary",
+id: "policyAgreeButton",
+disabled: true,
+onClick: () => {
+if (isTerms) {
+$("#termsCheckbox").checked = true; } else { 
+
+$("#privacyCheckbox").checked = true;
+}
+
+closeModal();
+}
+}
+]
+});
+
+const scrollable = $("#policyScrollableContent"); const agreeButton = 
+
+$("#policyAgreeButton");
+
+function checkPolicyScroll() {
+const atBottom =
+scrollable.scrollTop + scrollable.clientHeight >=
+scrollable.scrollHeight - 8;
+
+if (atBottom) {
+agreeButton.disabled = false;
+const warning = $(".policy-warning");
+
+if (warning) {
+warning.textContent = "อ่านเอกสารครบแล้ว สามารถกดยินยอมได้";
+warning.classList.remove("text-danger");
+warning.classList.add("text-success");
+}
+}
+}
+
+scrollable.addEventListener("scroll", checkPolicyScroll);
+scrollable.addEventListener("wheel", checkPolicyScroll);
+
+setTimeout(checkPolicyScroll, 100);
+}
+
+$("#termsCheckbox").addEventListener("change", () => { if ($("#termsCheckbox").checked) {
+$("#termsCheckbox").checked = false;
+openPolicyModal("terms");
+}
+});
+
+$("#privacyCheckbox").addEventListener("change", () => { if (
+
+$("#privacyCheckbox").checked) {
+$("#privacyCheckbox").checked = false;
+openPolicyModal("privacy");
+}
+});
+
+$("#openTermsLink").addEventListener("click", (event) => {
+event.preventDefault();
+openPolicyModal("terms");
+});
+
+$("#openPrivacyLink").addEventListener("click", (event) => {
+event.preventDefault();
+openPolicyModal("privacy");
+});
+
+/* ==========================================================
+9. EMAIL VERIFICATION FLOW
+========================================================== */
+
+function refreshEmailVerificationUI() {
+const input = $("#signupEmail"); const status = $("#emailVerifiedStatus");
+const button = $("#sendVerifyEmail");
+const storedEmail = normalizeEmail(
+localStorage.getItem(VERIFIED_EMAIL_KEY) || ""
+);
+
+if (
+storedEmail &&
+storedEmail === normalizeEmail(input.value)
+) {
+state.emailVerified = true;
+input.readOnly = true;
+input.disabled = true;
+status.classList.remove("hidden");
+button.classList.add("hidden");
+return;
+}
+
+input.readOnly = false;
+input.disabled = false;
+status.classList.add("hidden");
+button.classList.remove("hidden");
+state.emailVerified = false;
+}
+
+$("#signupEmail").addEventListener("input", () => {
+const storedEmail = normalizeEmail(
+localStorage.getItem(VERIFIED_EMAIL_KEY) || ""
+);
+
+const currentEmail = normalizeEmail($("#signupEmail").value);
+
+if (currentEmail !== storedEmail) {
+state.emailVerified = false;
+}
+
+refreshEmailVerificationUI();
+});
+
+async function beginEmailVerification() {
+const email = normalizeEmail($("#signupEmail").value);
+
+if (!validateEmail(email)) {
+showMessage(
+"อีเมลไม่ถูกต้อง",
+"กรุณากรอกอีเมลให้ถูกต้องก่อนส่งลิงก์ยืนยัน",
+"error"
+);
+$("#signupEmail").focus();
+return;
+}
+
+try {
+showLoading(true, "กำลังส่งลิงก์ยืนยันอีเมล", email);
+
+await api("beginEmailVerification", {
+email
+}, {
+silent: true
+});
+
+localStorage.setItem(PENDING_EMAIL_KEY, email);
+
+state.pendingVerificationEmail = email;
+state.waitingPollCount = 0;
+
+$("#waitingEmailAddress").textContent = email;
+showView("waitingEmail");
+
+pollEmailVerification();
+
+} catch (error) {
+showApiError(error, "ส่งลิงก์ยืนยันอีเมลไม่สำเร็จ");
+
+} finally {
+showLoading(false);
+}
+}
+
+$("#sendVerifyEmail").addEventListener("click", beginEmailVerification);
+
+async function pollEmailVerification() {
+clearWaitingPoll();
+
+if (state.view !== "waitingEmail") {
+return;
+}
+
+const email = normalizeEmail(
+state.pendingVerificationEmail ||
+localStorage.getItem(PENDING_EMAIL_KEY) ||
+""
+);
+
+if (!email) {
+return;
+}
+
+state.waitingPollCount++;
+
+try {
+const result = await api("checkEmailVerification", {
+email
+}, {
+silent: true
+});
+
+if (result.verified === true) {
+localStorage.setItem(VERIFIED_EMAIL_KEY, email);
+localStorage.removeItem(PENDING_EMAIL_KEY);
+
+state.emailVerified = true;
+state.pendingVerificationEmail = "";
+
+$("#signupEmail").value = email; 
+
+$("#signupEmail").disabled = true;
+$("#signupEmail").readOnly = true;
+
+$("#emailVerifiedStatus").classList.remove("hidden"); $("#sendVerifyEmail").classList.add("hidden");
+
+$("#waitingVerifiedStatus").className =
+"email-verified-status text-success";
+
+$("#waitingVerifiedStatus").innerHTML =
+'<i class="fa-solid fa-circle-check"></i>' +
+'<span>ยืนยันอีเมลสำเร็จ กำลังกลับไปหน้าลงทะเบียน</span>';
+
+showSignupView();
+
+showMessage(
+"ยืนยันอีเมลสำเร็จ",
+"อีเมลของคุณได้รับการยืนยันแล้ว กรุณากรอกข้อมูลที่เหลือและสมัครสมาชิกต่อ",
+"success"
+);
+
+return;
+}
+
+} catch (error) {
+// Keep polling silently. Temporary network errors do not
+// change the user's email verification status.
+}
+
+if (state.waitingPollCount < 180) {
+state.waitingPollTimer = setTimeout(
+pollEmailVerification,
+5000
+);
+} else {
+$("#waitingVerifiedStatus").innerHTML =
+'<i class="fa-regular fa-clock"></i>' +
+'<span>ยังไม่ได้รับการยืนยัน โปรดตรวจสอบอีเมลและลองกลับมาอีกครั้ง</span>';
+}
+}
+
+$("#cancelWaitingEmail").addEventListener("click", () => {
+clearWaitingPoll();
+showSignupView();
+});
+
+async function handleEmailVerificationLink(token) {
+showView("login");
+
+try {
+showLoading(true, "กำลังยืนยันอีเมล", "โปรดอย่าปิดหน้าต่างนี้");
+
+await api("confirmEmail", {
+verifyToken: token
+}, {
+silent: true
+});
+
+const pendingEmail = normalizeEmail(
+localStorage.getItem(PENDING_EMAIL_KEY) || ""
+);
+
+if (pendingEmail) {
+localStorage.setItem(VERIFIED_EMAIL_KEY, pendingEmail);
+localStorage.removeItem(PENDING_EMAIL_KEY);
+}
+
+window.history.replaceState(
+{},
+document.title,
+window.location.pathname
+);
+
+showMessage(
+"ยืนยันอีเมลสำเร็จ",
+"ยืนยันอีเมลสำเร็จ กรุณากลับไปหน้าลงทะเบียนเพื่อดำเนินการสมัครสมาชิกต่อ",
+"success",
+"กลับไปหน้าลงทะเบียน"
+);
+
+$("#modalFooter .button").addEventListener("click", () => {
+showSignupView();
+refreshEmailVerificationUI();
+}, {
+once: true
+});
+
+} catch (error) {
+showMessage(
+"ไม่สามารถยืนยันอีเมลได้",
+error.message || "ลิงก์อาจหมดอายุหรือถูกใช้งานไปแล้ว",
+"error"
+);
+
+} finally {
+showLoading(false);
+}
+}
+
+/* ==========================================================
+10. SIGNUP SUBMISSION
+========================================================== */
+
+async function submitSignup(event) {
+event.preventDefault();
+
+const prefix = $("#signupPrefix").value; const fullName = 
+
+$("#signupFullName").value.trim();
+const dob = $("#signupDob").value; const nationalId = 
+
+$("#signupNationalId").value.trim();
+const phone = $("#signupPhone").value.trim(); const email = normalizeEmail(
+
+$("#signupEmail").value);
+const password = $("#signupPassword").value; const confirmPassword = 
+
+$("#signupConfirmPassword").value;
+
+const storedVerifiedEmail = normalizeEmail(
+localStorage.getItem(VERIFIED_EMAIL_KEY) || ""
+);
+
+const emailVerified =
+state.emailVerified ||
+(
+storedVerifiedEmail !== "" &&
+storedVerifiedEmail === email
+);
+
+if (!prefix) {
+showMessage("ข้อมูลไม่ครบ", "กรุณาเลือกคำนำหน้า", "error");
+$("#signupPrefix").focus();
+return;
+}
+
+if (fullName.length < 4) {
+showMessage("ข้อมูลไม่ถูกต้อง", "กรุณากรอกชื่อและนามสกุลให้ถูกต้อง", "error");
+$("#signupFullName").focus();
+return;
+}
+
+if (!dob || dateDifferenceInYears(dob) < Number(state.publicConfig.minAge || 20)) {
+showMessage(
+"อายุไม่เป็นไปตามเงื่อนไข",
+"กรุณาตรวจสอบวันเกิดและคุณสมบัติอายุขั้นต่ำของระบบ",
+"error"
+);
+$("#signupDob").focus();
+return;
+}
+
+if (!validateNationalId(nationalId)) {
+showMessage(
+"หมายเลขบัตรประชาชนไม่ถูกต้อง",
+"กรุณาตรวจสอบหมายเลขบัตรประชาชน 13 หลัก",
+"error"
+);
+$("#signupNationalId").focus();
+return;
+}
+
+if (!validatePhone(phone)) {
+showMessage(
+"หมายเลขโทรศัพท์ไม่ถูกต้อง",
+"กรุณากรอกหมายเลขโทรศัพท์มือถือ 10 หลัก",
+"error"
+);
+$("#signupPhone").focus();
+return;
+}
+
+if (!validateEmail(email)) {
+showMessage("อีเมลไม่ถูกต้อง", "กรุณากรอกอีเมลให้ถูกต้อง", "error");
+$("#signupEmail").focus();
+return;
+}
+
+if (!emailVerified) {
+showMessage(
+"กรุณายืนยันอีเมล",
+"ต้องกดปุ่มยืนยันอีเมลและยืนยันผ่านลิงก์ในอีเมลก่อนสมัครสมาชิก",
+"error"
+);
+return;
+}
+
+const strength = getPasswordStrength(password);
+
+if (!strength.strong) {
+showMessage(
+"รหัสผ่านยังไม่ปลอดภัย",
+"รหัสผ่านต้องมีอย่างน้อย 12 ตัวอักษร และมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ ตัวเลข และอักขระพิเศษ",
+"error"
+);
+$("#signupPassword").focus();
+return;
+}
+
+if (password !== confirmPassword) {
+showMessage("รหัสผ่านไม่ตรงกัน", "กรุณากรอกรหัสผ่านทั้งสองช่องให้ตรงกัน", "error");
+$("#signupConfirmPassword").focus();
+return;
+}
+
+if (!$("#termsCheckbox").checked) {
+showMessage(
+"กรุณายอมรับข้อกำหนด",
+"ต้องอ่านและกดยินยอมข้อกำหนดและเงื่อนไขก่อนสมัครสมาชิก",
+"error"
+);
+return;
+}
+
+if (!$("#privacyCheckbox").checked) {
+showMessage(
+"กรุณารับทราบประกาศความเป็นส่วนตัว",
+"ต้องอ่านและกดยินยอมเพื่อยืนยันว่ารับทราบประกาศความเป็นส่วนตัวก่อนสมัครสมาชิก",
+"error"
+);
+return;
+}
+
+try {
+const result = await api("register", {
+prefix,
+fullName,
+dob,
+nationalId,
+phone,
+email,
+password,
+confirmPassword,
+termsAccepted: true,
+privacyAcknowledged: true
+}, {
+loadingText: "กำลังสร้างบัญชี FINORA"
+});
+
+clearVerificationDraft();
+
+$("#signupForm").reset(); 
+
+$("#passwordStrengthFill").style.width = "0";
+$("#passwordStrengthLabel").textContent = "ยังไม่ได้กรอก"; 
+
+$("#passwordMatchMessage").textContent = "กรอกรหัสผ่านทั้งสองช่องเพื่อตรวจสอบ";
+$("#nationalIdHint").textContent = "กรอกตัวเลข 13 หลักตามบัตรประชาชน";
+
+showLoginView();
+
+showMessage(
+"สมัครสมาชิกสำเร็จ",
+result.message || "สร้างบัญชีเรียบร้อยแล้ว กรุณาเข้าสู่ระบบ",
+"success"
+);
+
+$("#loginIdentifier").value = email;
+
+} catch (error) {
+showApiError(error, "สมัครสมาชิกไม่สำเร็จ");
+}
+}
+
+$("#signupForm").addEventListener("submit", submitSignup);
+
+/* ==========================================================
+11. LOGIN AND SESSION RESTORATION
+========================================================== */
+
+async function submitLogin(event) {
+event.preventDefault();
+
+const identifier = $("#loginIdentifier").value.trim(); const password = $("#loginPassword").value;
+const rememberMe = $("#rememberMe").checked;
+
+if (!identifier || !password) {
+showMessage(
+"กรุณากรอกข้อมูล",
+"กรุณากรอกชื่อผู้ใช้หรืออีเมลและรหัสผ่าน",
+"error"
+);
+return;
+}
+
+try {
+const result = await api("login", {
+identifier,
+password,
+rememberMe
+}, {
+loadingText: "กำลังตรวจสอบบัญชีผู้ใช้"
+});
+
+if (!result.token || !result.user) {
+throw new Error("ระบบไม่ได้ส่งข้อมูลเซสชันกลับมา");
+}
+
+storeToken(result.token, rememberMe);
+state.user = result.user;
+
+if (String(result.user.role).toUpperCase() === "ADMIN") {
+showMessage(
+"เข้าสู่ระบบสำเร็จ",
+"บัญชีนี้เป็นผู้ดูแลระบบ กำลังเปิดระบบหลังบ้าน",
+"success"
+);
+
+setTimeout(() => {
+window.location.href = new URL(
+"./dashboard.html",
+window.location.href
+).href;
+}, 700);
+
+return;
+}
+
+await loadBorrowerApplication();
+
+showView("app");
+
+} catch (error) {
+showApiError(error, "เข้าสู่ระบบไม่สำเร็จ");
+}
+}
+
+$("#loginForm").addEventListener("submit", submitLogin);
+
+async function restoreSession() {
+const token = getToken();
+
+if (!token) {
+return false;
+}
+
+try {
+showLoading(true, "กำลังโหลดข้อมูลระบบ", "กำลังตรวจสอบเซสชัน");
+
+const result = await api("me", {
+token
+}, {
+silent: true
+});
+
+if (!result.user) {
+clearToken();
+return false;
+}
+
+state.user = result.user;
+
+if (result.isAdmin || String(result.user.role).toUpperCase() === "ADMIN") {
+window.location.replace(
+new URL("./dashboard.html", window.location.href).href
+);
+return true;
+}
+
+await loadBorrowerApplication();
+
+showView("app");
+
+return true;
+
+} catch (error) {
+clearToken();
+return false;
+
+} finally {
+showLoading(false);
+}
+}
+
+async function logout() {
+const token = getToken();
+
+try {
+if (token) {
+await api("logout", {
+token
+}, {
+loadingText: "กำลังออกจากระบบ"
+});
+}
+} catch (error) {
+// Client-side session credentials are removed regardless.
+} finally {
+clearToken();
+
+state.user = null;
+state.dashboard = null;
+state.loans = [];
+state.payments = [];
+state.products = [];
+state.tickets = [];
+
+$("#loginForm").reset();
+
+showLoginView();
+}
+}
+
+$("#logoutButton").addEventListener("click", () => {
+openModal({
+title: "ออกจากระบบ",
+body:
+'<div class="text-center">' +
+'<div class="modal-icon info"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>' +
+'<p style="margin:0;color:#58657a;">คุณต้องการออกจากระบบ FINORA ใช่หรือไม่?</p>' +
+'</div>',
+buttons: [
+{
+label: "ยกเลิก",
+className: "button-secondary",
+onClick: closeModal
+},
+{
+label: "ออกจากระบบ",
+className: "button-danger",
+onClick: async () => {
+closeModal();
+await logout();
+}
+}
+ ]
+});
+});
+
+/* ==========================================================
+12. FORGOT PASSWORD AND RESET PASSWORD
+========================================================== */
+
+$("#goForgotPassword").addEventListener("click", (event) => {
+event.preventDefault();
+showView("forgotPassword");
+});
+
+$("#backToLoginFromForgot").addEventListener("click", showLoginView);
+
+$("#forgotPasswordForm").addEventListener("submit", async (event) => {
+event.preventDefault();
+
+const email = normalizeEmail($("#forgotEmail").value);
+
+if (!validateEmail(email)) {
+showMessage(
+"อีเมลไม่ถูกต้อง",
+"กรุณากรอกอีเมลให้ถูกต้อง",
+"error"
+);
+$("#forgotEmail").focus();
+return;
+}
+
+try {
+const result = await api("forgotPassword", {
+email
+}, {
+loadingText: "กำลังส่งลิงก์รีเซ็ตรหัสผ่าน"
+});
+
+showMessage(
+"ส่งลิงก์รีเซ็ตรหัสผ่านแล้ว",
+result.message || "หากอีเมลนี้มีบัญชีอยู่ ระบบจะส่งลิงก์รีเซ็ตรหัสผ่านให้",
+"success"
+);
+
+} catch (error) {
+showApiError(error, "ไม่สามารถส่งคำขอได้");
+}
+});
+
+async function initializeResetPassword(token) {
+showView("resetPassword");
+
+state.resetToken = token;
+$("#resetPasswordButton").disabled = true; 
+
+$("#resetTokenStatus").classList.add("hidden");
+
+try {
+showLoading(true, "กำลังตรวจสอบลิงก์รีเซ็ตรหัสผ่าน");
+
+await api("validateResetToken", {
+resetToken: token
+}, {
+silent: true
+});
+
+$("#resetTokenStatus").classList.remove("hidden"); 
+
+$("#resetPasswordButton").disabled = false;
+
+} catch (error) {
+showMessage(
+"ลิงก์ไม่ถูกต้องหรือหมดอายุ",
+error.message || "กรุณาขอลิงก์รีเซ็ตรหัสผ่านใหม่",
+"error"
+);
+
+} finally {
+showLoading(false);
+}
+}
+
+$("#resetPasswordForm").addEventListener("submit", async (event) => {
+event.preventDefault();
+
+if (!state.resetToken) {
+showMessage(
+"ไม่พบลิงก์รีเซ็ตรหัสผ่าน",
+"กรุณาเปิดลิงก์จากอีเมลที่ FINORA ส่งให้คุณ",
+"error"
+);
+return;
+}
+
+const password = $("#resetNewPassword").value; const confirmPassword = $("#resetConfirmPassword").value;
+const strength = getPasswordStrength(password);
+
+if (!strength.strong) {
+showMessage(
+"รหัสผ่านยังไม่ปลอดภัย",
+"รหัสผ่านต้องมีอย่างน้อย 12 ตัวอักษร และมีพิมพ์เล็ก พิมพ์ใหญ่ ตัวเลข และอักขระพิเศษ",
+"error"
+);
+return;
+}
+
+if (password !== confirmPassword) {
+showMessage(
+"รหัสผ่านไม่ตรงกัน",
+"กรุณากรอกรหัสผ่านทั้งสองช่องให้ตรงกัน",
+"error"
+);
+return;
+}
+
+try {
+const result = await api("resetPassword", {
+resetToken: state.resetToken,
+password,
+confirmPassword
+}, {
+loadingText: "กำลังเปลี่ยนรหัสผ่าน"
+});
+
+$("#resetPasswordForm").reset();
+state.resetToken = "";
+
+showLoginView();
+
+showMessage(
+"เปลี่ยนรหัสผ่านสำเร็จ",
+result.message || "กรุณาเข้าสู่ระบบด้วยรหัสผ่านใหม่",
+"success"
+);
+
+} catch (error) {
+showApiError(error, "เปลี่ยนรหัสผ่านไม่สำเร็จ");
+}
+});
+
+/* ==========================================================
+13. ANNOUNCEMENTS
+========================================================== */
+
+async function loadAnnouncements(placement, containerId) {
+try {
+const result = await api("getAnnouncements", {
+placement
+}, {
+silent: true
+});
+
+const announcements = Array.isArray(result.announcements)
+? result.announcements
+: [];
+
+state.announcements = announcements;
+
+renderAnnouncements(containerId, announcements);
+
+} catch (error) {
+const container = $("#" + containerId);
+
+if (container) {
+container.innerHTML = "";
+}
+}
+}
+
+function renderAnnouncements(containerId, announcements) {
+const container = $("#" + containerId);
+
+if (!container) {
+return;
+}
+
+if (!announcements || announcements.length === 0) {
+container.innerHTML = "";
+return;
+}
+
+container.innerHTML = announcements.map((item) => {
+const title = escapeHtml(item.title || "ประกาศจาก FINORA");
+const imageUrl = item.imageUrl
+? escapeHtml(item.imageUrl)
+: "";
+const imageAlt = escapeHtml(item.imageAlt || item.title || "ภาพประกาศ");
+
+return (
+'<article class="announcement-card">' +
+(
+imageUrl
+? '<img src="' + imageUrl + '" alt="' + imageAlt + '" loading="lazy" referrerpolicy="no-referrer">'
+: ''
+) +
+'<div class="announcement-inner">' +
+'<h3 class="announcement-title">' + title + '</h3>' +
+'<div class="announcement-content">' +
+String(item.contentHtml || "") +
+'</div>' +
+'</div>' +
+'</article>'
+);
+}).join("");
+}
+
+/* ==========================================================
+14. LOAD BORROWER APP DATA
+========================================================== */
+
+async function loadBorrowerApplication() {
+const token = getToken();
+
+if (!token) {
+showLoginView();
+return;
+}
+
+showLoading(true, "กำลังโหลดข้อมูลระบบ", "กำลังเตรียมหน้าบัญชีของคุณ");
+
+try {
+const results = await Promise.allSettled([
+api("borrowerDashboard", { token }, { silent: true }),
+api("myLoans", { token }, { silent: true }),
+api("myPayments", { token }, { silent: true }),
+api("listProducts", {}, { silent: true }),
+api("getAnnouncements", {
+token,
+placement: "BORROWER_DASHBOARD"
+}, { silent: true }),
+api("myTickets", { token }, { silent: true })
+ ]);
+
+const dashboardResult = results[0];
+const loansResult = results[1];
+const paymentsResult = results[2];
+const productsResult = results[3];
+const announcementsResult = results[4];
+const ticketsResult = results[5];
+
+if (dashboardResult.status === "fulfilled") {
+state.dashboard = dashboardResult.value;
+state.user = dashboardResult.value.user || state.user;
+}
+
+if (loansResult.status === "fulfilled") {
+state.loans = Array.isArray(loansResult.value.loans)
+? loansResult.value.loans
+: [];
+}
+
+if (paymentsResult.status === "fulfilled") {
+state.payments = Array.isArray(paymentsResult.value.payments)
+? paymentsResult.value.payments
+: [];
+}
+
+if (productsResult.status === "fulfilled") {
+state.products = Array.isArray(productsResult.value.products)
+? productsResult.value.products
+: [];
+}
+
+if (announcementsResult.status === "fulfilled") {
+state.announcements = Array.isArray(
+announcementsResult.value.announcements
+)
+? announcementsResult.value.announcements
+: [];
+}
+
+if (ticketsResult.status === "fulfilled") {
+state.tickets = Array.isArray(ticketsResult.value.tickets)
+? ticketsResult.value.tickets
+: [];
+}
+
+updateApplicationHeader();
+renderDashboardHome();
+renderLoans();
+renderPayments();
+renderProfile();
+renderAnnouncements("homeAnnouncements", state.announcements);
+renderAnnouncements("dashboardAnnouncements", state.announcements);
+renderTickets();
+
+populateProducts();
+
+} finally {
+showLoading(false);
+}
+}
+
+function updateApplicationHeader() {
+const user = state.user || {};
+
+const name = user.fullName || "ผู้ใช้งาน";
+const initials = name.trim().charAt(0) || "F";
+
+$("#topbarUserName").textContent = name; 
+
+$("#userAvatar").textContent = initials;
+$("#dashboardWelcomeName").textContent = name;
+}
+
+/* ==========================================================
+15. TAB NAVIGATION
+========================================================== */
+
+function setAppTab(tabName) {
+const panel = $("#tab-" + tabName);
+
+if (!panel) {
+return;
+}
+
+$$(".section-panel").forEach((section) => {
+section.classList.remove("active");
+});
+
+panel.classList.add("active");
+
+$$(".sidebar-link").forEach((link) => {
+link.classList.toggle(
+"active",
+link.dataset.tab === tabName
+);
+});
+
+window.scrollTo({
+top: 0,
+behavior: "smooth"
+});
+
+if (tabName === "loans") {
+loadLoansOnly();
+} else if (tabName === "payments") {
+loadPaymentsOnly();
+} else if (tabName === "announcements") {
+loadAnnouncements(
+"BORROWER_DASHBOARD",
+"dashboardAnnouncements"
+).catch(() => {});
+} else if (tabName === "support") {
+loadTicketsOnly();
+} else if (tabName === "apply") {
+loadProductsOnly();
+}
+}
+
+document.addEventListener("click", (event) => {
+const tabButton = event.target.closest("[data-tab]");
+
+if (tabButton && tabButton.classList.contains("sidebar-link")) {
+setAppTab(tabButton.dataset.tab);
+}
+
+const openTabButton = event.target.closest("[data-open-tab]");
+
+if (openTabButton) {
+setAppTab(openTabButton.dataset.openTab);
+}
+});
+
+$("#refreshDashboardButton").addEventListener("click", async () => {
+try {
+await loadBorrowerApplication();
+showMessage("อัปเดตข้อมูลแล้ว", "โหลดข้อมูลบัญชีล่าสุดเรียบร้อยแล้ว", "success");
+} catch (error) {
+showApiError(error, "ไม่สามารถอัปเดตข้อมูลได้");
+}
+});
+
+/* ==========================================================
+16. DASHBOARD HOME RENDERING
+========================================================== */
+
+function renderDashboardHome() {
+const data = state.dashboard || {};
+const totals = data || {};
+
+$("#statTotalLoans").textContent = String(
+Number(totals.totalLoans || 0)
+);
+
+$("#statActiveLoans").textContent = String(
+Number(totals.activeLoans || 0)
+);
+
+$("#statDueTotal").textContent =
+"฿" + formatMoney(totals.dueTotal || 0);
+
+$("#statAccountStatus").textContent =
+state.user && state.user.status === "ACTIVE"
+? "ปกติ"
+: "ตรวจสอบ";
+
+const recentLoans = Array.isArray(data.recentLoans)
+? data.recentLoans
+: state.loans.slice(-5).reverse();
+
+const container = $("#homeRecentLoans");
+
+if (!recentLoans.length) {
+container.innerHTML =
+'<div class="empty-state">' +
+'<i class="fa-solid fa-file-circle-plus"></i>' +
+'<strong>ยังไม่มีสินเชื่อ</strong>' +
+'<p>เริ่มต้นโดยเลือกผลิตภัณฑ์สินเชื่อที่ระบบเปิดให้สมัคร</p>' +
+'<button type="button" class="button button-primary button-sm" style="margin-top:15px;" data-open-tab="apply">สมัครสินเชื่อ</button>' +
+'</div>';
+
+return;
+}
+
+container.innerHTML = recentLoans.map((loan) => {
+return (
+'<div class="payment-row">' +
+'<div>' +
+'<strong>' + escapeHtml(loan.productName || "สินเชื่อ") + '</strong>' +
+'<span>' + displaySensitiveId(loan.loanId || "") + '</span>' +
+'</div>' +
+'<div style="text-align:right;">' +
+'<div class="payment-amount">฿' +
+formatMoney(loan.approvedAmount || loan.requestedAmount) +
+'</div>' +
+'<span>' + statusLabel(loan.status) + '</span>' +
+'</div>' +
+'</div>'
+);
+}).join("");
+}
+
+/* ==========================================================
+17. LOAN STATUS LABELS
+========================================================== */
+
+function statusLabel(status) {
+const labels = {
+REQUIRED: ["รอส่งข้อมูลเพิ่มเติม", "warning"],
+DRAFT: ["บันทึกแบบร่างแล้ว", "info"],
+RETURNED: ["ต้องแก้ไขข้อมูล", "danger"],
+SUBMITTED: ["รอตรวจข้อมูลเพิ่มเติม", "warning"],
+APPROVED: ["ข้อมูลเพิ่มเติมผ่านการตรวจ", "success"],
+PENDING_REVIEW: ["รอตรวจสอบ", "warning"],
+APPROVED_PENDING_ACCEPTANCE: ["รอยืนยันข้อเสนอ", "success"],
+ACCEPTED_PENDING_DISBURSEMENT: ["รอจ่ายเงิน", "warning"],
+DISBURSED: ["กำลังชำระ", "success"],
+REJECTED: ["ไม่อนุมัติ", "danger"],
+PAID_OFF: ["ปิดบัญชีแล้ว", "success"],
+UNPAID: ["ยังไม่ชำระ", "warning"],
+PARTIAL: ["ชำระบางส่วน", "warning"],
+PAID: ["ชำระแล้ว", "success"],
+AWAITING_SLIP: ["รอสลิป", "warning"],
+VERIFYING: ["กำลังตรวจสอบ", "warning"],
+REVIEW_REQUIRED: ["รอตรวจสอบเพิ่มเติม", "warning"],
+RETRY_REQUIRED: ["ต้องตรวจสอบใหม่", "danger"],
+REJECTED_PAYMENT: ["ปฏิเสธรายการ", "danger"],
+OPEN: ["เปิดคำร้อง", "warning"],
+IN_PROGRESS: ["กำลังดำเนินการ", "warning"],
+WAITING_CUSTOMER: ["รอข้อมูลลูกค้า", "warning"],
+RESOLVED: ["แก้ไขแล้ว", "success"],
+CLOSED: ["ปิดคำร้อง", "success"]
+};
+
+const key = String(status || "").toUpperCase();
+const entry = labels[key] || [key || "ไม่ทราบสถานะ", ""];
+
+return '<span class="status-badge ' +
+entry[1] +
+'">' +
+escapeHtml(entry[0]) +
+'</span>';
+}
+
+function frequencyLabel(frequency) {
+const labels = {
+DAILY: "รายวัน",
+WEEKLY: "รายสัปดาห์",
+MONTHLY: "รายเดือน"
+};
+
+return labels[String(frequency || "").toUpperCase()] || "—";
+}
+
+/* ==========================================================
+18. LOANS AND INSTALLMENT SCHEDULE
+========================================================== */
+
+function renderLoans() {
+const container = $("#loansList"); const filter = 
+
+$("#loanStatusFilter").value.toUpperCase();
+
+let loans = state.loans.slice();
+
+if (filter) {
+loans = loans.filter((loan) => {
+return String(loan.status).toUpperCase() === filter;
+});
+}
+
+if (!loans.length) {
+container.innerHTML =
+'<div class="panel-card">' +
+'<div class="empty-state">' +
+'<i class="fa-solid fa-wallet"></i>' +
+'<strong>ไม่พบรายการสินเชื่อ</strong>' +
+'<p>รายการจะแสดงเมื่อคุณส่งคำขอหรือได้รับสินเชื่อ</p>' +
+'</div>' +
+'</div>';
+
+return;
+}
+
+container.innerHTML = loans.map((loan) => {
+const amount = Number(
+loan.approvedAmount || loan.requestedAmount || 0
+);
+
+const installments = Array.isArray(loan.installments)
+? loan.installments
+: [];
+
+const scheduleHtml = installments.length
+? (
+'<div class="installment-table-wrap">' +
+'<table class="table">' +
+'<thead>' +
+'<tr>' +
+'<th>เลือก</th>' +
+'<th>งวด</th>' +
+'<th>ครบกำหนด</th>' +
+'<th>เงินต้น</th>' +
+'<th>ดอกเบี้ย</th>' +
+'<th>ยอดงวด</th>' +
+'<th>คงเหลือ</th>' +
+'<th>สถานะ</th>' +
+'</tr>' +
+'</thead>' +
+'<tbody>' +
+installments.map((item) => {
+const outstanding = Math.max(
+0,
+Number(item.totalDue || 0) -
+Number(item.paidAmount || 0)
+);
+
+const selectable =
+outstanding > 0 &&
+String(item.status).toUpperCase() !== "PAID" &&
+String(loan.status).toUpperCase() === "DISBURSED";
+
+return (
+'<tr>' +
+'<td>' +
+(
+selectable
+? '<input class="inst-check" type="checkbox" data-loan-id="' +
+escapeHtml(loan.loanId) +
+'" value="' +
+escapeHtml(item.installmentId) +
+'" aria-label="เลือกงวดที่ ' +
+escapeHtml(item.installmentNo) +
+'">'
+: '—'
+) +
+'</td>' +
+'<td>' + escapeHtml(item.installmentNo) + '</td>' +
+'<td>' + formatDate(item.dueDate) + '</td>' +
+'<td>฿' + formatMoney(item.principalAmount) + '</td>' +
+'<td>฿' + formatMoney(item.interestAmount) + '</td>' +
+'<td>฿' + formatMoney(item.totalDue) + '</td>' +
+'<td>฿' + formatMoney(outstanding) + '</td>' +
+'<td>' + statusLabel(item.status) + '</td>' +
+'</tr>'
+);
+}).join("") +
+'</tbody>' +
+'</table>' +
+'</div>'
+)
+: (
+'<div class="muted small" style="padding:15px 19px;">' +
+'ตารางชำระจะแสดงหลังจากสินเชื่อได้รับการจ่ายเงินและระบบสร้างตารางงวดแล้ว' +
+'</div>'
+);
+
+const canPay = String(loan.status).toUpperCase() === "DISBURSED";
+const supplementalStatus = String(loan.supplementalStatus || (loan.supplemental && loan.supplemental.status) || "").toUpperCase();
+let supplementalActionHtml = "";
+if (String(loan.status).toUpperCase() === "APPROVED_PENDING_ACCEPTANCE") {
+  if (supplementalStatus === "APPROVED") {
+    supplementalActionHtml = '<div class="loan-card-bottom"><span class="muted small">ข้อมูลเพิ่มเติมผ่านการตรวจสอบแล้ว กรุณาตรวจเงื่อนไขก่อนยอมรับข้อเสนอ</span><button type="button" class="button button-primary button-sm" data-accept-offer="' + escapeHtml(loan.loanId) + '">ยอมรับข้อเสนอ</button></div>';
+  } else if (["REQUIRED", "DRAFT", "RETURNED", ""].indexOf(supplementalStatus) >= 0) {
+    const returnReason = loan.supplemental && loan.supplemental.returnedReason ? '<div class="supplemental-alert"><strong>เหตุผลที่ให้แก้ไข:</strong> ' + escapeHtml(loan.supplemental.returnedReason) + '</div>' : "";
+    supplementalActionHtml = '<div class="loan-card-bottom"><span class="muted small">สินเชื่อได้รับการอนุมัติเบื้องต้นแล้ว กรุณาส่งข้อมูลและเอกสารประกอบก่อนยอมรับข้อเสนอ</span><button type="button" class="button button-primary button-sm" data-open-supplemental="' + escapeHtml(loan.loanId) + '"><i class="fa-solid fa-file-arrow-up"></i> ' + (supplementalStatus === "RETURNED" ? "แก้ไขข้อมูล / ส่งอีกครั้ง" : "อัปโหลดเอกสาร / ส่งข้อมูล") + '</button></div>' + returnReason;
+  } else if (supplementalStatus === "SUBMITTED") {
+    supplementalActionHtml = '<div class="loan-card-bottom"><span class="muted small">ส่งข้อมูลแล้ว รอเจ้าหน้าที่ตรวจสอบ</span>' + statusLabel("SUBMITTED") + '</div>';
+  } else if (supplementalStatus === "REJECTED") {
+    supplementalActionHtml = '<div class="loan-card-bottom"><span class="text-danger small">ข้อมูลเพิ่มเติมไม่ได้รับการอนุมัติ กรุณาตรวจสอบผลแจ้งจากเจ้าหน้าที่</span></div>';
+  }
+}
+
+return (
+'<article class="loan-card">' +
+'<div class="loan-card-top">' +
+'<div style="min-width:0;flex:1;">' +
+'<div class="loan-product">' + escapeHtml(loan.productName || "ผลิตภัณฑ์สินเชื่อ") + '</div>' +
+'<div class="loan-number">เลขที่สินเชื่อ: ' + displaySensitiveId(loan.loanId) + '</div>' +
+'<div class="loan-amount">฿' + formatMoney(amount) + '</div>' +
+'<div class="loan-meta">' +
+'<div class="loan-meta-item"><span>รอบชำระ</span><strong>' + frequencyLabel(loan.frequency) + '</strong></div>' +
+'<div class="loan-meta-item"><span>จำนวนงวด</span><strong>' + escapeHtml(loan.installmentCount != null ? loan.installmentCount : (Array.isArray(loan.installments) ? loan.installments.length : (Number(loan.installments) || 0))) + ' งวด</strong></div>' +
+'<div class="loan-meta-item"><span>ยอดคงค้าง</span><strong>฿' + formatMoney(loan.outstandingTotal || 0) + '</strong></div>' +
+'</div>' +
+'</div>' +
+'<div>' + statusLabel(loan.status) + '</div>' +
+'</div>' +
+supplementalActionHtml +
+scheduleHtml +
+(
+canPay
+? (
+'<div class="loan-card-bottom">' +
+'<span class="muted small">เลือกงวดที่ต้องการชำระ หรือไม่เลือกเพื่อชำระงวดค้างแรก</span>' +
+'<button type="button" class="button button-primary button-sm" data-create-payment="' +
+escapeHtml(loan.loanId) +
+'">' +
+'<i class="fa-solid fa-qrcode"></i> สร้าง QR ชำระเงิน' +
+'</button>' +
+'</div>'
+)
+: ''
+) +
+'</article>'
+);
+}).join("");
+}
+
+async function loadLoansOnly() {
+try {
+const result = await api("myLoans", {
+token: getToken()
+}, {
+loadingText: "กำลังโหลดสินเชื่อ"
+});
+
+state.loans = Array.isArray(result.loans)
+? result.loans
+: [];
+
+renderLoans();
+renderDashboardHome();
+
+} catch (error) {
+showApiError(error, "ไม่สามารถโหลดสินเชื่อได้");
+}
+}
+
+$("#refreshLoansButton").addEventListener("click", loadLoansOnly); 
+
+$("#loanStatusFilter").addEventListener("change", renderLoans);
+
+document.addEventListener("click", async (event) => {
+const payButton = event.target.closest("[data-create-payment]");
+
+if (payButton) {
+const loanId = payButton.dataset.createPayment;
+
+const selectedIds = $$(
+'.inst-check[data-loan-id="' + CSS.escape(loanId) + '"]:checked'
+).map((input) => input.value);
+
+await createPaymentQR(loanId, selectedIds);
+return;
+}
+
+const supplementalButton = event.target.closest("[data-open-supplemental]");
+if (supplementalButton) {
+  await openLoanSupplemental(supplementalButton.dataset.openSupplemental);
+  return;
+}
+
+const acceptButton = event.target.closest("[data-accept-offer]");
+
+if (acceptButton) {
+await acceptLoanOffer(acceptButton.dataset.acceptOffer);
+}
+});
+
+async function acceptLoanOffer(loanId) {
+openModal({
+title: "ยอมรับข้อเสนอสินเชื่อ",
+body:
+'<div class="text-center">' +
+'<div class="modal-icon info"><i class="fa-solid fa-file-signature"></i></div>' +
+'<p style="color:#536078;line-height:1.85;">คุณต้องตรวจสอบยอดเงิน อัตราดอกเบี้ย ค่าธรรมเนียม ตารางชำระ และเอกสารสัญญาที่เกี่ยวข้องก่อนยืนยันการรับข้อเสนอ</p>' +
+'<p class="text-danger small">ปุ่มนี้เป็นเพียงการยืนยันข้อเสนอในระบบตาม API ปัจจุบัน ไม่ใช่ลายเซ็นอิเล็กทรอนิกส์ของสัญญาฉบับสมบูรณ์</p>' +
+'</div>',
+buttons: [
+{
+label: "ยกเลิก",
+className: "button-secondary",
+onClick: closeModal
+},
+{
+label: "ยอมรับข้อเสนอ",
+className: "button-primary",
+onClick: async () => {
+closeModal();
+
+try {
+await api("acceptLoanOffer", {
+token: getToken(),
+loanId,
+acceptOffer: true
+}, {
+loadingText: "กำลังบันทึกการยอมรับข้อเสนอ"
+});
+
+showMessage(
+"ยืนยันข้อเสนอแล้ว",
+"สถานะคำขอถูกเปลี่ยนเป็นรอจ่ายเงินตามระบบ",
+"success"
+);
+
+await loadLoansOnly();
+
+} catch (error) {
+showApiError(error, "ไม่สามารถยอมรับข้อเสนอได้");
+}
+}
+}
+]
+});
+}
+
+/* ==========================================================
+19. PRODUCTS AND APPLICATION FORM
+========================================================== */
+
+function populateProducts() {
+const select = $("#applyProduct");
+const currentValue = select.value;
+
+select.innerHTML = '<option value="">เลือกผลิตภัณฑ์</option>';
+
+state.products.forEach((product) => {
+const option = document.createElement("option");
+
+option.value = product.productId;
+option.textContent = product.name;
+
+select.appendChild(option);
+});
+
+if (state.products.some((product) => product.productId === currentValue)) {
+select.value = currentValue;
+}
+
+$("#productsLoadingMessage").textContent =
+state.products.length
+? "มีผลิตภัณฑ์ที่เปิดให้สมัคร " + state.products.length + " รายการ"
+: "ขณะนี้ยังไม่มีผลิตภัณฑ์ที่เปิดให้สมัคร กรุณาติดต่อเจ้าหน้าที่";
+
+updateSelectedProduct();
+}
+
+async function loadProductsOnly() {
+try {
+const result = await api("listProducts", {}, {
+loadingText: "กำลังโหลดผลิตภัณฑ์"
+});
+
+state.products = Array.isArray(result.products)
+? result.products
+: [];
+
+populateProducts();
+
+} catch (error) {
+showApiError(error, "ไม่สามารถโหลดผลิตภัณฑ์ได้");
+}
+}
+
+$("#applyProduct").addEventListener("change", updateSelectedProduct);
+
+function updateSelectedProduct() {
+const product = state.products.find((item) => {
+return item.productId === $("#applyProduct").value;
+});
+
+if (!product) {
+$("#productDescription").textContent = ""; $("#amountHint").textContent = "เลือกผลิตภัณฑ์เพื่อดูช่วงวงเงิน";
+$("#installmentsHint").textContent = "เลือกผลิตภัณฑ์เพื่อดูจำนวนงวดที่รองรับ";
+return;
+}
+
+$("#productDescription").textContent =
+product.description || "";
+
+$("#applyAmount").min = String(product.minAmount); $("#applyAmount").max = String(product.maxAmount);
+
+$("#amountHint").textContent =
+"วงเงิน " +
+formatMoney(product.minAmount) +
+" – " +
+formatMoney(product.maxAmount) +
+" บาท";
+
+$("#applyInstallments").min = String(product.minInstallments); 
+
+$("#applyInstallments").max = String(product.maxInstallments);
+
+$("#installmentsHint").textContent =
+"จำนวน " +
+product.minInstallments +
+" – " +
+product.maxInstallments +
+" งวด";
+
+const allowed = Array.isArray(product.frequencies)
+? product.frequencies.map((value) => String(value).toUpperCase())
+: [];
+
+["DAILY", "WEEKLY", "MONTHLY"].forEach((frequency) => {
+const option = Array.from($("#applyFrequency").options)
+.find((item) => item.value === frequency);
+
+if (option) {
+option.disabled = allowed.indexOf(frequency) === -1;
+}
+});
+
+if (!allowed.includes($("#applyFrequency").value)) { 
+
+$("#applyFrequency").value = "";
+}
+
+if (!$("#applyAmount").value) { 
+
+$("#applyAmount").value = product.minAmount;
+}
+
+if (!$("#applyInstallments").value) { 
+
+$("#applyInstallments").value = product.minInstallments;
+}
+
+updateFrequencyFields();
+}
+
+$("#applyFrequency").addEventListener("change", updateFrequencyFields);
+$("#applyPurpose").addEventListener("change", function () {
+  const show = this.value === "OTHER";
+  $("#applyPurposeOtherGroup").classList.toggle("hidden", !show);
+  $("#applyPurposeOther").required = show;
+});
+
+function updateFrequencyFields() {
+const frequency = $("#applyFrequency").value;
+
+$("#dailyModeGroup").classList.toggle("hidden", frequency !== "DAILY"); 
+
+$("#weeklyDayGroup").classList.toggle("hidden", frequency !== "WEEKLY");
+$("#monthlyDayGroup").classList.toggle("hidden", frequency !== "MONTHLY");
+
+if (frequency === "MONTHLY") {
+const monthlyDay = $("#applyMonthlyDay").value || "5"; $("#applyMonthlyDay").value = monthlyDay;
+}
+}
+
+$("#applyLoanForm").addEventListener("submit", async (event) => {
+event.preventDefault();
+
+const productId = $("#applyProduct").value; const amount = Number(
+
+$("#applyAmount").value);
+const frequency = $("#applyFrequency").value; const installments = Number(
+
+$("#applyInstallments").value);
+const firstDueDate = $("#applyFirstDueDate").value;
+const purpose = $("#applyPurpose").value;
+const purposeDetails = $("#applyPurposeOther").value.trim();
+
+const product = state.products.find((item) => {
+return item.productId === productId;
+});
+
+if (!product) {
+showMessage("กรุณาเลือกผลิตภัณฑ์", "เลือกผลิตภัณฑ์สินเชื่อที่เปิดให้สมัคร", "error");
+return;
+}
+
+if (!purpose) {
+showMessage("กรุณาเลือกวัตถุประสงค์", "เลือกวัตถุประสงค์ในการขอสินเชื่อ", "error");
+$("#applyPurpose").focus();
+return;
+}
+if (purpose === "OTHER" && purposeDetails.length < 2) {
+showMessage("กรุณาระบุวัตถุประสงค์", "ระบุวัตถุประสงค์อื่น ๆ อย่างน้อย 2 ตัวอักษร", "error");
+$("#applyPurposeOther").focus();
+return;
+}
+
+if (
+!Number.isFinite(amount) ||
+amount < Number(product.minAmount) ||
+amount > Number(product.maxAmount)
+) {
+showMessage("จำนวนเงินไม่ถูกต้อง", "จำนวนเงินต้องอยู่ในช่วงวงเงินของผลิตภัณฑ์", "error");
+return;
+}
+
+if (
+!Number.isInteger(installments) ||
+installments < Number(product.minInstallments) ||
+installments > Number(product.maxInstallments)
+) {
+showMessage("จำนวนงวดไม่ถูกต้อง", "กรุณาเลือกจำนวนงวดตามช่วงที่ผลิตภัณฑ์รองรับ", "error");
+return;
+}
+
+if (!frequency) {
+showMessage("กรุณาเลือกรอบชำระ", "เลือกชำระรายวัน รายสัปดาห์ หรือรายเดือน", "error");
+return;
+}
+
+if (!firstDueDate || firstDueDate <= getDateOffset(0)) {
+showMessage("วันที่ไม่ถูกต้อง", "วันที่ชำระงวดแรกต้องเป็นวันที่ในอนาคต", "error");
+return;
+}
+
+const payload = {
+token: getToken(),
+productId,
+purpose,
+purposeDetails,
+amount,
+frequency,
+installments,
+firstDueDate
+};
+
+if (frequency === "DAILY") {
+payload.dailyMode = $("#applyDailyMode").value;
+}
+
+if (frequency === "WEEKLY") {
+payload.weeklyDay = $("#applyWeeklyDay").value;
+}
+
+if (frequency === "MONTHLY") {
+payload.monthlyDay = Number($("#applyMonthlyDay").value);
+}
+
+const summary =
+"ผลิตภัณฑ์: " + product.name + "\n" +
+"วัตถุประสงค์: " + loanPurposeLabel(purpose, purposeDetails) + "\n" +
+"วงเงินที่ขอ: " + formatMoney(amount) + " บาท\n" +
+"รอบชำระ: " + frequencyLabel(frequency) + "\n" +
+"จำนวนงวด: " + installments + " งวด\n" +
+"วันชำระงวดแรก: " + formatDate(firstDueDate) + "\n\n" +
+"การส่งคำขอยังไม่ใช่การอนุมัติสินเชื่อ";
+
+openModal({
+title: "ตรวจสอบคำขอสินเชื่อ",
+body:
+'<div style="white-space:pre-line;color:#4d5b73;font-size:12px;line-height:2;">' +
+escapeHtml(summary) +
+'</div>',
+buttons: [
+{
+label: "กลับไปแก้ไข",
+className: "button-secondary",
+onClick: closeModal
+},
+{
+label: "ยืนยันส่งคำขอ",
+className: "button-primary",
+onClick: async () => {
+closeModal();
+
+try {
+const result = await api("applyLoan", payload, {
+loadingText: "กำลังส่งคำขอสินเชื่อ"
+});
+
+showMessage(
+"ส่งคำขอเรียบร้อยแล้ว",
+result.message || "ระบบได้รับคำขอของคุณแล้ว",
+"success"
+);
+
+await loadBorrowerApplication();
+setAppTab("loans");
+
+} catch (error) {
+showApiError(error, "ส่งคำขอสินเชื่อไม่สำเร็จ");
+}
+}
+}
+]
+});
+});
+
+/* ==========================================================
+20. PAYMENT QR GENERATION
+========================================================== */
+
+async function createPaymentQR(loanId, installmentIds = []) {
+if (!loanId) {
+showMessage("ไม่พบสินเชื่อ", "กรุณาเลือกบัญชีสินเชื่อก่อนสร้าง QR", "error");
+return;
+}
+
+try {
+const result = await api("createPaymentQR", {
+token: getToken(),
+loanId,
+installmentIds
+}, {
+loadingText: "กำลังสร้าง QR Code สำหรับชำระเงิน"
+});
+
+state.paymentQr = result;
+openPaymentQrModal(result);
+
+} catch (error) {
+showApiError(error, "สร้าง QR Code ไม่สำเร็จ");
+}
+}
+
+function openPaymentQrModal(payment) {
+const safeAmount = formatMoney(payment.amount);
+const qrImage = String(payment.qrImageDataUrl || "");
+
+if (!qrImage.startsWith("data:image/")) {
+showMessage(
+"QR Code ไม่ถูกต้อง",
+"ระบบไม่ได้ส่งรูปภาพ QR Code กลับมา",
+"error"
+);
+return;
+}
+
+const content =
+'<div class="qr-layout">' +
+'<div class="text-center">' +
+'<p style="margin-top:0;color:#52617a;font-size:12px;">สแกน QR Code เพื่อชำระเงิน</p>' +
+'<img class="qr-image" src="' + escapeHtml(qrImage) + '" alt="QR Code ชำระเงิน">' +
+'<div style="margin-top:17px;color:#7c8799;font-size:11px;">ยอดชำระตามรายการ</div>' +
+'<div style="color:#173b8f;font-family:Inter,sans-serif;font-size:25px;font-weight:800;">฿' +
+safeAmount +
+'</div>' +
+'<div class="muted tiny" style="margin-top:6px;">เลขที่รายการ: ' +
+displaySensitiveId(payment.paymentId || "") +
+'</div>' +
+'<div class="muted tiny">หมดอายุ: ' + formatDateTime(payment.expiresAt) + '</div>' +
+'</div>' +
+'<div>' +
+'<h3 style="margin:0 0 9px;color:#243650;font-size:14px;">ส่งสลิปเพื่อตรวจสอบ</h3>' +
+'<p class="muted small" style="margin:0 0 15px;">อัปโหลดรูปสลิปที่อ่านข้อมูลได้ชัดเจน ระบบจะส่งตรวจสอบกับผู้ให้บริการ</p>' +
+'<label class="file-drop" for="paymentSlipFile">' +
+'<i class="fa-solid fa-cloud-arrow-up"></i>' +
+'<span id="paymentSlipFileLabel">คลิกเพื่อเลือกรูปสลิป</span>' +
+'<span class="tiny muted" style="margin-top:5px;">JPG, PNG หรือ WebP · ไม่เกิน 4 MiB</span>' +
+'</label>' +
+'<input id="paymentSlipFile" type="file" accept="image/jpeg,image/png,image/webp" class="hidden">' +
+'<div id="paymentSlipPreview" style="margin-top:12px;"></div>' +
+'<button id="submitPaymentSlipButton" type="button" class="button button-primary full-width" style="margin-top:16px;" disabled>' +
+'<i class="fa-solid fa-shield-check"></i> ส่งสลิปตรวจสอบ' +
+'</button>' +
+'<p class="muted tiny" style="margin-top:12px;line-height:1.8;">ไม่ควรส่งสลิปจากรายการอื่น ระบบจะตรวจสอบยอดเงินและข้อมูลธุรกรรมก่อนเปลี่ยนสถานะ</p>' +
+'</div>' +
+'</div>';
+
+openModal({
+title: "ชำระเงินด้วย QR Code",
+large: true,
+body: content,
+buttons: [
+{
+label: "ปิด",
+className: "button-secondary",
+onClick: closeModal
+}
+ ]
+});
+
+const fileInput = $("#paymentSlipFile"); const submitButton = 
+
+$("#submitPaymentSlipButton");
+
+let selectedFile = null;
+
+fileInput.addEventListener("change", () => {
+const file = fileInput.files && fileInput.files[0]
+? fileInput.files[0]
+: null;
+
+selectedFile = null;
+submitButton.disabled = true;
+$("#paymentSlipPreview").innerHTML = "";
+
+if (!file) {
+$("#paymentSlipFileLabel").textContent = "คลิกเพื่อเลือกรูปสลิป";
+return;
+}
+
+const allowedTypes = [
+"image/jpeg",
+"image/png",
+"image/webp"
+ ];
+
+if (!allowedTypes.includes(file.type)) {
+showMessage(
+"ชนิดไฟล์ไม่ถูกต้อง",
+"เลือกรูปภาพ JPG, PNG หรือ WebP เท่านั้น",
+"error"
+);
+fileInput.value = "";
+return;
+}
+
+if (file.size > 4 * 1024 * 1024) {
+showMessage(
+"ไฟล์มีขนาดใหญ่เกินไป",
+"โปรดเลือกสลิปที่มีขนาดไม่เกิน 4 MiB",
+"error"
+);
+fileInput.value = "";
+return;
+}
+
+selectedFile = file;
+$("#paymentSlipFileLabel").textContent = file.name;
+submitButton.disabled = false;
+
+const previewUrl = URL.createObjectURL(file);
+
+$("#paymentSlipPreview").innerHTML =
+'<img src="' + previewUrl + '" alt="ตัวอย่างสลิป" style="display:block;max-width:100%;max-height:200px;object-fit:contain;margin:0 auto;border-radius:10px;border:1px solid #e5eaf2;">';
+});
+
+submitButton.addEventListener("click", async () => {
+if (!selectedFile || !state.paymentQr) {
+return;
+}
+
+submitButton.disabled = true;
+
+try {
+const imageData = await readPaymentSlipAsDataUrl(selectedFile);
+
+closeModal();
+
+const result = await api("submitSlip", {
+token: getToken(),
+paymentId: state.paymentQr.paymentId,
+imageData
+}, {
+loadingText: "กำลังส่งสลิปตรวจสอบ"
+});
+
+const isPaid = String(result.status || "").toUpperCase() === "PAID";
+
+showMessage(
+isPaid ? "ตรวจสอบการชำระสำเร็จ" : "รับรายการตรวจสอบแล้ว",
+result.message || "ระบบได้รับข้อมูลสลิปแล้ว",
+isPaid ? "success" : "info"
+);
+
+await loadBorrowerApplication();
+setAppTab("payments");
+
+} catch (error) {
+showApiError(error, "ไม่สามารถส่งสลิปได้");
+
+} finally {
+submitButton.disabled = false;
+}
+});
+}
+
+function readFileAsDataUrl(file) {
+return new Promise((resolve, reject) => {
+if (!file) {
+reject(new Error("กรุณาเลือกไฟล์ก่อนอัปโหลด"));
+return;
+}
+
+const reader = new FileReader();
+reader.onload = () => {
+if (typeof reader.result !== "string") {
+reject(new Error("เบราว์เซอร์อ่านข้อมูลไฟล์ไม่ได้ กรุณาเลือกไฟล์อีกครั้ง"));
+return;
+}
+resolve(reader.result);
+};
+reader.onerror = () => {
+const detail = reader.error && reader.error.name ? " (" + reader.error.name + ")" : "";
+reject(new Error("เบราว์เซอร์อ่านไฟล์ไม่สำเร็จ กรุณาลองเลือกรูปใหม่" + detail));
+};
+reader.onabort = () => reject(new Error("การอ่านไฟล์ถูกยกเลิก กรุณาลองอีกครั้ง"));
+
+try {
+reader.readAsDataURL(file);
+} catch (error) {
+reject(new Error("ไม่สามารถเปิดไฟล์นี้ได้ กรุณาบันทึกรูปเป็น JPG หรือ PNG แล้วลองใหม่"));
+}
+});
+}
+
+/* Normalize payment images through the browser's image decoder and canvas.
+   This avoids relying on FileReader for mobile gallery/photo-picker files and
+   sends a correctly typed, size-limited JPEG accepted by the Apps Script API. */
+async function readPaymentSlipAsDataUrl(file) {
+if (!file || !/^image\/(jpeg|png|webp)$/i.test(String(file.type || ""))) {
+throw new Error("กรุณาเลือกรูปสลิปชนิด JPG, PNG หรือ WebP");
+}
+if (file.size > 4 * 1024 * 1024) {
+throw new Error("ไฟล์มีขนาดใหญ่เกิน 4 MiB กรุณาย่อรูปแล้วลองใหม่");
+}
+
+const objectUrl = URL.createObjectURL(file);
+try {
+const img = await new Promise((resolve, reject) => {
+const image = new Image();
+image.onload = () => resolve(image);
+image.onerror = () => reject(new Error("เปิดรูปสลิปไม่สำเร็จ กรุณาบันทึกเป็น JPG หรือ PNG แล้วเลือกใหม่"));
+image.src = objectUrl;
+});
+
+if (!img.naturalWidth || !img.naturalHeight) {
+throw new Error("รูปสลิปไม่มีขนาดภาพที่อ่านได้ กรุณาเลือกภาพอื่น");
+}
+
+let scale = Math.min(1, 2400 / Math.max(img.naturalWidth, img.naturalHeight));
+const qualities = [0.92, 0.86, 0.80, 0.74, 0.68];
+const maxBytes = 3.8 * 1024 * 1024;
+
+for (let resizePass = 0; resizePass < 4; resizePass++) {
+const canvas = document.createElement("canvas");
+canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+const ctx = canvas.getContext("2d", { alpha: false });
+if (!ctx) throw new Error("เบราว์เซอร์ไม่รองรับการแปลงรูป กรุณาลอง Chrome รุ่นล่าสุด");
+ctx.fillStyle = "#ffffff";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+for (const quality of qualities) {
+const dataUrl = canvas.toDataURL("image/jpeg", quality);
+if (!dataUrl || !dataUrl.startsWith("data:image/jpeg;base64,")) {
+throw new Error("แปลงรูปสลิปไม่สำเร็จ กรุณาลองบันทึกเป็น JPG แล้วเลือกใหม่");
+}
+const base64 = dataUrl.substring(dataUrl.indexOf(",") + 1);
+const estimatedBytes = Math.floor(base64.length * 3 / 4);
+if (estimatedBytes <= maxBytes) return dataUrl;
+}
+scale *= 0.82;
+}
+throw new Error("รูปสลิปยังมีขนาดใหญ่เกินไป กรุณาครอปรูปให้เหลือเฉพาะสลิปแล้วลองใหม่");
+} finally {
+URL.revokeObjectURL(objectUrl);
+}
+}
+
+/* ==========================================================
+20A. BORROWER SUPPLEMENTAL LOAN FORM
+========================================================== */
+
+function supplementalFieldValue(id) {
+  const element = $("#" + id);
+  return element ? element.value : "";
+}
+
+function readSupplementalFormData() {
+  const numeric = (id) => {
+    const value = $("#" + id).value;
+    return value === "" ? "" : Number(value);
+  };
+  return {
+    idType: $("#suppIdType").value,
+    idNumber: $("#suppIdNumber").value.trim(),
+    phone: $("#suppPhone").value.trim(),
+    registeredAddress: $("#suppRegisteredAddress").value.trim(),
+    currentAddress: $("#suppCurrentAddress").value.trim(),
+    residenceDuration: $("#suppResidenceDuration").value.trim(),
+    maritalStatus: $("#suppMaritalStatus").value,
+    occupationType: $("#suppOccupationType").value,
+    occupationOther: $("#suppOccupationOther").value.trim(),
+    employerName: $("#suppEmployerName").value.trim(),
+    jobTitle: $("#suppJobTitle").value.trim(),
+    workDuration: $("#suppWorkDuration").value.trim(),
+    monthlyIncome: numeric("suppMonthlyIncome"),
+    additionalIncome: numeric("suppAdditionalIncome"),
+    payDate: $("#suppPayDate").value.trim(),
+    monthlyExpenses: numeric("suppMonthlyExpenses"),
+    monthlyDebtPayment: numeric("suppMonthlyDebtPayment"),
+    otherDebtDetails: $("#suppOtherDebtDetails").value.trim(),
+    familySupport: numeric("suppFamilySupport"),
+    bankName: $("#suppBankName").value,
+    bankOtherName: $("#suppBankOtherName").value.trim(),
+    bankAccountType: $("#suppBankAccountType").value,
+    bankAccountName: $("#suppBankAccountName").value.trim(),
+    bankAccountNumber: $("#suppBankAccountNumber").value.replace(/[\s-]/g, ""),
+    privacyAcknowledged: $("#suppPrivacyAcknowledged").checked,
+    dataProcessingConsent: $("#suppDataProcessingConsent").checked,
+    creditCheckConsent: $("#suppCreditCheckConsent").checked,
+    electronicSignatureConsent: $("#suppElectronicSignatureConsent").checked,
+    accuracyConfirm: $("#suppAccuracyConfirm").checked
+  };
+}
+
+function formatSupplementalStatus(status) {
+  const labels = {
+    REQUIRED: ["ต้องส่งข้อมูล", "warning"],
+    DRAFT: ["แบบร่าง", "info"],
+    RETURNED: ["ต้องแก้ไข", "danger"],
+    SUBMITTED: ["รอตรวจสอบ", "warning"],
+    APPROVED: ["ตรวจข้อมูลผ่านแล้ว", "success"],
+    REJECTED: ["ไม่อนุมัติ", "danger"]
+  };
+  const item = labels[String(status || "").toUpperCase()] || [String(status || "ยังไม่เริ่ม"), ""];
+  return '<span class="status-badge ' + item[1] + '">' + escapeHtml(item[0]) + '</span>';
+}
+
+function loanPurposeLabel(value, details) {
+  const labels = {
+    LIVING_EXPENSES: "ค่าใช้จ่ายจำเป็นในชีวิตประจำวัน",
+    MEDICAL: "ค่ารักษาพยาบาล",
+    EDUCATION: "ค่าเล่าเรียน/การศึกษา",
+    TRAVEL: "ค่าเดินทาง",
+    BUSINESS: "ประกอบอาชีพ/ธุรกิจ",
+    EMERGENCY: "เหตุฉุกเฉิน",
+    OTHER: "อื่น ๆ",
+    GENERAL: "ไม่ระบุ"
+  };
+  const key = String(value || "GENERAL").toUpperCase();
+  return labels[key] || String(value || "ไม่ระบุ") + (details ? ": " + details : "");
+}
+
+function renderSupplementalLoanSummary() {
+  const loan = state.supplemental.loan || {};
+  const terms = state.supplemental.productTerms || {};
+  const amount = Number(loan.approvedAmount || loan.requestedAmount || 0);
+  const rows = [
+    ["เลขที่คำขอ", loan.loanId || state.supplemental.loanId],
+    ["ผลิตภัณฑ์สินเชื่อ", loan.productName || "สินเชื่อ"],
+    ["วัตถุประสงค์", loanPurposeLabel(loan.purpose, loan.purposeDetails)],
+    ["รายละเอียดวัตถุประสงค์", loan.purpose === "OTHER" ? (loan.purposeDetails || "—") : "—"],
+    ["วงเงินที่ขอ", formatMoney(loan.requestedAmount) + " บาท"],
+    ["วงเงินเสนออนุมัติ", formatMoney(amount) + " บาท"],
+    ["รอบชำระ", frequencyLabel(loan.frequency)],
+    ["จำนวนงวด", String(loan.installments || "—") + " งวด"],
+    ["อัตราดอกเบี้ยต่อปี", String(Number(terms.interestRateAnnual || loan.interestRateAnnual || 0)) + "%"],
+    ["สถานะคำขอ", statusLabel(loan.status)]
+  ];
+  $("#supplementalLoanSummary").innerHTML = rows.map(function (row) {
+    return '<div class="supplemental-summary-item"><span>' + escapeHtml(row[0]) + '</span><strong>' + (row[0] === "สถานะคำขอ" ? row[1] : row[0] === "เลขที่คำขอ" ? displaySensitiveId(row[1]) : escapeHtml(row[1])) + '</strong></div>';
+  }).join("");
+  updateSupplementalEstimate();
+}
+
+function updateSupplementalEstimate() {
+  const loan = state.supplemental.loan || {};
+  const terms = state.supplemental.productTerms || {};
+  const principal = Number(loan.approvedAmount || loan.requestedAmount || 0);
+  const rate = Number(terms.interestRateAnnual || loan.interestRateAnnual || 0);
+  const fixedFee = Number(terms.feeFixed || 0);
+  const percentFee = Number(terms.feePercent || 0);
+  const periods = Math.max(1, Number(loan.installments || 1));
+  const frequency = String(loan.frequency || "MONTHLY").toUpperCase();
+  const periodsPerYear = frequency === "DAILY" ? 365 : frequency === "WEEKLY" ? 52 : 12;
+  let estimatedInterest;
+  if (String(terms.interestMethod || loan.interestMethod || "").toUpperCase().indexOf("FLAT") >= 0) {
+    estimatedInterest = principal * (rate / 100) * (periods / periodsPerYear);
+  } else {
+    // Conservative display estimate only. The backend's actual schedule/contract remains authoritative.
+    estimatedInterest = principal * (rate / 100) * (periods / periodsPerYear) / 2;
+  }
+  const fees = Math.max(0, fixedFee) + Math.max(0, principal * percentFee / 100);
+  const total = principal + estimatedInterest + fees;
+  $("#suppEstimateAmount").textContent = "฿" + formatMoney(principal);
+  $("#suppEstimateTenor").textContent = String(loan.installments || "—") + " งวด / " + frequencyLabel(frequency);
+  $("#suppEstimateInterest").textContent = rate + "% ต่อปี";
+  $("#suppEstimateFees").textContent = "฿" + formatMoney(fees);
+  $("#suppEstimateTotal").textContent = "฿" + formatMoney(total);
+  $("#suppEstimateInstallment").textContent = "฿" + formatMoney(total / periods);
+}
+
+function renderSupplementalUploadedDocuments() {
+  const docs = state.supplemental.documents || [];
+  const container = $("#supplementalUploadedDocuments");
+  if (!docs.length) {
+    container.innerHTML = '<p class="muted small">ยังไม่มีเอกสารที่อัปโหลดในคำขอนี้</p>';
+    return;
+  }
+  container.innerHTML = '<h3 style="font-size:12px;margin:14px 0 6px;">เอกสารที่อัปโหลดแล้ว</h3>' + docs.map(function (doc) {
+    return '<div class="document-list-item"><i class="fa-solid fa-file-circle-check"></i><div><strong>' + escapeHtml(doc.documentName || doc.documentType || "เอกสาร") + '</strong><span>' + escapeHtml(doc.documentType || "") + ' · ' + escapeHtml(formatDateTime(doc.uploadedAt || doc.signedAt || "")) + (doc.version ? ' · รุ่น ' + escapeHtml(doc.version) : '') + '</span></div></div>';
+  }).join("");
+}
+
+function setSupplementalField(id, value) {
+  const element = $("#" + id);
+  if (element) element.value = value === undefined || value === null ? "" : String(value);
+}
+
+function populateSupplementalForm(result) {
+  const user = result.user || {};
+  const data = result.formData || {};
+  const record = result.supplemental || {};
+  setSupplementalField("supplementalLoanId", result.loan && result.loan.loanId ? result.loan.loanId : state.supplemental.loanId);
+  setSupplementalField("suppLegalName", [user.prefix, user.fullName].filter(Boolean).join(" "));
+  setSupplementalField("suppBirthDate", user.dob ? formatDate(user.dob) : "");
+  setSupplementalField("suppEmail", user.email || "");
+  setSupplementalField("suppPhone", data.phone || user.phone || "");
+  [
+    ["suppIdType", "idType"], ["suppIdNumber", "idNumber"],
+    ["suppRegisteredAddress", "registeredAddress"], ["suppCurrentAddress", "currentAddress"],
+    ["suppResidenceDuration", "residenceDuration"], ["suppMaritalStatus", "maritalStatus"],
+    ["suppOccupationType", "occupationType"], ["suppOccupationOther", "occupationOther"],
+    ["suppEmployerName", "employerName"], ["suppJobTitle", "jobTitle"],
+    ["suppWorkDuration", "workDuration"], ["suppMonthlyIncome", "monthlyIncome"],
+    ["suppAdditionalIncome", "additionalIncome"], ["suppPayDate", "payDate"],
+    ["suppMonthlyExpenses", "monthlyExpenses"], ["suppMonthlyDebtPayment", "monthlyDebtPayment"],
+    ["suppOtherDebtDetails", "otherDebtDetails"], ["suppFamilySupport", "familySupport"],
+    ["suppBankName", "bankName"], ["suppBankOtherName", "bankOtherName"], ["suppBankAccountType", "bankAccountType"],
+    ["suppBankAccountName", "bankAccountName"], ["suppBankAccountNumber", "bankAccountNumber"]
+  ].forEach(function (pair) { setSupplementalField(pair[0], data[pair[1]] === undefined ? "" : data[pair[1]]); });
+  $("#suppPrivacyAcknowledged").checked = Boolean(data.privacyAcknowledged);
+  $("#suppDataProcessingConsent").checked = Boolean(data.dataProcessingConsent);
+  $("#suppCreditCheckConsent").checked = Boolean(data.creditCheckConsent);
+  $("#suppElectronicSignatureConsent").checked = Boolean(data.electronicSignatureConsent);
+  $("#suppAccuracyConfirm").checked = Boolean(data.accuracyConfirm);
+  $("#supplementalReturnedAlert").classList.toggle("hidden", String(record.status || "").toUpperCase() !== "RETURNED");
+  if (String(record.status || "").toUpperCase() === "RETURNED") {
+    $("#supplementalReturnedAlert").innerHTML = '<strong><i class="fa-solid fa-rotate-left"></i> เจ้าหน้าที่ส่งกลับให้แก้ไข</strong><p style="margin:6px 0 0;white-space:pre-wrap;">' + escapeHtml(record.returnedReason || record.adminNote || "กรุณาตรวจสอบข้อมูลและส่งอีกครั้ง") + '</p>';
+  } else {
+    $("#supplementalReturnedAlert").innerHTML = "";
+  }
+  const editAllowed = ["REQUIRED", "DRAFT", "RETURNED"].indexOf(String(record.status || "").toUpperCase()) >= 0;
+  $$("#supplementalForm input, #supplementalForm select, #supplementalForm textarea, #supplementalForm button").forEach(function (element) {
+    if (element.id === "backFromSupplementalButton") return;
+    if (element.id === "saveSupplementalDraftButton" || element.id === "submitSupplementalButton" || element.id === "addSupplementalDocumentButton" || element.type === "file" || element.dataset.clearSignature !== undefined) {
+      element.disabled = !editAllowed;
+    }
+    if (element.tagName === "INPUT" || element.tagName === "SELECT" || element.tagName === "TEXTAREA") {
+      if (!element.readOnly) element.disabled = !editAllowed;
+    }
+  });
+  supplementalSignatureIds.forEach(function (id) {
+    const canvas = $("#" + id);
+    if (canvas) canvas.style.pointerEvents = editAllowed ? "auto" : "none";
+  });
+  if (!editAllowed) {
+    $("#supplementalSignatureNotice").textContent = "ข้อมูลชุดนี้ส่งแล้วหรือผ่านการตรวจสอบแล้ว จึงเปิดดูได้แต่แก้ไขไม่ได้";
+    $("#supplementalReturnedAlert").classList.remove("hidden");
+    if (!$("#supplementalReturnedAlert").innerHTML) $("#supplementalReturnedAlert").textContent = "สถานะปัจจุบัน: " + (record.status || "ไม่ทราบสถานะ");
+  } else {
+    $("#supplementalSignatureNotice").textContent = "ระบบจะบันทึกลายมือชื่อเป็นไฟล์ส่วนตัวเพื่อประกอบหลักฐานการยืนยันข้อมูล ไม่ใช่การรับรองว่ามีสัญญาเงินกู้สมบูรณ์แล้ว";
+  }
+  toggleSupplementalOccupationOther();
+  updateSupplementalDisposableIncome();
+  updateSupplementalBankPreview();
+}
+
+async function openLoanSupplemental(loanId) {
+  try {
+    const result = await api("getLoanSupplemental", { token: getToken(), loanId: loanId }, { loadingText: "กำลังโหลดแบบฟอร์มข้อมูลเพิ่มเติม" });
+    state.supplemental = {
+      loanId: loanId,
+      record: result.supplemental || {},
+      loan: result.loan || {},
+      user: result.user || {},
+      productTerms: result.productTerms || {},
+      formData: result.formData || {},
+      documents: (result.documents || []).concat(result.signatures || []),
+      signatures: result.signatures || []
+    };
+    $("#supplementalForm").reset();
+    $("#supplementalExtraDocuments").innerHTML = "";
+    state.supplementalExtraRows = 0;
+    populateSupplementalForm(result);
+    renderSupplementalLoanSummary();
+    renderSupplementalUploadedDocuments();
+    setAppTab("supplemental");
+    setupSupplementalSignatureCanvases();
+    supplementalSignatureIds.forEach(clearSupplementalSignature);
+  } catch (error) {
+    showApiError(error, "เปิดแบบฟอร์มข้อมูลเพิ่มเติมไม่สำเร็จ");
+  }
+}
+
+function toggleSupplementalOccupationOther() {
+  const show = $("#suppOccupationType").value === "OTHER";
+  $("#suppOccupationOtherGroup").classList.toggle("hidden", !show);
+  $("#suppOccupationOther").required = show;
+}
+
+function updateSupplementalDisposableIncome() {
+  const income = Number($("#suppMonthlyIncome").value || 0);
+  const additional = Number($("#suppAdditionalIncome").value || 0);
+  const expenses = Number($("#suppMonthlyExpenses").value || 0);
+  const debt = Number($("#suppMonthlyDebtPayment").value || 0);
+  const family = Number($("#suppFamilySupport").value || 0);
+  const total = income + additional - expenses - debt - family;
+  $("#suppDisposableIncome").value = formatMoney(total);
+}
+
+function updateSupplementalBankPreview() {
+  const bank = $("#suppBankName").value;
+  const selected = $("#suppBankName").selectedOptions[0];
+  const label = selected && selected.textContent ? selected.textContent : "เลือกธนาคารที่ต้องการใช้รับเงิน";
+  const isOther = bank === "อื่น ๆ";
+  $("#suppBankOtherGroup").classList.toggle("hidden", !isOther);
+  $("#suppBankOtherName").required = isOther;
+  const code = isOther ? "BANK" : label.split("·")[0].trim().slice(0, 8) || "BANK";
+  $("#suppBankLogoPreview").textContent = code;
+  $("#suppBankNamePreview").textContent = isOther
+    ? (($("#suppBankOtherName").value || "").trim() || "ระบุชื่อธนาคาร")
+    : bank ? label : "เลือกธนาคารที่ต้องการใช้รับเงิน";
+}
+
+function addSupplementalExtraDocumentRow() {
+  state.supplementalExtraRows += 1;
+  const rowId = "suppExtraRow" + state.supplementalExtraRows;
+  const html = '<div class="panel-card" id="' + rowId + '" style="margin-top:10px;padding:13px;">' +
+    '<div class="form-grid"><div class="form-group"><label class="form-label" for="' + rowId + 'Name">ชื่อเอกสาร</label><input class="field" id="' + rowId + 'Name" maxlength="200" placeholder="เช่น หนังสือรับรองรายได้" required></div>' +
+    '<div class="form-group"><label class="form-label" for="' + rowId + 'File">ไฟล์เอกสาร</label><input class="field" id="' + rowId + 'File" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" data-supplemental-file="SUPPORTING" data-extra-document-row="' + rowId + '"></div></div>' +
+    '<button type="button" class="button button-danger button-sm" data-remove-supplemental-row="' + rowId + '">ลบแถวนี้</button></div>';
+  $("#supplementalExtraDocuments").insertAdjacentHTML("beforeend", html);
+}
+
+async function uploadSupplementalSelectedFiles(input) {
+  if (!state.supplemental.loanId) throw new Error("ไม่พบเลขที่สินเชื่อ");
+  const files = Array.from(input.files || []);
+  if (!files.length) return;
+  const rowId = input.dataset.extraDocumentRow || "";
+  let documentName = input.dataset.supplementalFile === "IDENTITY_DOCUMENT" ? "เอกสารประจำตัว" : input.dataset.supplementalFile === "INCOME_PROOF" ? "หลักฐานรายได้" : "เอกสารประกอบเพิ่มเติม";
+  if (rowId) {
+    documentName = $("#" + rowId + "Name").value.trim();
+    if (!documentName) {
+      showMessage("กรุณาตั้งชื่อเอกสาร", "กรอกชื่อเอกสารก่อนเลือกไฟล์", "error");
+      input.value = "";
+      return;
+    }
+  }
+  for (const file of files) {
+    if (file.size > 3 * 1024 * 1024) {
+      showMessage("ไฟล์มีขนาดใหญ่เกินไป", "กรุณาเลือกไฟล์ที่มีขนาดไม่เกิน 3 MiB ต่อไฟล์: " + file.name, "error");
+      continue;
+    }
+    const fileData = await readFileAsDataUrl(file);
+    const result = await api("uploadLoanSupplementalFile", {
+      token: getToken(), loanId: state.supplemental.loanId,
+      documentType: input.dataset.supplementalFile || "SUPPORTING",
+      documentName: documentName + " — " + file.name,
+      fileName: file.name,
+      fileData: fileData
+    }, { loadingText: "กำลังอัปโหลด " + file.name });
+    state.supplemental.documents.push({ documentName: documentName + " — " + file.name, documentType: input.dataset.supplementalFile || "SUPPORTING", uploadedAt: new Date().toISOString(), version: result.version || "" });
+  }
+  input.value = "";
+  renderSupplementalUploadedDocuments();
+  showMessage("อัปโหลดเอกสารแล้ว", "เอกสารถูกบันทึกในพื้นที่ Google Drive ที่ระบบกำหนด", "success");
+}
+
+const supplementalSignatureIds = ["suppSignaturePrimary", "suppSignatureConfirmation"];
+function setupSupplementalSignatureCanvases() {
+  supplementalSignatureIds.forEach(function (id) {
+    const canvas = $("#" + id);
+    if (!canvas || canvas.dataset.initialized === "true") return;
+    const rect = canvas.getBoundingClientRect();
+    const ratio = Math.max(1, window.devicePixelRatio || 1);
+    canvas.width = Math.max(1, Math.floor(rect.width * ratio));
+    canvas.height = Math.max(1, Math.floor(rect.height * ratio));
+    const ctx = canvas.getContext("2d");
+    ctx.scale(ratio, ratio);
+    ctx.strokeStyle = "#172033";
+    ctx.lineWidth = 2.2;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, rect.width, rect.height);
+    canvas.dataset.initialized = "true";
+    canvas.dataset.drawn = "false";
+    let drawing = false;
+    const point = (event) => {
+      const bounds = canvas.getBoundingClientRect();
+      return { x: event.clientX - bounds.left, y: event.clientY - bounds.top };
+    };
+    canvas.addEventListener("pointerdown", function (event) {
+      if (canvas.disabled) return;
+      drawing = true;
+      canvas.setPointerCapture(event.pointerId);
+      const p = point(event);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      canvas.dataset.drawn = "true";
+      event.preventDefault();
+    });
+    canvas.addEventListener("pointermove", function (event) {
+      if (!drawing) return;
+      const p = point(event);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+      event.preventDefault();
+    });
+    const stopDrawing = function () { drawing = false; };
+    canvas.addEventListener("pointerup", stopDrawing);
+    canvas.addEventListener("pointercancel", stopDrawing);
+    canvas.addEventListener("lostpointercapture", stopDrawing);
+  });
+}
+
+function clearSupplementalSignature(id) {
+  const canvas = $("#" + id);
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const ratio = Math.max(1, window.devicePixelRatio || 1);
+  const bounds = canvas.getBoundingClientRect();
+  ctx.clearRect(0, 0, bounds.width, bounds.height);
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, bounds.width, bounds.height);
+  ctx.strokeStyle = "#172033";
+  ctx.lineWidth = 2.2;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  canvas.dataset.drawn = "false";
+}
+
+async function saveSupplementalDraft(showSuccess) {
+  const formData = readSupplementalFormData();
+  const result = await api("saveLoanSupplemental", {
+    token: getToken(), loanId: state.supplemental.loanId, formData: formData
+  }, { loadingText: "กำลังบันทึกแบบร่างข้อมูลเพิ่มเติม" });
+  state.supplemental.formData = formData;
+  state.supplemental.record = result.supplemental || state.supplemental.record;
+  if (showSuccess !== false) showMessage("บันทึกแบบร่างแล้ว", result.message || "บันทึกข้อมูลล่าสุดแล้ว", "success");
+  return result;
+}
+
+async function submitSupplementalForm(event) {
+  event.preventDefault();
+  if (!state.supplemental.loanId) {
+    showMessage("ไม่พบคำขอสินเชื่อ", "กรุณากลับไปเลือกสินเชื่อจากหน้าสินเชื่อของฉัน", "error");
+    return;
+  }
+  if (!$("#supplementalForm").reportValidity()) return;
+  const data = readSupplementalFormData();
+  if (data.idType === "THAI_ID_CARD" && !validateNationalId(data.idNumber)) {
+    showMessage("เลขบัตรประชาชนไม่ถูกต้อง", "กรุณาตรวจสอบเลข 13 หลักตามบัตรประชาชน", "error");
+    $("#suppIdNumber").focus();
+    return;
+  }
+  if (data.idType === "PASSPORT" && !/^[A-Za-z0-9][A-Za-z0-9-]{5,19}$/.test(data.idNumber)) {
+    showMessage("เลขพาสปอร์ตไม่ถูกต้อง", "กรุณาตรวจสอบเลขพาสปอร์ต 6–20 ตัวอักษร", "error");
+    $("#suppIdNumber").focus();
+    return;
+  }
+  if (!validatePhone(data.phone)) {
+    showMessage("เบอร์โทรศัพท์ไม่ถูกต้อง", "กรุณากรอกหมายเลขโทรศัพท์มือถือไทย 10 หลัก", "error");
+    $("#suppPhone").focus();
+    return;
+  }
+  if (!$("#suppSignaturePrimary").dataset.drawn || $("#suppSignaturePrimary").dataset.drawn !== "true" || !$("#suppSignatureConfirmation").dataset.drawn || $("#suppSignatureConfirmation").dataset.drawn !== "true") {
+    showMessage("กรุณาลงลายมือชื่อทั้งสองช่อง", "วาดลายมือชื่อและยืนยันลายมือชื่ออีกครั้งก่อนส่งข้อมูล", "error");
+    return;
+  }
+  const primaryPng = $("#suppSignaturePrimary").toDataURL("image/png");
+  const confirmationPng = $("#suppSignatureConfirmation").toDataURL("image/png");
+  const submitButton = $("#submitSupplementalButton");
+  submitButton.disabled = true;
+  try {
+    await saveSupplementalDraft(false);
+    await api("uploadLoanSupplementalFile", {
+      token: getToken(), loanId: state.supplemental.loanId,
+      documentType: "SIGNATURE_PRIMARY", documentName: "ลายมือชื่อผู้กู้",
+      fileName: "signature-primary-v" + (Number(state.supplemental.record && state.supplemental.record.version || 0) + 1) + ".png",
+      fileData: primaryPng
+    }, { loadingText: "กำลังบันทึกลายมือชื่อ" });
+    await api("uploadLoanSupplementalFile", {
+      token: getToken(), loanId: state.supplemental.loanId,
+      documentType: "SIGNATURE_CONFIRMATION", documentName: "ยืนยันลายมือชื่อ",
+      fileName: "signature-confirmation-v" + (Number(state.supplemental.record && state.supplemental.record.version || 0) + 1) + ".png",
+      fileData: confirmationPng
+    }, { loadingText: "กำลังบันทึกลายมือชื่อยืนยัน" });
+    const result = await api("submitLoanSupplemental", {
+      token: getToken(), loanId: state.supplemental.loanId
+    }, { loadingText: "กำลังยืนยันและส่งข้อมูลให้เจ้าหน้าที่" });
+    showMessage("ส่งข้อมูลเรียบร้อยแล้ว", result.message || "ระบบได้รับข้อมูลแล้ว กรุณารอเจ้าหน้าที่ตรวจสอบ", "success");
+    await loadLoansOnly();
+    setAppTab("loans");
+  } catch (error) {
+    showApiError(error, "ส่งข้อมูลเพิ่มเติมไม่สำเร็จ");
+  } finally {
+    submitButton.disabled = false;
+  }
+}
+
+$("#backFromSupplementalButton").addEventListener("click", function () {
+  setAppTab("loans");
+  loadLoansOnly();
+});
+$("#saveSupplementalDraftButton").addEventListener("click", async function () {
+  try { await saveSupplementalDraft(true); }
+  catch (error) { showApiError(error, "บันทึกแบบร่างไม่สำเร็จ"); }
+});
+$("#supplementalForm").addEventListener("submit", submitSupplementalForm);
+$("#suppOccupationType").addEventListener("change", toggleSupplementalOccupationOther);
+$("#suppBankName").addEventListener("change", updateSupplementalBankPreview);
+$("#suppBankOtherName").addEventListener("input", updateSupplementalBankPreview);
+["suppMonthlyIncome", "suppAdditionalIncome", "suppMonthlyExpenses", "suppMonthlyDebtPayment", "suppFamilySupport"].forEach(function (id) {
+  $("#" + id).addEventListener("input", updateSupplementalDisposableIncome);
+});
+$("#suppIdType").addEventListener("change", function () {
+  const isThaiId = this.value === "THAI_ID_CARD";
+  $("#suppIdNumber").value = "";
+  $("#suppIdNumber").maxLength = isThaiId ? 13 : 20;
+  $("#suppIdNumber").inputMode = isThaiId ? "numeric" : "text";
+  $("#suppIdNumberHint").textContent = isThaiId ? "กรอกตัวเลข 13 หลัก ระบบตรวจสอบเลขตรวจสอบให้" : this.value === "PASSPORT" ? "กรอกเลขพาสปอร์ต 6–20 ตัวอักษร ภาษาอังกฤษ/ตัวเลขและขีดกลาง" : "เลือกประเภทเอกสารเพื่อดูรูปแบบที่ต้องกรอก";
+});
+$("#addSupplementalDocumentButton").addEventListener("click", addSupplementalExtraDocumentRow);
+document.addEventListener("change", async function (event) {
+  const input = event.target.closest("input[data-supplemental-file]");
+  if (!input) return;
+  try { await uploadSupplementalSelectedFiles(input); }
+  catch (error) { showApiError(error, "อัปโหลดเอกสารไม่สำเร็จ"); }
+});
+document.addEventListener("click", function (event) {
+  const clear = event.target.closest("[data-clear-signature]");
+  if (clear) { clearSupplementalSignature(clear.dataset.clearSignature); return; }
+  const remove = event.target.closest("[data-remove-supplemental-row]");
+  if (remove) { const row = $("#" + remove.dataset.removeSupplementalRow); if (row) row.remove(); }
+});
+
+/* ==========================================================
+21. PAYMENTS HISTORY AND DUE LIST
+========================================================== */
+
+function renderPayments() {
+const history = $("#paymentsHistory"); const dueList = 
+
+$("#paymentDueList");
+
+const unpaidInstallments = [];
+
+state.loans.forEach((loan) => {
+if (String(loan.status).toUpperCase() !== "DISBURSED") {
+return;
+}
+
+const installments = Array.isArray(loan.installments)
+? loan.installments
+: [];
+
+installments.forEach((item) => {
+const balance = Math.max(
+0,
+Number(item.totalDue || 0) -
+Number(item.paidAmount || 0)
+);
+
+if (
+balance > 0 &&
+String(item.status).toUpperCase() !== "PAID"
+) {
+unpaidInstallments.push({
+...item,
+loanId: loan.loanId,
+productName: loan.productName
+});
+}
+});
+});
+
+unpaidInstallments.sort((a, b) => {
+return String(a.dueDate).localeCompare(String(b.dueDate));
+});
+
+if (!unpaidInstallments.length) {
+dueList.innerHTML =
+'<div class="empty-state">' +
+'<i class="fa-solid fa-circle-check"></i>' +
+'<strong>ไม่พบงวดค้างชำระ</strong>' +
+'<p>หากมีสินเชื่อที่จ่ายเงินแล้ว ระบบจะแสดงตารางชำระในส่วนนี้</p>' +
+'</div>';
+} else {
+dueList.innerHTML = unpaidInstallments.map((item) => {
+const due = Math.max(
+0,
+Number(item.totalDue || 0) -
+Number(item.paidAmount || 0)
+);
+
+return (
+'<div class="payment-row">' +
+'<div style="min-width:0;">' +
+'<strong>' + escapeHtml(item.productName || "สินเชื่อ") +
+' · งวดที่ ' + escapeHtml(item.installmentNo) +
+'</strong>' +
+'<span>ครบกำหนด ' + formatDate(item.dueDate) + '</span>' +
+'<span>เลขที่สินเชื่อ: ' + displaySensitiveId(item.loanId) + '</span>' +
+'</div>' +
+'<div style="text-align:right;">' +
+'<div class="payment-amount">฿' + formatMoney(due) + '</div>' +
+'<button type="button" class="button button-primary button-sm" style="margin-top:8px;" data-pay-one="' +
+escapeHtml(item.loanId) +
+'" data-installment-id="' +
+escapeHtml(item.installmentId) +
+'">' +
+'<i class="fa-solid fa-qrcode"></i> สร้าง QR' +
+'</button>' +
+'</div>' +
+'</div>'
+);
+}).join("");
+}
+
+if (!state.payments.length) {
+history.innerHTML =
+'<div class="empty-state">' +
+'<i class="fa-solid fa-receipt"></i>' +
+'<strong>ยังไม่มีประวัติการชำระเงิน</strong>' +
+'<p>รายการที่สร้าง QR และส่งตรวจสอบจะแสดงในส่วนนี้</p>' +
+'</div>';
+} else {
+history.innerHTML = state.payments.map((payment) => {
+return (
+'<div class="payment-row">' +
+'<div style="min-width:0;">' +
+'<strong>รายการ ' + displaySensitiveId(payment.paymentId) + '</strong>' +
+'<span>สินเชื่อ ' + displaySensitiveId(payment.loanId) + '</span>' +
+'<span>' + formatDateTime(payment.createdAt) + '</span>' +
+(
+payment.verificationMessage
+? '<span>' + escapeHtml(payment.verificationMessage) + '</span>'
+: ''
+) +
+'</div>' +
+'<div style="text-align:right;">' +
+'<div class="payment-amount">฿' + formatMoney(payment.amount) + '</div>' +
+'<div style="margin-top:7px;">' + statusLabel(payment.status) + '</div>' +
+'</div>' +
+'</div>'
+);
+}).join("");
+}
+}
+
+async function loadPaymentsOnly() {
+try {
+const result = await api("myPayments", {
+token: getToken()
+}, {
+loadingText: "กำลังโหลดประวัติชำระเงิน"
+});
+
+state.payments = Array.isArray(result.payments)
+? result.payments
+: [];
+
+renderPayments();
+
+} catch (error) {
+showApiError(error, "ไม่สามารถโหลดรายการชำระเงินได้");
+}
+}
+
+$("#refreshPaymentsButton").addEventListener("click", loadPaymentsOnly);
+
+document.addEventListener("click", async (event) => {
+const onePaymentButton = event.target.closest("[data-pay-one]");
+
+if (!onePaymentButton) {
+return;
+}
+
+await createPaymentQR(
+onePaymentButton.dataset.payOne,
+[onePaymentButton.dataset.installmentId]
+);
+});
+
+/* ==========================================================
+22. PROFILE
+========================================================== */
+
+function renderProfile() {
+const user = state.user || {};
+
+$("#profileContent").innerHTML =
+'<div class="profile-card">' +
+'<div class="profile-avatar"><i class="fa-solid fa-user"></i></div>' +
+'<div style="min-width:0;">' +
+'<h2>' + escapeHtml(user.fullName || "ผู้ใช้งาน") + '</h2>' +
+'<p>' + escapeHtml(user.email || "") + '</p>' +
+'<div style="margin-top:8px;">' +
+statusLabel(user.status || "ACTIVE") +
+' ' +
+(
+user.emailVerified
+? '<span class="status-badge success">ยืนยันอีเมลแล้ว</span>'
+: '<span class="status-badge warning">รอยืนยันอีเมล</span>'
+) +
+'</div>' +
+'</div>' +
+'</div>' +
+
+'<div class="profile-info-grid">' +
+'<div class="profile-info"><span>คำนำหน้า</span><strong>' + escapeHtml(user.prefix || "—") + '</strong></div>' +
+'<div class="profile-info"><span>ชื่อ - สกุล</span><strong>' + escapeHtml(user.fullName || "—") + '</strong></div>' +
+'<div class="profile-info"><span>วันเกิด</span><strong>' + formatDate(user.dob) + '</strong></div>' +
+'<div class="profile-info"><span>โทรศัพท์</span><strong>' + escapeHtml(user.phone || "—") + '</strong></div>' +
+'<div class="profile-info"><span>อีเมล</span><strong>' + escapeHtml(user.email || "—") + '</strong></div>' +
+'<div class="profile-info"><span>สมาชิกตั้งแต่</span><strong>' + formatDate(user.createdAt) + '</strong></div>' +
+'<div class="profile-info"><span>เข้าสู่ระบบล่าสุด</span><strong>' + formatDateTime(user.lastLoginAt) + '</strong></div>' +
+'<div class="profile-info"><span>รหัสผู้ใช้</span><strong>' + displaySensitiveId(user.userId || "—") + '</strong></div>' +
+'</div>';
+}
+
+/* ==========================================================
+23. SUPPORT TICKETS
+========================================================== */
+
+$("#supportForm").addEventListener("submit", async (event) => {
+event.preventDefault();
+
+const subject = $("#supportSubject").value.trim(); const category = $("#supportCategory").value;
+const message = $("#supportMessage").value.trim();
+
+if (subject.length < 3 || message.length < 5) {
+showMessage(
+"ข้อมูลไม่ครบถ้วน",
+"กรุณากรอกหัวข้ออย่างน้อย 3 ตัวอักษรและรายละเอียดอย่างน้อย 5 ตัวอักษร",
+"error"
+);
+return;
+}
+
+try {
+const result = await api("createSupportTicket", {
+token: getToken(),
+subject,
+category,
+message
+}, {
+loadingText: "กำลังส่งคำร้องถึงฝ่ายบริการ"
+});
+
+$("#supportForm").reset();
+
+showMessage(
+"ส่งคำร้องแล้ว",
+result.message || "ระบบได้รับคำร้องของคุณแล้ว",
+"success"
+);
+
+await loadTicketsOnly();
+
+} catch (error) {
+showApiError(error, "ส่งคำร้องไม่สำเร็จ");
+}
+});
+
+function renderTickets() {
+const container = $("#myTicketsList");
+
+if (!state.tickets.length) {
+container.innerHTML =
+'<div class="empty-state">' +
+'<i class="fa-regular fa-comments"></i>' +
+'<strong>ยังไม่มีคำร้อง</strong>' +
+'<p>สร้างคำร้องใหม่ได้จากแบบฟอร์มที่แสดง</p>' +
+'</div>';
+
+return;
+}
+
+container.innerHTML = state.tickets.map((ticket) => {
+return (
+'<div class="ticket-row">' +
+'<div style="min-width:0;">' +
+'<strong>' + escapeHtml(ticket.subject) + '</strong>' +
+'<span>เลขที่ ' + displaySensitiveId(ticket.ticketId) + '</span>' +
+'<span>' + escapeHtml(ticket.category) + ' · ' + formatDateTime(ticket.createdAt) + '</span>' +
+'</div>' +
+'<div>' + statusLabel(ticket.status) + '</div>' +
+'</div>'
+);
+}).join("");
+}
+
+async function loadTicketsOnly() {
+try {
+const result = await api("myTickets", {
+token: getToken()
+}, {
+loadingText: "กำลังโหลดคำร้อง"
+});
+
+state.tickets = Array.isArray(result.tickets)
+? result.tickets
+: [];
+
+renderTickets();
+
+} catch (error) {
+showApiError(error, "ไม่สามารถโหลดคำร้องได้");
+}
+}
+
+$("#refreshTicketsButton").addEventListener("click", loadTicketsOnly);
+
+/* ==========================================================
+24. AUTH PAGE NAVIGATION
+========================================================== */
+
+$("#goSignup").addEventListener("click", (event) => {
+event.preventDefault();
+showSignupView();
+});
+
+$("#backToLoginFromSignup").addEventListener("click", showLoginView);
+
+$("#goLoginFromSignup").addEventListener("click", (event) => {
+event.preventDefault();
+showLoginView();
+});
+
+/* ==========================================================
+25. STARTUP AND DEEP LINKS
+========================================================== */
+
+async function initializeApplication() {
+initDateInputs();
+showLoading(true, "กำลังตรวจสอบสถานะระบบ", "กรุณารอสักครู่");
+
+// Check maintenance mode before deep links, session restoration, or showing Login.
+let initialMaintenanceStatus = null;
+try {
+initialMaintenanceStatus = await api("getMaintenanceStatus", {}, { silent: true });
+} catch (error) {
+  // The maintenance endpoint is available after deploying the updated Apps Script.
+}
+startMaintenanceMonitor();
+if (initialMaintenanceStatus && initialMaintenanceStatus.maintenanceActive) {
+showMaintenanceView(initialMaintenanceStatus);
+showLoading(false);
+return;
+}
+showLoading(false);
+
+try {
+const publicConfig = await api("getPublicConfig", {}, {
+silent: true
+});
+
+state.publicConfig = {
+minAge: Number(publicConfig.minAge || 20),
+termsVersion: String(publicConfig.termsVersion || "1.0"),
+privacyVersion: String(publicConfig.privacyVersion || "1.0")
+};
+
+$("#termsVersionLabel").textContent = state.publicConfig.termsVersion; 
+
+$("#privacyVersionLabel").textContent = state.publicConfig.privacyVersion;
+
+} catch (error) {
+// Public config is optional for initial rendering.
+}
+
+initDateInputs();
+
+const params = new URLSearchParams(window.location.search);
+const verifyToken = params.get("verifyEmail");
+const resetToken = params.get("resetPassword");
+
+if (verifyToken) {
+await handleEmailVerificationLink(verifyToken);
+return;
+}
+
+if (resetToken) {
+await initializeResetPassword(resetToken);
+return;
+}
+
+if (params.get("signup") === "1") {
+showSignupView();
+return;
+}
+
+const restored = await restoreSession();
+
+if (!restored) {
+showLoginView();
+}
+}
+
+/* ==========================================================
+26. INITIAL EVENT BINDINGS
+========================================================== */
+
+$("#termsCheckbox").checked = false; 
+
+$("#privacyCheckbox").checked = false;
+
+window.addEventListener("online", () => {
+if (state.view === "app") {
+showMessage(
+"เชื่อมต่ออินเทอร์เน็ตแล้ว",
+"คุณสามารถลองโหลดข้อมูลระบบอีกครั้งได้",
+"success"
+);
+}
+});
+
+window.addEventListener("offline", () => {
+showMessage(
+"ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
+"กรุณาตรวจสอบเครือข่ายก่อนดำเนินการต่อ",
+"error"
+);
+});
+
+initializeApplication();
+</script>
+</body>
+</html>
