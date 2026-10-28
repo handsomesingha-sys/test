@@ -1,0 +1,4469 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#102d65">
+<meta name="description" content="FINORA Admin Control Center">
+<title>FINORA | Admin Control Center</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.6/purify.min.js"></script>
+
+<style>
+:root {
+--primary: #173b8f;
+--primary-dark: #102d65;
+--primary-light: #eaf1ff;
+--accent: #05a9ed;
+--success: #168954;
+--warning: #a66b00;
+--danger: #bd344a;
+--text: #1d2636;
+--muted: #788397;
+--line: #e5eaf2;
+--surface: #fff;
+--background: #f4f7fb;
+--shadow: 0 12px 38px rgba(20, 40, 75, .07);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+margin: 0;
+min-height: 100vh;
+color: var(--text);
+background: var(--background);
+font-family: "Prompt", "Inter", sans-serif;
+font-size: 13px;
+line-height: 1.65;
+}
+
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity: .55; cursor: not-allowed; }
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; }
+.hidden { display: none !important; }
+.muted { color: var(--muted); }
+.small { font-size: 11px; }
+.tiny { font-size: 10px; }
+.text-danger { color: var(--danger); }
+.text-success { color: var(--success); }
+.wrap-anywhere { overflow-wrap: anywhere; }
+.w-full { width: 100%; }
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+outline: 3px solid rgba(5, 169, 237, .3);
+outline-offset: 2px;
+}
+
+.brand {
+display: inline-flex;
+align-items: center;
+gap: 10px;
+color: var(--primary-dark);
+font-family: "Inter", "Prompt", sans-serif;
+font-size: 22px;
+font-weight: 800;
+letter-spacing: -.7px;
+white-space: nowrap;
+}
+
+.brand-mark {
+display: grid;
+width: 39px;
+height: 39px;
+place-items: center;
+border-radius: 12px;
+color: white;
+background: linear-gradient(135deg, #173b8f, #05a9ed);
+box-shadow: 0 6px 17px rgba(23, 59, 143, .18);
+}
+
+.brand-mark i { font-size: 17px; }
+
+.button {
+display: inline-flex;
+min-height: 40px;
+align-items: center;
+justify-content: center;
+gap: 8px;
+padding: 9px 14px;
+border: 1px solid transparent;
+border-radius: 10px;
+font-weight: 600;
+text-decoration: none;
+transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+.button:hover {
+transform: translateY(-1px);
+text-decoration: none;
+}
+
+.button-primary {
+color: white;
+background: var(--primary);
+box-shadow: 0 5px 13px rgba(23, 59, 143, .12);
+}
+
+.button-primary:hover { background: #214da9; }
+.button-secondary { color: #40506a; background: white; border-color: var(--line); }
+.button-soft { color: var(--primary); background: var(--primary-light); }
+.button-danger { color: #b72f43; background: #fff0f2; border-color: #f4d3d9; }
+.button-success { color: #137a4c; background: #e9f8ef; border-color: #c9efd8; }
+.button-warning { color: #8d5c00; background: #fff5df; border-color: #f4e4bd; }
+.button-sm { min-height: 32px; padding: 6px 10px; border-radius: 8px; font-size: 11px; }
+.button-block { width: 100%; }
+
+.icon-button {
+display: grid;
+width: 38px;
+height: 38px;
+flex: 0 0 38px;
+place-items: center;
+border: 1px solid var(--line);
+border-radius: 10px;
+background: white;
+color: #738099;
+}
+
+.icon-button:hover { color: var(--primary); background: #f7f9fe; }
+
+.field {
+width: 100%;
+min-height: 40px;
+padding: 9px 11px;
+border: 1px solid #dce3ee;
+border-radius: 10px;
+background: white;
+color: #25344b;
+outline: none;
+transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.field:focus {
+border-color: #6c8cdb;
+box-shadow: 0 0 0 3px rgba(23, 59, 143, .07);
+}
+
+.field[readonly],
+.field:disabled { background: #f2f4f8; color: #788397; }
+
+textarea.field { min-height: 105px; resize: vertical; }
+select.field { cursor: pointer; }
+
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.form-label { color: #42506a; font-size: 11px; font-weight: 600; }
+.field-hint { color: var(--muted); font-size: 10px; }
+
+.form-grid {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 0 14px;
+}
+
+.span-2 { grid-column: 1 / -1; }
+
+.check-row {
+display: flex;
+align-items: flex-start;
+gap: 8px;
+color: #58657b;
+font-size: 11px;
+}
+
+.check-row input {
+flex: 0 0 16px;
+width: 16px;
+height: 16px;
+margin-top: 3px;
+accent-color: var(--primary);
+}
+
+.status-badge {
+display: inline-flex;
+align-items: center;
+gap: 5px;
+padding: 4px 8px;
+border-radius: 99px;
+background: #edf1f7;
+color: #59687e;
+font-size: 10px;
+font-weight: 600;
+white-space: nowrap;
+}
+
+.status-badge.success { color: #117347; background: #e7f7ee; }
+.status-badge.warning { color: #946000; background: #fff4d9; }
+.status-badge.danger { color: #b72f43; background: #ffedf0; }
+.status-badge.info { color: #1b4eaa; background: #eaf1ff; }
+
+/* Loading overlay */
+
+.loading-overlay {
+position: fixed;
+z-index: 10000;
+inset: 0;
+display: grid;
+place-items: center;
+padding: 20px;
+background: rgba(246, 248, 252, .88);
+backdrop-filter: blur(5px);
+}
+
+.loading-box {
+width: min(100%, 320px);
+padding: 30px 22px;
+border: 1px solid #e6ebf4;
+border-radius: 20px;
+background: #fff;
+box-shadow: 0 20px 60px rgba(25, 43, 76, .1);
+text-align: center;
+}
+
+.four-dot-spinner {
+position: relative;
+width: 86px;
+height: 78px;
+margin: 0 auto 16px;
+}
+
+.four-dot-spinner span {
+position: absolute;
+display: block;
+border-radius: 50%;
+animation: dotPulse 1.1s ease-in-out infinite;
+}
+
+.four-dot-spinner span:nth-child(1) {
+top: 5px;
+left: 8px;
+width: 34px;
+height: 34px;
+background: #05a9ed;
+}
+
+.four-dot-spinner span:nth-child(2) {
+top: 10px;
+right: 8px;
+width: 25px;
+height: 25px;
+background: #ff5b65;
+animation-delay: .12s;
+}
+
+.four-dot-spinner span:nth-child(3) {
+bottom: 4px;
+left: 19px;
+width: 24px;
+height: 24px;
+background: #cb64f0;
+animation-delay: .24s;
+}
+
+.four-dot-spinner span:nth-child(4) {
+right: 0;
+bottom: 0;
+width: 44px;
+height: 44px;
+background: #8dcf20;
+animation-delay: .36s;
+}
+
+@keyframes dotPulse {
+0%, 100% { transform: scale(1); opacity: 1; }
+50% { transform: scale(.83); opacity: .65; }
+}
+
+.loading-title { margin: 0; font-weight: 600; }
+.loading-subtitle { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
+body.modal-open { overflow: hidden; }
+
+/* Modal */
+
+.modal-overlay {
+position: fixed;
+z-index: 11000;
+inset: 0;
+display: grid;
+place-items: center;
+padding: 15px;
+background: rgba(17, 27, 45, .54);
+backdrop-filter: blur(4px);
+}
+
+.modal-card {
+display: flex;
+width: min(100%, 570px);
+max-height: 90vh;
+flex-direction: column;
+overflow: hidden;
+border: 1px solid rgba(255, 255, 255, .65);
+border-radius: 19px;
+background: white;
+box-shadow: 0 28px 90px rgba(9, 20, 39, .25);
+animation: modalIn .18s ease-out;
+}
+
+.modal-card.large { width: min(100%, 820px); }
+.modal-card.xlarge { width: min(100%, 1050px); }
+
+@keyframes modalIn {
+from { transform: translateY(7px) scale(.985); opacity: 0; }
+to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.modal-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 10px;
+padding: 16px 20px;
+border-bottom: 1px solid var(--line);
+}
+
+.modal-header h2 { margin: 0; font-size: 15px; }
+.modal-close { display: grid; width: 33px; height: 33px; place-items: center; border: 0; border-radius: 9px; background: #f1f4f9; color: #68758a; }
+.modal-body { overflow: auto; padding: 20px; overscroll-behavior: contain; }
+.modal-footer { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 9px; padding: 14px 20px; border-top: 1px solid var(--line); background: #fbfcfe; }
+.modal-icon { display: grid; width: 56px; height: 56px; place-items: center; margin: 0 auto 14px; border-radius: 50%; font-size: 22px; color: var(--primary); background: var(--primary-light); }
+.modal-icon.success { color: white; background: #62df77; }
+.modal-icon.error { color: white; background: #e95e70; }
+
+/* Layout */
+
+.topbar {
+position: sticky;
+z-index: 500;
+top: 0;
+display: flex;
+min-height: 68px;
+align-items: center;
+justify-content: space-between;
+gap: 18px;
+padding: 12px 23px;
+border-bottom: 1px solid rgba(224, 230, 239, .9);
+background: rgba(255, 255, 255, .94);
+backdrop-filter: blur(12px);
+}
+
+.topbar-left, .topbar-right { display: flex; align-items: center; gap: 13px; }
+.topbar-right { min-width: 0; }
+
+.topbar-search { position: relative; width: min(32vw, 330px); }
+.topbar-search i { position: absolute; top: 50%; left: 12px; transform: translateY(-50%); color: #8b96a9; }
+.topbar-search input { padding-left: 36px; background: #f8faff; }
+
+.topbar-user { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.avatar { display: grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border-radius: 12px; background: #eaf1ff; color: var(--primary); font-weight: 700; }
+.user-details { min-width: 0; }
+.user-details strong { display: block; max-width: 170px; overflow: hidden; color: #293750; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.user-details span { display: block; color: var(--muted); font-size: 10px; }
+
+.app-layout { display: grid; grid-template-columns: 245px minmax(0, 1fr); min-height: calc(100vh - 68px); }
+
+.sidebar {
+position: sticky;
+top: 68px;
+align-self: start;
+height: calc(100vh - 68px);
+overflow-y: auto;
+padding: 21px 13px;
+border-right: 1px solid var(--line);
+background: #fff;
+}
+
+.sidebar-label { padding: 8px 12px; color: #a0a9b8; font-size: 10px; font-weight: 600; letter-spacing: .9px; }
+.sidebar-menu { display: grid; gap: 4px; }
+.sidebar-link { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 43px; padding: 10px 12px; border: 0; border-radius: 11px; background: transparent; color: #65738a; font-size: 11px; text-align: left; }
+.sidebar-link i { width: 18px; font-size: 14px; text-align: center; }
+.sidebar-link:hover { background: #f5f7fc; color: var(--primary); }
+.sidebar-link.active { color: var(--primary); background: var(--primary-light); font-weight: 600; }
+.sidebar-footer { margin-top: 20px; padding: 13px; border: 1px solid #e7edf9; border-radius: 12px; background: #f8faff; color: #748198; font-size: 10px; line-height: 1.8; }
+.sidebar-footer strong { color: var(--primary-dark); }
+
+.main-content { min-width: 0; padding: 25px; }
+
+.page-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; margin-bottom: 21px; }
+.page-heading h1 { margin: 0; color: #182a4d; font-size: 22px; font-weight: 700; }
+.page-heading p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
+.page-heading-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.section-panel { display: none; animation: sectionIn .18s ease; }
+.section-panel.active { display: block; }
+
+@keyframes sectionIn {
+from { opacity: 0; transform: translateY(4px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.panel-card { min-width: 0; padding: 19px; border: 1px solid var(--line); border-radius: 16px; background: white; box-shadow: 0 4px 20px rgba(20, 40, 80, .025); }
+.panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 15px; }
+.panel-heading h2 { margin: 0; color: #25344b; font-size: 13px; font-weight: 700; }
+.panel-heading p { margin: 3px 0 0; color: var(--muted); font-size: 10px; }
+
+.hero-banner {
+position: relative;
+display: flex;
+min-height: 150px;
+align-items: center;
+justify-content: space-between;
+gap: 18px;
+margin-bottom: 20px;
+padding: 27px;
+overflow: hidden;
+border-radius: 19px;
+background: linear-gradient(115deg, #102d65, #19459d 65%, #087eca);
+color: white;
+}
+
+.hero-banner::after {
+position: absolute;
+top: -100px;
+right: -28px;
+width: 250px;
+height: 250px;
+border: 1px solid rgba(255, 255, 255, .15);
+border-radius: 50%;
+box-shadow: 0 0 0 32px rgba(255, 255, 255, .025), 0 0 0 66px rgba(255, 255, 255, .025);
+content: "";
+}
+
+.hero-banner > div { position: relative; z-index: 1; }
+.hero-eyebrow { color: #bbd6ff; font-family: "Inter", sans-serif; font-size: 10px; letter-spacing: 1px; }
+.hero-banner h2 { margin: 7px 0 0; font-size: 21px; }
+.hero-banner p { margin: 5px 0 0; color: #dbe8ff; font-size: 11px; }
+.hero-icon { display: grid; width: 68px; height: 68px; flex: 0 0 68px; place-items: center; border: 1px solid rgba(255,255,255,.21); border-radius: 20px; background: rgba(255,255,255,.12); font-size: 27px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; margin-bottom: 19px; }
+.stat-card { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 15px; background: white; }
+.stat-heading { display: flex; align-items: center; justify-content: space-between; gap: 7px; color: var(--muted); font-size: 10px; }
+.stat-icon { display: grid; width: 35px; height: 35px; flex: 0 0 35px; place-items: center; border-radius: 11px; background: var(--primary-light); color: var(--primary); font-size: 14px; }
+.stat-value { margin-top: 13px; color: #1b2b4c; font-family: "Inter", "Prompt", sans-serif; font-size: 22px; font-weight: 800; letter-spacing: -.5px; overflow-wrap: anywhere; }
+.stat-foot { margin-top: 5px; color: #98a2b1; font-size: 10px; }
+
+.content-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 17px; }
+.quick-list { display: grid; gap: 10px; }
+.quick-item { display: flex; align-items: center; gap: 11px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: white; color: inherit; text-align: left; }
+.quick-item:hover { border-color: #c7d6fa; background: #fbfcff; }
+.quick-item-icon { display: grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border-radius: 11px; background: var(--primary-light); color: var(--primary); }
+.quick-item strong { display: block; color: #3a4860; font-size: 11px; }
+.quick-item small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+
+/* Tables */
+
+.toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+.toolbar-left, .toolbar-right { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.table-search { width: min(100%, 260px); }
+.table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+.table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.table th { padding: 12px 13px; background: #f6f8fc; color: #627087; font-weight: 600; text-align: left; white-space: nowrap; }
+.table td { padding: 12px 13px; border-bottom: 1px solid #edf0f5; color: #4d5a70; vertical-align: middle; }
+.table tbody tr:last-child td { border-bottom: 0; }
+.table tbody tr:hover { background: #fbfcff; }
+.table .primary-cell { color: #273a59; font-weight: 600; }
+.table .secondary-cell { margin-top: 3px; color: var(--muted); font-size: 10px; overflow-wrap: anywhere; }
+.table-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.empty-state { display: grid; place-items: center; padding: 36px 18px; color: var(--muted); text-align: center; }
+.empty-state i { margin-bottom: 12px; color: #b6c1d4; font-size: 29px; }
+.empty-state strong { color: #4a5870; font-size: 12px; }
+.empty-state p { margin: 5px 0 0; font-size: 10px; }
+.pagination-note { margin-top: 10px; color: var(--muted); font-size: 10px; }
+
+/* Products */
+
+.product-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.product-card { min-width: 0; padding: 17px; border: 1px solid var(--line); border-radius: 14px; background: white; }
+.product-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.product-card h3 { margin: 0; color: #25344b; font-size: 13px; }
+.product-card p { margin: 5px 0 0; color: var(--muted); font-size: 10px; }
+.product-numbers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 15px 0; }
+.product-number { padding: 10px; border-radius: 10px; background: #f7f9fd; }
+.product-number span { display: block; color: var(--muted); font-size: 10px; }
+.product-number strong { display: block; margin-top: 4px; color: var(--primary-dark); font-size: 12px; }
+.product-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
+
+/* Announcements */
+
+.announcement-layout { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 17px; }
+.announcement-list { display: grid; gap: 11px; }
+.announcement-item { padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: white; }
+.announcement-item-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.announcement-item h3 { margin: 0; color: #293852; font-size: 12px; }
+.announcement-meta { margin-top: 5px; color: var(--muted); font-size: 10px; }
+.announcement-item img { display: block; max-width: 100%; max-height: 135px; margin-top: 11px; object-fit: contain; border-radius: 9px; background: #f6f8fc; }
+.announcement-editor-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.html-editor { min-height: 190px; font-family: "Inter", monospace; font-size: 11px; line-height: 1.65; }
+.preview-box { min-height: 130px; padding: 15px; overflow-wrap: anywhere; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.preview-box h1, .preview-box h2, .preview-box h3 { color: #203653; }
+.preview-box img { max-width: 100%; height: auto; }
+.preview-box a { color: var(--primary); text-decoration: underline; }
+
+.image-upload-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.image-url-field { flex: 1; min-width: 180px; }
+.image-size-note { padding: 10px; border-radius: 10px; background: #f7f9fd; color: var(--muted); font-size: 10px; }
+
+/* Health */
+
+.health-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.health-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px; border: 1px solid var(--line); border-radius: 10px; background: white; }
+.health-item span:first-child { color: #58667d; font-size: 10px; overflow-wrap: anywhere; }
+.health-check { color: var(--success); }
+.health-missing { color: var(--danger); }
+
+.callout { display: flex; align-items: flex-start; gap: 10px; padding: 13px; border: 1px solid #d9e6ff; border-radius: 12px; background: #f4f8ff; color: #445672; font-size: 11px; }
+.callout i { margin-top: 3px; color: var(--primary); }
+
+.app-footer { margin-top: 24px; color: #9aa4b3; font-size: 10px; text-align: center; }
+
+@media (max-width: 1150px) {
+.stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.app-layout { grid-template-columns: 220px minmax(0, 1fr); }
+.main-content { padding: 20px; }
+.announcement-layout { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 850px) {
+.app-layout { display: block; }
+.sidebar { position: fixed; z-index: 480; top: auto; right: 0; bottom: 0; left: 0; display: flex; height: 68px; align-items: stretch; padding: 5px 5px calc(5px + env(safe-area-inset-bottom)); overflow: hidden; border-top: 1px solid var(--line); border-right: 0; background: rgba(255,255,255,.97); backdrop-filter: blur(14px); }
+.sidebar-label, .sidebar-footer { display: none; }
+.sidebar-menu { display: flex; width: 100%; align-items: stretch; gap: 4px; overflow-x: auto; }
+.sidebar-link { display: flex; min-width: 0; min-height: 0; flex: 0 0 78px; flex-direction: column; justify-content: center; gap: 2px; padding: 5px 2px; border-radius: 10px; font-size: 9px; text-align: center; }
+.sidebar-link i { width: auto; font-size: 15px; }
+.main-content { padding: 20px 14px 95px; }
+.topbar { padding: 10px 14px; }
+.content-grid { grid-template-columns: minmax(0, 1fr); }
+.topbar-search { width: min(30vw, 220px); }
+.hero-banner { padding: 20px; }
+.product-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 560px) {
+.brand { font-size: 18px; gap: 7px; }
+.brand-mark { width: 34px; height: 34px; }
+.topbar { min-height: 61px; gap: 8px; }
+.topbar-search { display: none; }
+.user-details { display: none; }
+.topbar-right { gap: 7px; }
+.topbar .button span { display: none; }
+.topbar .button { padding: 8px 10px; }
+.page-heading { align-items: flex-start; flex-direction: column; }
+.page-heading h1 { font-size: 20px; }
+.hero-banner { min-height: 127px; padding: 17px; }
+.hero-banner h2 { font-size: 17px; }
+.hero-icon { display: none; }
+.stats-grid { gap: 9px; }
+.stat-card { padding: 12px; }
+.stat-value { font-size: 17px; }
+.stat-heading { align-items: flex-start; }
+.stat-icon { width: 29px; height: 29px; flex-basis: 29px; font-size: 11px; }
+.form-grid, .health-grid { grid-template-columns: minmax(0, 1fr); }
+.span-2 { grid-column: auto; }
+.toolbar { align-items: stretch; }
+.toolbar-left, .toolbar-right { width: 100%; }
+.table-search { width: 100%; }
+.panel-card { padding: 14px; }
+.modal-overlay { padding: 9px; }
+.modal-card { max-height: 92vh; border-radius: 16px; }
+.modal-header { padding: 14px 15px; }
+.modal-body { padding: 15px; }
+.modal-footer { padding: 12px 15px; }
+.modal-footer .button { flex: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+*, *::before, *::after {
+animation-duration: .01ms !important;
+animation-iteration-count: 1 !important;
+transition-duration: .01ms !important;
+}
+}
+
+.supplemental-diff { width:100%; border-collapse:collapse; font-size:11px; margin-top:10px; }
+.supplemental-diff th { background:#f6f8fc; color:#637087; text-align:left; padding:9px; }
+.supplemental-diff td { border-bottom:1px solid var(--line); padding:9px; vertical-align:top; overflow-wrap:anywhere; }
+.supplemental-detail-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+.supplemental-detail-item { min-width:0; padding:10px; border:1px solid var(--line); border-radius:9px; background:#fbfcff; }
+.supplemental-detail-item span { display:block; color:var(--muted); font-size:10px; }
+.supplemental-detail-item strong { display:block; margin-top:4px; font-size:11px; overflow-wrap:anywhere; white-space:pre-wrap; }
+.supplemental-review-doc { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); }
+.supplemental-review-doc strong { display:block; font-size:11px; }
+.supplemental-review-doc small { display:block; color:var(--muted); }
+.supplemental-history-section { margin-top:18px; }
+.supplemental-history-section h3 { margin:0 0 8px; font-size:13px; }
+@media(max-width:650px) { .supplemental-detail-grid { grid-template-columns:minmax(0,1fr); } }
+
+
+
+
+/* FINORA long-ID display: mask long IDs until the eye button is pressed. */
+.finora-id-wrap {
+  display: inline-flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-width: 0;
+  max-width: 100%;
+  vertical-align: middle;
+}
+.finora-id-text {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.finora-id-wrap.is-revealed {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: flex-start;
+}
+.finora-id-wrap.is-revealed .finora-id-text {
+  flex: 1 1 100%;
+}
+.finora-id-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 25px;
+  min-height: 22px;
+  padding: 2px 5px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--primary, #173b8f);
+  cursor: pointer;
+  line-height: 1;
+}
+.finora-id-toggle:hover {
+  background: rgba(23, 59, 143, .08);
+}
+.finora-id-toggle:focus-visible {
+  outline: 2px solid var(--primary, #173b8f);
+  outline-offset: 2px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- GLOBAL LOADING -->
+<div id="loadingOverlay" class="loading-overlay hidden" role="status" aria-live="polite">
+<div class="loading-box">
+<div class="four-dot-spinner" aria-hidden="true">
+<span></span><span></span><span></span><span></span>
+</div>
+<p id="loadingTitle" class="loading-title">กำลังโหลดข้อมูลระบบ</p>
+<p id="loadingSubtitle" class="loading-subtitle">กรุณารอสักครู่</p>
+</div>
+</div>
+
+<!-- CENTRAL MODAL -->
+<div id="modalOverlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+<div id="modalCard" class="modal-card">
+<div class="modal-header">
+<h2 id="modalTitle">แจ้งเตือน</h2>
+<button id="modalClose" class="modal-close" type="button" aria-label="ปิดหน้าต่าง">
+<i class="fa-solid fa-xmark"></i>
+</button>
+</div>
+<div id="modalBody" class="modal-body"></div>
+<div id="modalFooter" class="modal-footer"></div>
+</div>
+</div>
+
+<!-- APP -->
+<div id="appShell" class="hidden">
+<header class="topbar">
+<div class="topbar-left">
+<div class="brand">
+<span class="brand-mark"><i class="fa-solid fa-wallet"></i></span>
+<span>FINORA</span>
+</div>
+<span class="status-badge info"><i class="fa-solid fa-shield-halved"></i> ADMIN</span>
+</div>
+
+<div class="topbar-right">
+<label class="topbar-search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input id="globalSearch" class="field" type="search" placeholder="ค้นหาในตารางที่เปิดอยู่">
+</label>
+
+<button id="topRefreshButton" class="icon-button" type="button" title="รีเฟรชข้อมูล" aria-label="รีเฟรชข้อมูล">
+<i class="fa-solid fa-rotate"></i>
+</button>
+
+<div class="topbar-user">
+<div id="adminAvatar" class="avatar">A</div>
+<div class="user-details">
+<strong id="adminName">ผู้ดูแลระบบ</strong>
+<span id="adminEmail">—</span>
+</div>
+</div>
+
+<button id="logoutButton" class="button button-secondary button-sm" type="button" title="ออกจากระบบ">
+<i class="fa-solid fa-arrow-right-from-bracket"></i>
+<span>ออกจากระบบ</span>
+</button>
+</div>
+</header>
+
+<div class="app-layout">
+<aside class="sidebar">
+<div class="sidebar-label">WORKSPACE</div>
+
+<nav class="sidebar-menu" aria-label="เมนูผู้ดูแลระบบ">
+<button class="sidebar-link active" type="button" data-tab="overview">
+<i class="fa-solid fa-chart-pie"></i><span>ภาพรวมระบบ</span>
+</button>
+<button class="sidebar-link" type="button" data-tab="users">
+<i class="fa-solid fa-users"></i><span>จัดการลูกค้า</span>
+</button>
+<button class="sidebar-link" type="button" data-tab="loans">
+<i class="fa-solid fa-file-signature"></i><span>คำขอสินเชื่อ</span>
+</button>
+<button class="sidebar-link" type="button" data-tab="supplementals">
+<i class="fa-solid fa-file-circle-check"></i><span>ตรวจข้อมูลเพิ่มเติม</span>
+</button>
+<button class="sidebar-link" type="button" data-tab="products">
+<i class="fa-solid fa-boxes-stacked"></i><span>ผลิตภัณฑ์สินเชื่อ</span>
+</button>
+<button class="sidebar-link" type="button" data-tab="payments">
+<i class="fa-solid fa-money-bill-transfer"></i><span>รายการชำระเงิน</span>
+</button>
+<button class="sidebar-link" type="button" data-tab="announcements">
+<i class="fa-solid fa-bullhorn"></i><span>จัดการประกาศ</span>
+</button>
+<button class="sidebar-link" type="button" data-tab="maintenance">
+<i class="fa-solid fa-screwdriver-wrench"></i><span>ปิดระบบชั่วคราว</span>
+</button>
+<button class="sidebar-link" type="button" data-tab="tickets">
+<i class="fa-solid fa-headset"></i><span>ศูนย์บริการ</span>
+</button>
+<button class="sidebar-link" type="button" data-tab="audit">
+<i class="fa-solid fa-clipboard-list"></i><span>ประวัติระบบ</span>
+</button>
+<button class="sidebar-link" type="button" data-tab="health">
+<i class="fa-solid fa-heart-pulse"></i><span>ตรวจสอบระบบ</span>
+</button>
+</nav>
+
+<div class="sidebar-footer">
+<i class="fa-solid fa-lock"></i>
+<strong>FINORA Control Center</strong>
+<br>
+ใช้บัญชีผู้ดูแลที่ได้รับอนุญาตเท่านั้น
+</div>
+</aside>
+
+<main class="main-content">
+
+<!-- OVERVIEW -->
+<section id="tab-overview" class="section-panel active">
+<div class="page-heading">
+<div>
+<h1>ภาพรวมระบบ</h1>
+<p>สถานะลูกค้า สินเชื่อ ยอดรับชำระ และงานที่ต้องตรวจสอบ</p>
+</div>
+<div class="page-heading-actions">
+<button class="button button-secondary button-sm" type="button" data-refresh="overview">
+<i class="fa-solid fa-rotate"></i> รีเฟรช
+</button>
+</div>
+</div>
+
+<div class="hero-banner">
+<div>
+<div class="hero-eyebrow">FINORA ADMIN CONTROL CENTER</div>
+<h2>ยินดีต้อนรับ <span id="overviewAdminName">ผู้ดูแลระบบ</span></h2>
+<p>ติดตามและบริหารจัดการระบบสินเชื่อได้จากส่วนกลาง</p>
+</div>
+<div class="hero-icon"><i class="fa-solid fa-chart-line"></i></div>
+</div>
+
+<div class="stats-grid">
+<div class="stat-card">
+<div class="stat-heading">
+<span>ลูกค้าทั้งหมด</span>
+<div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+</div>
+<div id="statUsers" class="stat-value">—</div>
+<div id="statActiveUsersFoot" class="stat-foot">กำลังโหลดข้อมูล</div>
+</div>
+<div class="stat-card">
+<div class="stat-heading">
+<span>คำขอรอตรวจสอบ</span>
+<div class="stat-icon"><i class="fa-solid fa-file-circle-question"></i></div>
+</div>
+<div id="statPendingLoans" class="stat-value">—</div>
+<div class="stat-foot">คำขอที่รอเจ้าหน้าที่พิจารณา</div>
+</div>
+<div class="stat-card">
+<div class="stat-heading">
+<span>เงินต้นคงค้าง</span>
+<div class="stat-icon"><i class="fa-solid fa-wallet"></i></div>
+</div>
+<div id="statPrincipal" class="stat-value">฿0.00</div>
+<div class="stat-foot">รวมตามข้อมูลบัญชีสินเชื่อ</div>
+</div>
+<div class="stat-card">
+<div class="stat-heading">
+<span>ยอดรับชำระที่ยืนยันแล้ว</span>
+<div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+</div>
+<div id="statPayments" class="stat-value">฿0.00</div>
+<div class="stat-foot">ตามรายการชำระที่เป็น PAID</div>
+</div>
+<div class="stat-card">
+<div class="stat-heading">
+<span>สินเชื่อที่กำลังชำระ</span>
+<div class="stat-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+</div>
+<div id="statActiveLoans" class="stat-value">—</div>
+<div class="stat-foot">สถานะ DISBURSED</div>
+</div>
+<div class="stat-card">
+<div class="stat-heading">
+<span>ยอดหนี้รวมคงค้าง</span>
+<div class="stat-icon"><i class="fa-solid fa-coins"></i></div>
+</div>
+<div id="statOutstanding" class="stat-value">฿0.00</div>
+<div class="stat-foot">เงินต้นและยอดงวดคงเหลือตาม API</div>
+</div>
+<div class="stat-card">
+<div class="stat-heading">
+<span>รายการชำระต้องตรวจสอบ</span>
+<div class="stat-icon"><i class="fa-solid fa-magnifying-glass-dollar"></i></div>
+</div>
+<div id="statPaymentReview" class="stat-value">—</div>
+<div class="stat-foot">รายการที่ต้องตรวจสอบเพิ่มเติม</div>
+</div>
+<div class="stat-card">
+<div class="stat-heading">
+<span>คำร้องที่ยังเปิดอยู่</span>
+<div class="stat-icon"><i class="fa-solid fa-comments"></i></div>
+</div>
+<div id="statOpenTickets" class="stat-value">—</div>
+<div class="stat-foot">Ticket ที่ยังไม่ปิด</div>
+</div>
+</div>
+
+<div class="content-grid">
+<div class="panel-card">
+<div class="panel-heading">
+<div>
+<h2>คำขอสินเชื่อล่าสุด</h2>
+<p>รายการล่าสุดจากระบบกลาง</p>
+</div>
+<button class="button button-secondary button-sm" type="button" data-open-tab="loans">ดูทั้งหมด</button>
+</div>
+<div id="overviewRecentLoans"></div>
+</div>
+
+<div class="panel-card">
+<div class="panel-heading">
+<div>
+<h2>ทางลัดการจัดการ</h2>
+<p>ไปยังงานหลักของเจ้าหน้าที่</p>
+</div>
+</div>
+<div class="quick-list">
+<button class="quick-item" type="button" data-open-tab="loans">
+<span class="quick-item-icon"><i class="fa-solid fa-file-signature"></i></span>
+<span><strong>ตรวจคำขอสินเชื่อ</strong><small>พิจารณาและบันทึกผล</small></span>
+</button>
+<button class="quick-item" type="button" data-open-tab="payments">
+<span class="quick-item-icon"><i class="fa-solid fa-money-bill-transfer"></i></span>
+<span><strong>ตรวจรายการชำระเงิน</strong><small>ติดตามสถานะธุรกรรม</small></span>
+</button>
+<button class="quick-item" type="button" data-open-tab="announcements">
+<span class="quick-item-icon"><i class="fa-solid fa-bullhorn"></i></span>
+<span><strong>จัดการประกาศ</strong><small>เผยแพร่ข่าวและ HTML</small></span>
+</button>
+<button class="quick-item" type="button" data-open-tab="health">
+<span class="quick-item-icon"><i class="fa-solid fa-heart-pulse"></i></span>
+<span><strong>ตรวจสอบระบบ</strong><small>ตรวจ Properties ที่จำเป็น</small></span>
+</button>
+</div>
+</div>
+</div>
+
+<div class="panel-card" style="margin-top:17px;">
+<div class="panel-heading">
+<div>
+<h2>รายการชำระเงินล่าสุด</h2>
+<p>สถานะจาก Payments ใน Google Sheets</p>
+</div>
+<button class="button button-secondary button-sm" type="button" data-open-tab="payments">ดูทั้งหมด</button>
+</div>
+<div id="overviewRecentPayments"></div>
+</div>
+</section>
+
+<!-- USERS -->
+<section id="tab-users" class="section-panel">
+<div class="page-heading">
+<div>
+<h1>จัดการลูกค้า</h1>
+<p>ค้นหา ตรวจสอบสถานะบัญชี และยกเลิกเซสชันของผู้ใช้งาน</p>
+</div>
+<div class="page-heading-actions">
+<button class="button button-secondary button-sm" type="button" data-refresh="users">
+<i class="fa-solid fa-rotate"></i> รีเฟรช
+</button>
+</div>
+</div>
+
+<div class="panel-card">
+<div class="toolbar">
+<div class="toolbar-left">
+<input id="userSearch" class="field table-search" type="search" placeholder="ค้นหาชื่อ อีเมล โทรศัพท์ หรือรหัสผู้ใช้">
+<select id="userStatusFilter" class="field" style="width:auto;">
+<option value="">ทุกสถานะ</option>
+<option value="ACTIVE">ใช้งาน</option>
+<option value="SUSPENDED">ระงับ</option>
+</select>
+</div>
+<div class="toolbar-right">
+<span id="userCountLabel" class="muted small">— รายการ</span>
+</div>
+</div>
+<div id="usersTable"></div>
+</div>
+</section>
+
+<!-- LOANS -->
+<section id="tab-loans" class="section-panel">
+<div class="page-heading">
+<div>
+<h1>จัดการคำขอสินเชื่อ</h1>
+<p>ตรวจคำขอ บันทึกผลพิจารณา และบันทึกสถานะการจ่ายเงิน</p>
+</div>
+<button class="button button-secondary button-sm" type="button" data-refresh="loans">
+<i class="fa-solid fa-rotate"></i> รีเฟรช
+</button>
+</div>
+
+<div class="panel-card">
+<div class="toolbar">
+<div class="toolbar-left">
+<input id="loanSearch" class="field table-search" type="search" placeholder="ค้นหาเลขที่คำขอ ชื่อ หรืออีเมล">
+<select id="loanStatusFilter" class="field" style="width:auto;">
+<option value="">ทุกสถานะ</option>
+<option value="PENDING_REVIEW">รอตรวจสอบ</option>
+<option value="APPROVED_PENDING_ACCEPTANCE">รอยอมรับข้อเสนอ</option>
+<option value="ACCEPTED_PENDING_DISBURSEMENT">รอจ่ายเงิน</option>
+<option value="DISBURSED">กำลังชำระ</option>
+<option value="REJECTED">ไม่อนุมัติ</option>
+<option value="PAID_OFF">ปิดบัญชีแล้ว</option>
+</select>
+</div>
+<span id="loanCountLabel" class="muted small">— รายการ</span>
+</div>
+<div id="loansTable"></div>
+</div>
+</section>
+
+<!-- LOAN SUPPLEMENTAL REVIEW -->
+<section id="tab-supplementals" class="section-panel">
+  <div class="page-heading">
+    <div>
+      <h1>ตรวจข้อมูลเพิ่มเติมของผู้กู้</h1>
+      <p>ตรวจเอกสาร ข้อมูลส่วนบุคคล รายได้ ภาระหนี้ บัญชีรับเงิน และประวัติการแก้ไข หลังอนุมัติคำขอเบื้องต้น</p>
+    </div>
+    <div class="page-heading-actions">
+      <button class="button button-secondary button-sm" type="button" data-refresh="supplementals"><i class="fa-solid fa-rotate"></i> รีเฟรช</button>
+    </div>
+  </div>
+  <div class="callout" style="margin-bottom:15px;">
+    <i class="fa-solid fa-shield-halved"></i>
+    <div>ตรวจสอบข้อมูลกับหลักฐานจริงก่อนตัดสินใจ เอกสารที่ส่งเพิ่มไม่ได้รับประกันการอนุมัติ และการอนุมัติข้อมูลเพิ่มเติมยังไม่ใช่การโอนเงินจริง</div>
+  </div>
+  <div class="panel-card">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <input id="supplementalSearch" class="field table-search" type="search" placeholder="ค้นหาเลขสินเชื่อ ชื่อ หรืออีเมล">
+        <select id="supplementalStatusFilter" class="field" style="width:auto;">
+          <option value="">ทุกสถานะ</option>
+          <option value="REQUIRED">รอข้อมูลเพิ่มเติม</option>
+          <option value="DRAFT">แบบร่าง</option>
+          <option value="RETURNED">ตีกลับให้แก้ไข</option>
+          <option value="SUBMITTED">รอตรวจสอบ</option>
+          <option value="APPROVED">ข้อมูลผ่านการตรวจ</option>
+          <option value="REJECTED">ไม่อนุมัติ</option>
+        </select>
+      </div>
+      <span id="supplementalCountLabel" class="muted small">— รายการ</span>
+    </div>
+    <div id="supplementalsTable"></div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="tab-products" class="section-panel">
+<div class="page-heading">
+<div>
+<h1>ผลิตภัณฑ์สินเชื่อ</h1>
+<p>กำหนดวงเงิน ระยะเวลาผ่อน วิธีคำนวณ และรอบชำระที่รองรับ</p>
+</div>
+<div class="page-heading-actions">
+<button id="newProductButton" class="button button-primary button-sm" type="button">
+<i class="fa-solid fa-plus"></i> เพิ่มผลิตภัณฑ์
+</button>
+<button class="button button-secondary button-sm" type="button" data-refresh="products">
+<i class="fa-solid fa-rotate"></i> รีเฟรช
+</button>
+</div>
+</div>
+
+<div class="callout" style="margin-bottom:16px;">
+<i class="fa-solid fa-shield-halved"></i>
+<div>
+การเปิดใช้ผลิตภัณฑ์ต้องผ่านการตรวจสอบเงื่อนไขและข้อกำกับก่อน หากแก้ดอกเบี้ยหรือค่าธรรมเนียม
+ควรตรวจทานผลกระทบต่อข้อเสนอและสัญญาที่มีอยู่ก่อนเผยแพร่
+</div>
+</div>
+
+<div id="productsGrid" class="product-grid"></div>
+</section>
+
+<!-- PAYMENTS -->
+<section id="tab-payments" class="section-panel">
+<div class="page-heading">
+<div>
+<h1>รายการชำระเงิน</h1>
+<p>ติดตาม QR รายการชำระ และสถานะตรวจสอบสลิป</p>
+</div>
+<button class="button button-secondary button-sm" type="button" data-refresh="payments">
+<i class="fa-solid fa-rotate"></i> รีเฟรช
+</button>
+</div>
+
+<div class="callout" style="margin-bottom:16px;">
+<i class="fa-solid fa-circle-info"></i>
+<div>
+API ปัจจุบันไม่ได้ส่ง URL หรือไฟล์สลิปกลับมาให้หน้า Admin จึงแสดงได้เฉพาะข้อมูลธุรกรรม
+และสถานะจากผู้ให้บริการ การปฏิเสธหรือส่งตรวจใหม่จะไม่ยืนยันว่าเงินถูกคืนหรือโอนแล้ว
+</div>
+</div>
+
+<div class="panel-card">
+<div class="toolbar">
+<div class="toolbar-left">
+<input id="paymentSearch" class="field table-search" type="search" placeholder="ค้นหา Payment ID ชื่อลูกค้า หรือเลขอ้างอิง">
+<select id="paymentStatusFilter" class="field" style="width:auto;">
+<option value="">ทุกสถานะ</option>
+<option value="AWAITING_SLIP">รอสลิป</option>
+<option value="VERIFYING">กำลังตรวจสอบ</option>
+<option value="PAID">ชำระแล้ว</option>
+<option value="REVIEW_REQUIRED">รอตรวจสอบเพิ่มเติม</option>
+<option value="RETRY_REQUIRED">ต้องตรวจใหม่</option>
+<option value="REJECTED">ปฏิเสธ</option>
+</select>
+</div>
+<span id="paymentCountLabel" class="muted small">— รายการ</span>
+</div>
+<div id="paymentsTable"></div>
+</div>
+</section>
+
+<!-- ANNOUNCEMENTS -->
+<section id="tab-announcements" class="section-panel">
+<div class="page-heading">
+<div>
+<h1>จัดการประกาศ</h1>
+<p>เพิ่มข่าวสาร เลือกตำแหน่งแสดงผล อัปโหลดรูปภาพ และพรีวิว HTML ก่อนบันทึก</p>
+</div>
+<button id="newAnnouncementButton" class="button button-primary button-sm" type="button">
+<i class="fa-solid fa-plus"></i> เพิ่มประกาศ
+</button>
+</div>
+
+<div class="callout" style="margin-bottom:16px;">
+<i class="fa-solid fa-image"></i>
+<div>
+รูปประกาศแนะนำขนาด 1200 × 500 พิกเซล หรืออัตราส่วนประมาณ 12:5
+เพื่อให้เหมาะกับแบนเนอร์หน้าเว็บ รองรับ JPG, PNG และ WebP โดยขนาดไฟล์ไม่เกิน 4 MiB
+ใช้ ImgBB สำหรับภาพที่ตั้งใจเผยแพร่ต่อสาธารณะเท่านั้น ห้ามอัปโหลดบัตรประชาชนหรือสลิปชำระเงิน
+</div>
+</div>
+
+<div class="panel-card">
+<div class="toolbar">
+<div class="toolbar-left">
+<input id="announcementSearch" class="field table-search" type="search" placeholder="ค้นหาชื่อประกาศ">
+<select id="announcementStatusFilter" class="field" style="width:auto;">
+<option value="">ทุกสถานะ</option>
+<option value="TRUE">เปิดใช้งาน</option>
+<option value="FALSE">ปิดใช้งาน</option>
+</select>
+</div>
+<button class="button button-secondary button-sm" type="button" data-refresh="announcements">
+<i class="fa-solid fa-rotate"></i> รีเฟรช
+</button>
+</div>
+<div id="announcementsList" class="announcement-list"></div>
+</div>
+</section>
+
+<!-- TEMPORARY MAINTENANCE -->
+<section id="tab-maintenance" class="section-panel">
+<div class="page-heading">
+<div><h1>ปิดระบบชั่วคราว</h1><p>ตั้งเวลาปิด–เปิดระบบอัตโนมัติ พร้อมรูปภาพและเนื้อหา HTML ที่จะแสดงแทนหน้า Login</p></div>
+<div class="page-heading-actions">
+<button id="maintenanceLoadButton" class="button button-secondary button-sm" type="button"><i class="fa-solid fa-rotate"></i> โหลดค่า</button>
+<button id="maintenanceSaveButton" class="button button-primary button-sm" type="button"><i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่า</button>
+</div>
+</div>
+<div id="maintenanceStatus" class="callout" style="margin-bottom:16px;"><i class="fa-solid fa-circle-info"></i><div>กำลังโหลดสถานะการปิดระบบ</div></div>
+<div class="panel-card" style="margin-bottom:17px;">
+<div class="form-group">
+<label class="check-row" style="font-weight:700;"><input id="maintenanceEnabled" type="checkbox"><span>เปิดใช้กำหนดการปิดระบบ</span></label>
+<p class="muted small" style="margin:5px 0 0;">เมื่อเปิดใช้ ระบบจะแสดงหน้าปิดปรับปรุงระหว่างเวลาเริ่มต้นกับเวลาสิ้นสุด หากไม่ระบุเวลาเริ่ม ระบบจะปิดทันที และหากไม่ระบุเวลาสิ้นสุด ระบบจะปิดต่อไปจนกว่าจะปิดตัวเลือกนี้</p>
+</div>
+<div class="form-grid" style="margin-top:17px;">
+<div class="form-group"><label class="form-label" for="maintenanceStart">เวลาเริ่มปิดระบบ</label><input id="maintenanceStart" class="field" type="datetime-local"><small class="muted">เว้นว่างเพื่อเริ่มทันที</small></div>
+<div class="form-group"><label class="form-label" for="maintenanceEnd">เวลาเปิดระบบกลับ</label><input id="maintenanceEnd" class="field" type="datetime-local"><small class="muted">เว้นว่างเพื่อปิดต่อเนื่อง</small></div>
+<div class="form-group span-2"><label class="form-label" for="maintenanceTitle">หัวข้อประกาศ</label><input id="maintenanceTitle" class="field" type="text" maxlength="200" value="ระบบกำลังปรับปรุงชั่วคราว"></div>
+<div class="form-group span-2"><label class="form-label" for="maintenanceImageUrl">URL รูปภาพประกาศ</label><div style="display:flex;gap:8px;flex-wrap:wrap;"><input id="maintenanceImageUrl" class="field" type="url" placeholder="https://..." style="flex:1;min-width:200px;"><button id="maintenanceUploadImageButton" class="button button-secondary" type="button"><i class="fa-solid fa-upload"></i> อัปโหลดรูป</button><input id="maintenanceImageFile" class="hidden" type="file" accept="image/jpeg,image/png,image/webp"></div><small class="muted">รองรับ JPG, PNG, WebP ไม่เกิน 4 MiB รูปจะถูกเผยแพร่ผ่านบริการโฮสต์ภาพสาธารณะ</small></div>
+<div class="form-group span-2"><label class="form-label" for="maintenanceImageAlt">คำอธิบายรูปภาพ</label><input id="maintenanceImageAlt" class="field" type="text" maxlength="300" placeholder="คำอธิบายรูปภาพ"></div>
+<div class="form-group span-2"><label class="form-label" for="maintenanceMessageHtml">เนื้อหา HTML</label><textarea id="maintenanceMessageHtml" class="field" rows="11" spellcheck="false" style="font-family:ui-monospace,SFMono-Regular,Consolas,monospace;" placeholder="<p>ขออภัยในความไม่สะดวก ระบบอยู่ระหว่างการปรับปรุง</p>"></textarea><small class="muted">ระบบจะกรองแท็ก HTML ที่ไม่ปลอดภัยก่อนนำไปแสดงบนหน้าเว็บ</small></div>
+</div>
+<div style="display:flex;justify-content:flex-end;margin-top:12px;"><button id="maintenancePreviewButton" class="button button-secondary button-sm" type="button"><i class="fa-solid fa-eye"></i> อัปเดตตัวอย่าง</button></div>
+</div>
+<div class="panel-card">
+<div class="panel-heading"><div><h2>ตัวอย่างหน้าปิดปรับปรุง</h2><p>พรีวิวเนื้อหาที่ผู้ใช้จะเห็นแทนหน้า Login</p></div></div>
+<iframe id="maintenancePreview" title="ตัวอย่างหน้าปิดปรับปรุง" sandbox="" style="display:block;width:100%;min-height:300px;border:1px solid var(--line);border-radius:12px;background:#fff;"></iframe>
+</div>
+</section>
+
+<!-- SUPPORT -->
+<section id="tab-tickets" class="section-panel">
+<div class="page-heading">
+<div>
+<h1>ศูนย์บริการลูกค้า</h1>
+<p>ติดตามคำร้อง มอบหมายผู้ดูแล และบันทึกการแก้ไขปัญหา</p>
+</div>
+<button class="button button-secondary button-sm" type="button" data-refresh="tickets">
+<i class="fa-solid fa-rotate"></i> รีเฟรช
+</button>
+</div>
+
+<div class="panel-card">
+<div class="toolbar">
+<div class="toolbar-left">
+<input id="ticketSearch" class="field table-search" type="search" placeholder="ค้นหา Ticket หัวข้อ หรือชื่อลูกค้า">
+<select id="ticketStatusFilter" class="field" style="width:auto;">
+<option value="">ทุกสถานะ</option>
+<option value="OPEN">เปิดคำร้อง</option>
+<option value="IN_PROGRESS">กำลังดำเนินการ</option>
+<option value="WAITING_CUSTOMER">รอข้อมูลลูกค้า</option>
+<option value="RESOLVED">แก้ไขแล้ว</option>
+<option value="CLOSED">ปิดคำร้อง</option>
+</select>
+</div>
+</div>
+<div id="ticketsTable"></div>
+</div>
+</section>
+
+<!-- AUDIT -->
+<section id="tab-audit" class="section-panel">
+<div class="page-heading">
+<div>
+<h1>ประวัติการใช้งานระบบ</h1>
+<p>ตรวจสอบรายการ Audit Log ล่าสุดเพื่อช่วยสืบค้นเหตุการณ์</p>
+</div>
+<button class="button button-secondary button-sm" type="button" data-refresh="audit">
+<i class="fa-solid fa-rotate"></i> รีเฟรช
+</button>
+</div>
+
+<div class="callout" style="margin-bottom:16px;">
+<i class="fa-solid fa-clipboard-check"></i>
+<div>
+รายการนี้แสดงเฉพาะเหตุการณ์ที่โค้ดปัจจุบันบันทึกไว้ใน SystemLogs
+ไม่ได้หมายความว่าทุกการอ่านข้อมูลหรือทุกคำขอ HTTP ถูกบันทึกครบถ้วนแล้ว
+</div>
+</div>
+
+<div class="panel-card">
+<div class="toolbar">
+<input id="auditSearch" class="field table-search" type="search" placeholder="ค้นหา Event, Entity หรือ Actor">
+<span id="auditCountLabel" class="muted small">สูงสุด 100 รายการ</span>
+</div>
+<div id="auditTable"></div>
+</div>
+</section>
+
+<!-- SYSTEM HEALTH -->
+<section id="tab-health" class="section-panel">
+<div class="page-heading">
+<div>
+<h1>ตรวจสอบระบบ</h1>
+<p>ตรวจสอบ Script Properties ที่จำเป็นต่อการทำงานของ API</p>
+</div>
+<button class="button button-secondary button-sm" type="button" data-refresh="health">
+<i class="fa-solid fa-rotate"></i> ตรวจสอบอีกครั้ง
+</button>
+</div>
+
+<div id="healthSummary" class="panel-card" style="margin-bottom:17px;">
+<div class="empty-state">
+<i class="fa-solid fa-heart-pulse"></i>
+<strong>กำลังตรวจสอบสถานะระบบ</strong>
+</div>
+</div>
+
+<div class="panel-card">
+<div class="panel-heading">
+<div>
+<h2>ผลตรวจสอบ Properties</h2>
+<p>แสดงเฉพาะชื่อและสถานะ ไม่แสดงค่าความลับ</p>
+</div>
+</div>
+<div id="healthProperties" class="health-grid"></div>
+</div>
+
+<div class="callout" style="margin-top:17px;">
+<i class="fa-solid fa-circle-exclamation"></i>
+<div>
+การตรวจพบว่า Property มีค่า ไม่ได้หมายความว่า API Key ใช้งานได้จริงหรือระบบผ่านการตรวจสอบความปลอดภัยทั้งหมด
+ต้องทดสอบการเชื่อมต่อและธุรกรรมในสภาพแวดล้อมจริงก่อนเปิดให้บริการ
+</div>
+</div>
+</section>
+
+<footer class="app-footer">
+FINORA Admin Control Center · บริหารจัดการอย่างปลอดภัย
+</footer>
+</main>
+</div>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+1. CONFIGURATION AND STATE
+============================================================ */
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbyWJroEmS5AA-sRgn-P6SXoUpqNaSTRIb8w9PSr_sNOLXCUf5PaqvEABpnOkB8_aUQuLA/exec";
+
+const TOKEN_KEY = "finora_access_token";
+const SESSION_TOKEN_KEY = "finora_session_token";
+
+const state = {
+admin: null,
+activeTab: "overview",
+dashboard: null,
+users: [],
+loans: [],
+supplementals: [],
+products: [],
+payments: [],
+announcements: [],
+tickets: [],
+logs: [],
+health: null,
+maintenance: null,
+imageUploadInProgress: false
+};
+
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+
+function escapeHtml(value) {
+  return String(value === undefined || value === null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function displaySensitiveId(value) {
+  const full = String(value === undefined || value === null ? "" : value);
+  if (!full || full === "—" || full.length <= 18) return escapeHtml(full || "—");
+
+  const masked = full.slice(0, 12) + "*******";
+  return (
+    '<span class="finora-id-wrap" data-finora-id-full="' + escapeHtml(full) +
+    '" data-finora-id-mask="' + escapeHtml(masked) + '">' +
+      '<span class="finora-id-text">' + escapeHtml(masked) + '</span>' +
+      '<button type="button" class="finora-id-toggle" data-finora-id-toggle ' +
+        'aria-expanded="false" aria-label="แสดงรหัสเต็ม" title="แสดงรหัสเต็ม">' +
+        '<i class="fa-solid fa-eye" aria-hidden="true"></i>' +
+      '</button>' +
+    '</span>'
+  );
+}
+
+document.addEventListener("click", function (event) {
+  const button = event.target && event.target.closest
+    ? event.target.closest("[data-finora-id-toggle]")
+    : null;
+  if (!button) return;
+
+  const widget = button.closest(".finora-id-wrap");
+  const text = widget && widget.querySelector(".finora-id-text");
+  if (!widget || !text) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  const reveal = button.getAttribute("aria-expanded") !== "true";
+  text.textContent = reveal
+    ? (widget.getAttribute("data-finora-id-full") || "")
+    : (widget.getAttribute("data-finora-id-mask") || "");
+  widget.classList.toggle("is-revealed", reveal);
+  button.setAttribute("aria-expanded", String(reveal));
+  button.setAttribute("aria-label", reveal ? "ซ่อนรหัสเต็ม" : "แสดงรหัสเต็ม");
+  button.title = reveal ? "ซ่อนรหัสเต็ม" : "แสดงรหัสเต็ม";
+  button.innerHTML = reveal
+    ? '<i class="fa-solid fa-eye-slash" aria-hidden="true"></i>'
+    : '<i class="fa-solid fa-eye" aria-hidden="true"></i>';
+});
+
+function safeNumber(value) {
+const result = Number(value || 0);
+return Number.isFinite(result) ? result : 0;
+}
+
+function formatMoney(value) {
+return new Intl.NumberFormat("th-TH", {
+minimumFractionDigits: 2,
+maximumFractionDigits: 2
+}).format(safeNumber(value));
+}
+
+function formatDate(value) {
+if (!value) return "—";
+
+const text = String(value);
+const date = /^\d{4}-\d{2}-\d{2}$/.test(text)
+? new Date(text + "T12:00:00")
+: new Date(text);
+
+if (Number.isNaN(date.getTime())) return escapeHtml(text);
+
+return new Intl.DateTimeFormat("th-TH", {
+day: "numeric",
+month: "short",
+year: "numeric"
+}).format(date);
+}
+
+function formatDateTime(value) {
+if (!value) return "—";
+
+const date = new Date(value);
+
+if (Number.isNaN(date.getTime())) {
+return escapeHtml(value);
+}
+
+return new Intl.DateTimeFormat("th-TH", {
+dateStyle: "medium",
+timeStyle: "short"
+}).format(date);
+}
+
+function getToken() {
+return localStorage.getItem(TOKEN_KEY) ||
+sessionStorage.getItem(SESSION_TOKEN_KEY) ||
+"";
+}
+
+function clearToken() {
+localStorage.removeItem(TOKEN_KEY);
+sessionStorage.removeItem(SESSION_TOKEN_KEY);
+}
+
+function tokenPayload(parameters = {}) {
+return {
+token: getToken(),
+...parameters
+};
+}
+
+/* ============================================================
+2. LOADING AND MODALS
+============================================================ */
+
+function showLoading(show, title = "กำลังโหลดข้อมูลระบบ", subtitle = "กรุณารอสักครู่") {
+const overlay = $("#loadingOverlay");
+
+if (show) {
+$("#loadingTitle").textContent = title; 
+
+$("#loadingSubtitle").textContent = subtitle;
+overlay.classList.remove("hidden");
+} else {
+overlay.classList.add("hidden");
+}
+}
+
+function closeModal() {
+$("#modalOverlay").classList.add("hidden"); document.body.classList.remove("modal-open"); 
+
+$("#modalBody").innerHTML = "";
+$("#modalFooter").innerHTML = "";
+}
+
+function openModal(options = {}) {
+const card = $("#modalCard");
+
+$("#modalTitle").textContent = options.title || "รายละเอียด"; 
+
+$("#modalBody").innerHTML = options.body || "";
+$("#modalFooter").innerHTML = "";
+
+card.classList.remove("large", "xlarge");
+
+if (options.large) card.classList.add("large");
+if (options.xlarge) card.classList.add("xlarge");
+
+const buttons = Array.isArray(options.buttons) && options.buttons.length
+? options.buttons
+: [{ label: "ปิด", className: "button-primary", onClick: closeModal }];
+
+buttons.forEach((config) => {
+const button = document.createElement("button");
+
+button.type = "button";
+button.className = "button " + (config.className || "button-primary");
+button.textContent = config.label || "ตกลง";
+button.disabled = config.disabled === true;
+
+if (config.id) button.id = config.id;
+
+button.addEventListener("click", async () => {
+if (typeof config.onClick === "function") {
+await config.onClick();
+} else {
+closeModal();
+}
+});
+
+$("#modalFooter").appendChild(button);
+});
+
+$("#modalOverlay").classList.remove("hidden");
+document.body.classList.add("modal-open");
+
+if (typeof options.onOpen === "function") {
+options.onOpen();
+}
+}
+
+function showMessage(title, message, type = "info") {
+const icon = type === "success"
+? '<i class="fa-solid fa-check"></i>'
+: type === "error"
+? '<i class="fa-solid fa-xmark"></i>'
+: '<i class="fa-solid fa-circle-info"></i>';
+
+const iconClass = type === "success"
+? "success"
+: type === "error"
+? "error"
+: "";
+
+openModal({
+title: title,
+body:
+'<div class="text-center">' +
+'<div class="modal-icon ' + iconClass + '">' + icon + '</div>' +
+'<div style="color:#56637a;font-size:12px;line-height:1.9;white-space:pre-line;">' +
+escapeHtml(message) +
+'</div>' +
+'</div>',
+buttons: [
+{
+label: "ตกลง",
+className: "button-primary",
+onClick: closeModal
+}
+ ]
+});
+}
+
+function showApiError(error, title = "ดำเนินการไม่สำเร็จ") {
+showMessage(
+title,
+error && error.message
+? error.message
+: "ระบบเกิดข้อผิดพลาด กรุณาลองใหม่",
+"error"
+);
+}
+
+$("#modalClose").addEventListener("click", closeModal);
+
+$("#modalOverlay").addEventListener("click", (event) => { if (event.target === 
+
+$("#modalOverlay")) {
+closeModal();
+}
+});
+
+document.addEventListener("keydown", (event) => {
+if (event.key === "Escape" && !$("#modalOverlay").classList.contains("hidden")) {
+closeModal();
+}
+});
+
+/* ============================================================
+3. API TRANSPORT
+============================================================ */
+
+async function api(action, parameters = {}, options = {}) {
+const silent = options.silent === true;
+
+if (!silent) {
+showLoading(
+true,
+options.loadingTitle || "กำลังประมวลผล",
+options.loadingSubtitle || "กำลังเชื่อมต่อระบบ"
+);
+}
+
+try {
+const response = await fetch(API_URL, {
+method: "POST",
+mode: "cors",
+redirect: "follow",
+headers: {
+"Content-Type": "text/plain;charset=UTF-8"
+},
+body: JSON.stringify({
+action,
+...parameters
+}),
+cache: "no-store"
+});
+
+if (!response.ok) {
+throw new Error(
+"เซิร์ฟเวอร์ตอบกลับด้วยสถานะ HTTP " +
+response.status
+);
+}
+
+const text = await response.text();
+let result;
+
+try {
+result = JSON.parse(text);
+} catch (error) {
+throw new Error(
+"รูปแบบข้อมูลตอบกลับไม่ถูกต้อง กรุณาตรวจสอบ Apps Script Deployment"
+);
+}
+
+if (!result || result.ok !== true) {
+const error = new Error(
+result && result.message
+? result.message
+: "ระบบไม่สามารถดำเนินการได้"
+);
+
+error.code = result && result.code
+? result.code
+: "API_ERROR";
+
+throw error;
+}
+
+return result;
+
+} catch (error) {
+if (error instanceof TypeError) {
+throw new Error(
+"เชื่อมต่อ API ไม่สำเร็จ อาจเกิดจาก CORS หรือ Web App Deployment กรุณาตรวจสอบ URL และการตั้งค่า Apps Script"
+);
+}
+
+throw error;
+
+} finally {
+if (!silent) {
+showLoading(false);
+}
+}
+}
+
+/* ============================================================
+4. AUTHENTICATION
+============================================================ */
+
+function redirectToLogin() {
+const loginUrl = new URL("./index.html", window.location.href);
+window.location.replace(loginUrl.href);
+}
+
+async function initializeAdmin() {
+const token = getToken();
+
+if (!token) {
+redirectToLogin();
+return;
+}
+
+try {
+showLoading(true, "กำลังตรวจสอบสิทธิ์ผู้ดูแล", "กรุณารอสักครู่");
+
+const result = await api("me", { token }, { silent: true });
+
+if (!result.user) {
+clearToken();
+redirectToLogin();
+return;
+}
+
+const role = String(result.user.role || "").toUpperCase();
+
+if (result.isAdmin !== true && role !== "ADMIN") {
+showLoading(false);
+
+showMessage(
+"ไม่มีสิทธิ์เข้าถึง",
+"บัญชีนี้ไม่ได้รับสิทธิ์ผู้ดูแลระบบ กรุณาเข้าสู่ระบบด้วยบัญชีที่ได้รับอนุญาต",
+"error"
+);
+
+setTimeout(redirectToLogin, 1200);
+return;
+}
+
+state.admin = result.user;
+
+$("#adminName").textContent = result.user.fullName || "ผู้ดูแลระบบ"; $("#adminEmail").textContent = result.user.email || "";
+$("#adminAvatar").textContent = String(result.user.fullName || "A").trim().charAt(0) || "A"; $("#overviewAdminName").textContent =
+result.user.fullName || "ผู้ดูแลระบบ";
+
+$("#appShell").classList.remove("hidden");
+
+await loadOverview();
+
+} catch (error) {
+showLoading(false);
+
+if (
+error.code === "INVALID_SESSION" ||
+error.code === "SESSION_EXPIRED" ||
+error.code === "SESSION_REVOKED" ||
+error.code === "AUTHENTICATION_REQUIRED" ||
+error.code === "ADMIN_REQUIRED" ||
+error.code === "ACCOUNT_DISABLED"
+) {
+clearToken();
+redirectToLogin();
+return;
+}
+
+showMessage(
+"เชื่อมต่อระบบไม่สำเร็จ",
+error.message || "ไม่สามารถตรวจสอบสิทธิ์ผู้ดูแลได้",
+"error"
+);
+} finally {
+showLoading(false);
+}
+}
+
+async function logoutAdmin() {
+const token = getToken();
+
+closeModal();
+
+try {
+if (token) {
+await api("logout", { token }, {
+loadingTitle: "กำลังออกจากระบบ"
+});
+}
+} catch (error) {
+// Clear local session even when the network request fails.
+}
+
+clearToken();
+redirectToLogin();
+}
+
+$("#logoutButton").addEventListener("click", () => {
+openModal({
+title: "ออกจากระบบ",
+body:
+'<div class="text-center">' +
+'<div class="modal-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>' +
+'<p style="color:#536078;">คุณต้องการออกจากระบบผู้ดูแล FINORA ใช่หรือไม่?</p>' +
+'</div>',
+buttons: [
+{
+label: "ยกเลิก",
+className: "button-secondary",
+onClick: closeModal
+},
+{
+label: "ออกจากระบบ",
+className: "button-danger",
+onClick: logoutAdmin
+}
+ ]
+});
+});
+
+/* ============================================================
+5. STATUS AND GENERAL RENDER HELPERS
+============================================================ */
+
+function statusLabel(status) {
+const labels = {
+REQUIRED: ["รอข้อมูลเพิ่มเติม", "warning"],
+DRAFT: ["แบบร่าง", "info"],
+APPROVED: ["ข้อมูลเพิ่มเติมผ่านการตรวจ", "success"],
+RETURNED: ["ตีกลับให้แก้ไข", "danger"],
+SUBMITTED: ["รอตรวจข้อมูลเพิ่มเติม", "warning"],
+SUPPLEMENTAL_APPROVED: ["ข้อมูลเพิ่มเติมผ่าน", "success"],
+ACTIVE: ["ใช้งาน", "success"],
+SUSPENDED: ["ระงับบัญชี", "danger"],
+PENDING_REVIEW: ["รอตรวจสอบ", "warning"],
+APPROVED_PENDING_ACCEPTANCE: ["รอยอมรับข้อเสนอ", "info"],
+ACCEPTED_PENDING_DISBURSEMENT: ["รอจ่ายเงิน", "warning"],
+DISBURSED: ["กำลังชำระ", "success"],
+REJECTED: ["ไม่อนุมัติ", "danger"],
+PAID_OFF: ["ปิดบัญชีแล้ว", "success"],
+AWAITING_SLIP: ["รอสลิป", "warning"],
+VERIFYING: ["กำลังตรวจสอบ", "info"],
+PAID: ["ชำระแล้ว", "success"],
+REVIEW_REQUIRED: ["รอตรวจสอบเพิ่มเติม", "warning"],
+RETRY_REQUIRED: ["ต้องตรวจใหม่", "danger"],
+OPEN: ["เปิดคำร้อง", "warning"],
+IN_PROGRESS: ["กำลังดำเนินการ", "info"],
+WAITING_CUSTOMER: ["รอข้อมูลลูกค้า", "warning"],
+RESOLVED: ["แก้ไขแล้ว", "success"],
+CLOSED: ["ปิดคำร้อง", "success"],
+TRUE: ["เปิดใช้งาน", "success"],
+FALSE: ["ปิดใช้งาน", "danger"],
+UNPAID: ["ยังไม่ชำระ", "warning"],
+PARTIAL: ["ชำระบางส่วน", "warning"]
+};
+
+const entry = labels[String(status || "").toUpperCase()] ||
+[String(status || "ไม่ทราบสถานะ"), ""];
+
+return '<span class="status-badge ' +
+entry[1] +
+'">' +
+escapeHtml(entry[0]) +
+'</span>';
+}
+
+function frequencyLabel(value) {
+const labels = {
+DAILY: "รายวัน",
+WEEKLY: "รายสัปดาห์",
+MONTHLY: "รายเดือน"
+};
+
+return labels[String(value || "").toUpperCase()] || "—";
+}
+
+function methodLabel(value) {
+const labels = {
+REDUCING_BALANCE: "ลดต้นลดดอก",
+FLAT: "ดอกเบี้ยคงที่",
+THUNDER_PROMPTPAY: "PromptPay / Thunder"
+};
+
+return labels[String(value || "").toUpperCase()] || escapeHtml(value || "—");
+}
+
+function emptyState(title, detail, icon = "fa-folder-open") {
+return (
+'<div class="empty-state">' +
+'<i class="fa-solid ' + escapeHtml(icon) + '"></i>' +
+'<strong>' + escapeHtml(title) + '</strong>' +
+'<p>' + escapeHtml(detail || "") + '</p>' +
+'</div>'
+);
+}
+
+function safeHtmlPreview(html) {
+if (window.DOMPurify) {
+return DOMPurify.sanitize(String(html || ""), {
+ALLOWED_TAGS: [
+"h1", "h2", "h3", "h4", "h5", "h6",
+"p", "div", "span", "br", "hr",
+"ul", "ol", "li", "strong", "em",
+"b", "i", "u", "blockquote", "a", "img"
+ ],
+ALLOWED_ATTR: [
+"href", "src", "alt", "title", "target", "rel"
+ ],
+ALLOW_DATA_ATTR: false
+});
+}
+
+return escapeHtml(html);
+}
+
+function filterRows(inputSelector, tableSelector) {
+const input = $(inputSelector);
+
+if (!input) return;
+
+const query = input.value.trim().toLowerCase();
+
+$$(tableSelector + " tbody tr").forEach((row) => {
+const searchable = String(
+row.getAttribute("data-search") || row.textContent || ""
+).toLowerCase();
+
+row.classList.toggle(
+"hidden",
+query !== "" && !searchable.includes(query)
+);
+});
+
+$$(tableSelector + " .announcement-item").forEach((item) => {
+const searchable = String(
+item.getAttribute("data-search") || item.textContent || ""
+).toLowerCase();
+
+item.classList.toggle(
+"hidden",
+query !== "" && !searchable.includes(query)
+);
+});
+}
+
+/* ============================================================
+6. TAB NAVIGATION AND REFRESH
+============================================================ */
+
+function setTab(tabName) {
+const panel = $("#tab-" + tabName);
+
+if (!panel) return;
+
+$$(".section-panel").forEach((section) => {
+section.classList.remove("active");
+});
+
+panel.classList.add("active");
+
+$$(".sidebar-link").forEach((link) => {
+link.classList.toggle(
+"active",
+link.dataset.tab === tabName
+);
+});
+
+state.activeTab = tabName;
+
+const handlers = {
+overview: loadOverview,
+users: loadUsers,
+loans: loadLoans,
+supplementals: loadSupplementals,
+products: loadProducts,
+payments: loadPayments,
+announcements: loadAnnouncements,
+tickets: loadTickets,
+audit: loadAudit,
+maintenance: loadMaintenance,
+health: loadHealth
+};
+
+if (handlers[tabName]) {
+handlers[tabName]();
+}
+
+window.scrollTo({ top: 0, behavior: "auto" });
+$("#globalSearch").value = "";
+}
+
+document.addEventListener("click", (event) => {
+const navButton = event.target.closest(".sidebar-link[data-tab]");
+
+if (navButton) {
+setTab(navButton.dataset.tab);
+return;
+}
+
+const tabButton = event.target.closest("[data-open-tab]");
+
+if (tabButton) {
+setTab(tabButton.dataset.openTab);
+return;
+}
+
+const refreshButton = event.target.closest("[data-refresh]");
+
+if (refreshButton) {
+const key = refreshButton.dataset.refresh;
+
+const handlers = {
+overview: loadOverview,
+users: loadUsers,
+loans: loadLoans,
+supplementals: loadSupplementals,
+products: loadProducts,
+payments: loadPayments,
+announcements: loadAnnouncements,
+tickets: loadTickets,
+audit: loadAudit,
+maintenance: loadMaintenance,
+health: loadHealth
+};
+
+if (handlers[key]) handlers[key]();
+}
+});
+
+$("#topRefreshButton").addEventListener("click", () => {
+const handlers = {
+overview: loadOverview,
+users: loadUsers,
+loans: loadLoans,
+supplementals: loadSupplementals,
+products: loadProducts,
+payments: loadPayments,
+announcements: loadAnnouncements,
+tickets: loadTickets,
+audit: loadAudit,
+maintenance: loadMaintenance,
+health: loadHealth
+};
+
+if (handlers[state.activeTab]) {
+handlers[state.activeTab]();
+}
+});
+
+$("#globalSearch").addEventListener("input", () => {
+const inputMap = {
+users: "#userSearch",
+loans: "#loanSearch",
+supplementals: "#supplementalSearch",
+payments: "#paymentSearch",
+announcements: "#announcementSearch",
+tickets: "#ticketSearch",
+audit: "#auditSearch"
+};
+
+const targetSelector = inputMap[state.activeTab];
+
+if (!targetSelector) return;
+
+$(targetSelector).value = $("#globalSearch").value;
+
+const filterMap = {
+users: "#usersTable table",
+loans: "#loansTable table",
+supplementals: "#supplementalsTable table",
+payments: "#paymentsTable table",
+announcements: "#announcementsList",
+tickets: "#ticketsTable table",
+audit: "#auditTable table"
+};
+
+filterRows(targetSelector, filterMap[state.activeTab]);
+});
+
+/* ============================================================
+7. OVERVIEW DASHBOARD
+============================================================ */
+
+async function loadOverview() {
+try {
+const result = await api("adminDashboard", tokenPayload(), {
+loadingTitle: "กำลังโหลดภาพรวมระบบ"
+});
+
+state.dashboard = result;
+
+const totals = result.totals || {};
+
+$("#statUsers").textContent = String(safeNumber(totals.users)); 
+
+$("#statActiveUsersFoot").textContent =
+"ใช้งานอยู่ " + safeNumber(totals.activeUsers) + " บัญชี";
+$("#statPendingLoans").textContent = String(safeNumber(totals.pendingLoans)); 
+
+$("#statPrincipal").textContent = "฿" + formatMoney(totals.outstandingPrincipal);
+$("#statPayments").textContent = "฿" + formatMoney(totals.verifiedPayments); 
+
+$("#statActiveLoans").textContent = String(safeNumber(totals.activeLoans));
+$("#statOutstanding").textContent = "฿" + formatMoney(totals.outstandingTotal); 
+
+$("#statPaymentReview").textContent = String(safeNumber(totals.pendingPaymentReviews));
+$("#statOpenTickets").textContent = String(safeNumber(totals.openTickets));
+
+renderOverviewLoans(result.recentLoans || []);
+renderOverviewPayments(result.recentPayments || []);
+
+} catch (error) {
+showApiError(error, "โหลดภาพรวมระบบไม่สำเร็จ");
+}
+}
+
+function renderOverviewLoans(loans) {
+const container = $("#overviewRecentLoans");
+
+if (!loans.length) {
+container.innerHTML = emptyState(
+"ยังไม่มีคำขอสินเชื่อ",
+"เมื่อมีคำขอใหม่ รายการจะแสดงที่นี่",
+"fa-file-circle-question"
+);
+return;
+}
+
+container.innerHTML =
+'<div class="table-wrap"><table class="table">' +
+'<thead><tr><th>คำขอ</th><th>จำนวนเงิน</th><th>สถานะ</th><th>วันที่สมัคร</th></tr></thead>' +
+'<tbody>' +
+loans.map((loan) => (
+'<tr data-search="' +
+escapeHtml([
+loan.loanId, loan.productName, loan.status
+ ].join(" ")) +
+'">' +
+'<td><div class="primary-cell">' + escapeHtml(loan.productName || "สินเชื่อ") + '</div>' +
+'<div class="secondary-cell">' + displaySensitiveId(loan.loanId) + '</div></td>' +
+'<td>฿' + formatMoney(loan.approvedAmount || loan.requestedAmount) + '</td>' +
+'<td>' + statusLabel(loan.status) + '</td>' +
+'<td>' + formatDate(loan.appliedAt) + '</td>' +
+'</tr>'
+)).join("") +
+'</tbody>' +
+'</table></div>';
+}
+
+function renderOverviewPayments(payments) {
+const container = $("#overviewRecentPayments");
+
+if (!payments.length) {
+container.innerHTML = emptyState(
+"ยังไม่มีรายการชำระเงิน",
+"รายการชำระเงินจะแสดงเมื่อมีธุรกรรมเข้าระบบ",
+"fa-money-bill-transfer"
+);
+return;
+}
+
+container.innerHTML =
+'<div class="table-wrap"><table class="table">' +
+'<thead><tr><th>รายการ</th><th>ลูกค้า</th><th>ยอดเงิน</th><th>สถานะ</th><th>วันที่</th></tr></thead>' +
+'<tbody>' +
+payments.map((payment) => (
+'<tr>' +
+'<td><div class="primary-cell">' + displaySensitiveId(payment.paymentId) + '</div>' +
+'<div class="secondary-cell">' + displaySensitiveId(payment.loanId) + '</div></td>' +
+'<td>' + escapeHtml(payment.customerName || "—") + '</td>' +
+'<td>฿' + formatMoney(payment.amount) + '</td>' +
+'<td>' + statusLabel(payment.status) + '</td>' +
+'<td>' + formatDateTime(payment.createdAt) + '</td>' +
+'</tr>'
+)).join("") +
+'</tbody>' +
+'</table></div>';
+}
+
+/* ============================================================
+8. USER MANAGEMENT
+============================================================ */
+
+async function loadUsers() {
+try {
+const result = await api("adminListUsers", tokenPayload(), {
+loadingTitle: "กำลังโหลดข้อมูลลูกค้า"
+});
+
+state.users = Array.isArray(result.users)
+? result.users
+: [];
+
+renderUsers();
+
+} catch (error) {
+showApiError(error, "โหลดรายชื่อลูกค้าไม่สำเร็จ");
+}
+}
+
+function renderUsers() {
+const container = $("#usersTable"); const query = $("#userSearch").value.trim().toLowerCase();
+const status = $("#userStatusFilter").value.toUpperCase();
+
+let users = state.users.slice();
+
+if (status) {
+users = users.filter((user) => {
+return String(user.status).toUpperCase() === status;
+});
+}
+
+if (query) {
+users = users.filter((user) => {
+const haystack = [
+user.userId,
+user.fullName,
+user.email,
+user.phone,
+user.status
+ ].join(" ").toLowerCase();
+
+return haystack.includes(query);
+});
+}
+
+$("#userCountLabel").textContent = users.length + " รายการ";
+
+if (!users.length) {
+container.innerHTML = emptyState(
+"ไม่พบข้อมูลลูกค้า",
+"ลองเปลี่ยนคำค้นหาหรือตัวกรอง",
+"fa-users"
+);
+return;
+}
+
+container.innerHTML =
+'<div class="table-wrap"><table class="table">' +
+'<thead><tr><th>ลูกค้า</th><th>อีเมล / โทรศัพท์</th><th>ยืนยันอีเมล</th><th>สถานะ</th><th>สมัครเมื่อ</th><th>การจัดการ</th></tr></thead>' +
+'<tbody>' +
+users.map((user) => {
+const isActive = String(user.status).toUpperCase() === "ACTIVE";
+const isAdmin = String(user.role).toUpperCase() === "ADMIN";
+
+return (
+'<tr data-search="' +
+escapeHtml([
+user.userId, user.fullName, user.email, user.phone
+ ].join(" ")) +
+'">' +
+'<td><div class="primary-cell">' + escapeHtml(user.prefix + " " + user.fullName) + '</div>' +
+'<div class="secondary-cell">' + displaySensitiveId(user.userId) +
+(isAdmin ? " · ADMIN" : "") +
+'</div></td>' +
+'<td><div>' + escapeHtml(user.email) + '</div>' +
+'<div class="secondary-cell">' + escapeHtml(user.phone || "—") + '</div></td>' +
+'<td>' + (
+user.emailVerified
+? '<span class="status-badge success">ยืนยันแล้ว</span>'
+: '<span class="status-badge warning">ยังไม่ยืนยัน</span>'
+) + '</td>' +
+'<td>' + statusLabel(user.status) + '</td>' +
+'<td>' + formatDate(user.createdAt) + '</td>' +
+'<td><div class="table-actions">' +
+'<button type="button" class="button button-secondary button-sm" data-user-detail="' +
+escapeHtml(user.userId) +
+'"><i class="fa-regular fa-eye"></i> รายละเอียด</button>' +
+(
+isAdmin
+? ''
+: (
+'<button type="button" class="button ' +
+(isActive ? "button-danger" : "button-success") +
+' button-sm" data-user-status="' +
+escapeHtml(user.userId) +
+'" data-next-status="' +
+(isActive ? "SUSPENDED" : "ACTIVE") +
+'">' +
+(isActive ? "ระงับ" : "เปิดใช้งาน") +
+'</button>'
+)
+) +
+'<button type="button" class="button button-secondary button-sm" data-revoke-sessions="' +
+escapeHtml(user.userId) +
+'">ยกเลิกเซสชัน</button>' +
+'</div></td>' +
+'</tr>'
+);
+}).join("") +
+'</tbody>' +
+'</table></div>';
+}
+
+$("#userSearch").addEventListener("input", renderUsers); $("#userStatusFilter").addEventListener("change", renderUsers);
+
+document.addEventListener("click", async (event) => {
+const detailButton = event.target.closest("[data-user-detail]");
+
+if (detailButton) {
+openUserDetail(detailButton.dataset.userDetail);
+return;
+}
+
+const statusButton = event.target.closest("[data-user-status]");
+
+if (statusButton) {
+await changeUserStatus(
+statusButton.dataset.userStatus,
+statusButton.dataset.nextStatus
+);
+return;
+}
+
+const revokeButton = event.target.closest("[data-revoke-sessions]");
+
+if (revokeButton) {
+await revokeUserSessions(revokeButton.dataset.revokeSessions);
+}
+});
+
+function openUserDetail(userId) {
+const user = state.users.find((item) => {
+return String(item.userId) === String(userId);
+});
+
+if (!user) {
+showMessage("ไม่พบข้อมูล", "ไม่พบข้อมูลผู้ใช้งานที่เลือก", "error");
+return;
+}
+
+openModal({
+title: "รายละเอียดลูกค้า",
+body:
+'<div class="form-grid">' +
+detailField("รหัสผู้ใช้", user.userId) +
+detailField("คำนำหน้า", user.prefix) +
+detailField("ชื่อ - สกุล", user.fullName) +
+detailField("วันเกิด", formatDate(user.dob)) +
+detailField("เลขบัตรประชาชนท้าย 4 หลัก", user.nationalIdLast4) +
+detailField("โทรศัพท์", user.phone) +
+detailField("อีเมล", user.email) +
+detailField("ยืนยันอีเมล", user.emailVerified ? "ยืนยันแล้ว" : "ยังไม่ยืนยัน") +
+detailField("สถานะบัญชี", user.status) +
+detailField("บทบาท", user.role) +
+detailField("สมัครเมื่อ", formatDateTime(user.createdAt)) +
+detailField("เข้าสู่ระบบล่าสุด", formatDateTime(user.lastLoginAt)) +
+'</div>' +
+'<div class="callout" style="margin-top:15px;">' +
+'<i class="fa-solid fa-shield-halved"></i>' +
+'<div>หน้ารายละเอียดนี้ไม่แสดงรหัสผ่านหรือเลขบัตรประชาชนฉบับเต็ม</div>' +
+'</div>',
+buttons: [
+{ label: "ปิด", className: "button-secondary", onClick: closeModal }
+ ]
+});
+}
+
+function detailField(label, value) {
+const isIdentifier = /(?:\bID\b|รหัส|เลขที่|เลขอ้างอิง|เลขเอกสาร|เลขบัญชี|Snapshot)/i.test(String(label || ""));
+const displayValue = isIdentifier
+  ? displaySensitiveId(value || "—")
+  : escapeHtml(value || "—");
+return (
+'<div class="form-group">' +
+'<label class="form-label">' + escapeHtml(label) + '</label>' +
+'<div class="field" style="background:#f8faff;min-height:39px;">' +
+displayValue +
+'</div>' +
+'</div>'
+);
+}
+
+async function changeUserStatus(userId, status) {
+const user = state.users.find((item) => {
+return String(item.userId) === String(userId);
+});
+
+if (!user) return;
+
+const isSuspend = status === "SUSPENDED";
+
+openModal({
+title: isSuspend ? "ระงับบัญชีลูกค้า" : "เปิดใช้งานบัญชีลูกค้า",
+body:
+'<div class="text-center">' +
+'<div class="modal-icon"><i class="fa-solid fa-user-shield"></i></div>' +
+'<p style="color:#4f5d73;">คุณต้องการ' +
+(isSuspend ? "ระงับ" : "เปิดใช้งาน") +
+'บัญชี <strong>' + escapeHtml(user.fullName) + '</strong> ใช่หรือไม่?</p>' +
+'<p class="muted small">การระงับบัญชีจะยกเลิกเซสชันของผู้ใช้ตามระบบปัจจุบัน</p>' +
+'</div>',
+buttons: [
+{ label: "ยกเลิก", className: "button-secondary", onClick: closeModal },
+{
+label: isSuspend ? "ยืนยันระงับ" : "ยืนยันเปิดใช้งาน",
+className: isSuspend ? "button-danger" : "button-success",
+onClick: async () => {
+closeModal();
+
+try {
+const result = await api("adminUpdateUserStatus", tokenPayload({
+userId,
+status
+}), {
+loadingTitle: "กำลังเปลี่ยนสถานะบัญชี"
+});
+
+showMessage("ดำเนินการสำเร็จ", result.message, "success");
+await loadUsers();
+
+} catch (error) {
+showApiError(error, "เปลี่ยนสถานะบัญชีไม่สำเร็จ");
+}
+}
+}
+]
+});
+}
+
+async function revokeUserSessions(userId) {
+openModal({
+title: "ยกเลิกเซสชัน",
+body:
+'<div class="text-center">' +
+'<div class="modal-icon"><i class="fa-solid fa-right-from-bracket"></i></div>' +
+'<p style="color:#536078;">เซสชันของผู้ใช้รายนี้จะถูกยกเลิก และผู้ใช้ต้องเข้าสู่ระบบใหม่</p>' +
+'</div>',
+buttons: [
+{ label: "ยกเลิก", className: "button-secondary", onClick: closeModal },
+{
+label: "ยืนยันยกเลิกเซสชัน",
+className: "button-danger",
+onClick: async () => {
+closeModal();
+
+try {
+const result = await api("adminRevokeUserSessions", tokenPayload({
+userId
+}), {
+loadingTitle: "กำลังยกเลิกเซสชัน"
+});
+
+showMessage("ดำเนินการสำเร็จ", result.message, "success");
+
+} catch (error) {
+showApiError(error, "ยกเลิกเซสชันไม่สำเร็จ");
+}
+}
+}
+]
+});
+}
+
+/* ============================================================
+9. LOAN APPLICATION MANAGEMENT
+============================================================ */
+
+async function loadLoans() {
+try {
+const result = await api("adminListLoans", tokenPayload(), {
+loadingTitle: "กำลังโหลดคำขอสินเชื่อ"
+});
+
+state.loans = Array.isArray(result.loans) ? result.loans : [];
+renderLoans();
+
+} catch (error) {
+showApiError(error, "โหลดคำขอสินเชื่อไม่สำเร็จ");
+}
+}
+
+function renderLoans() {
+const container = $("#loansTable"); const query = $("#loanSearch").value.trim().toLowerCase();
+const status = $("#loanStatusFilter").value.toUpperCase();
+
+let loans = state.loans.slice();
+
+if (status) {
+loans = loans.filter((loan) => {
+return String(loan.status).toUpperCase() === status;
+});
+}
+
+if (query) {
+loans = loans.filter((loan) => {
+const text = [
+loan.loanId, loan.customerName, loan.customerEmail,
+loan.customerPhone, loan.productName, loan.status
+ ].join(" ").toLowerCase();
+
+return text.includes(query);
+});
+}
+
+$("#loanCountLabel").textContent = loans.length + " รายการ";
+
+if (!loans.length) {
+container.innerHTML = emptyState(
+"ไม่พบคำขอสินเชื่อ",
+"ลองเปลี่ยนตัวกรองหรือค้นหาอีกครั้ง",
+"fa-file-circle-question"
+);
+return;
+}
+
+container.innerHTML =
+'<div class="table-wrap"><table class="table">' +
+'<thead><tr><th>คำขอ / ลูกค้า</th><th>จำนวนเงิน</th><th>รอบชำระ</th><th>งวด</th><th>สถานะ</th><th>วันที่สมัคร</th><th>การจัดการ</th></tr></thead>' +
+'<tbody>' +
+loans.map((loan) => {
+const statusValue = String(loan.status).toUpperCase();
+const pending = statusValue === "PENDING_REVIEW";
+const accepted = statusValue === "ACCEPTED_PENDING_DISBURSEMENT";
+
+return (
+'<tr data-search="' +
+escapeHtml([
+loan.loanId, loan.customerName, loan.customerEmail,
+loan.productName, loan.status
+ ].join(" ")) +
+'">' +
+'<td><div class="primary-cell">' + escapeHtml(loan.productName || "สินเชื่อ") + '</div>' +
+'<div class="secondary-cell">' + displaySensitiveId(loan.loanId) + '</div>' +
+'<div class="secondary-cell">' + escapeHtml(loan.customerName || "—") +
+(loan.customerEmail ? " · " + escapeHtml(loan.customerEmail) : "") +
+'</div></td>' +
+'<td><div class="primary-cell">฿' + formatMoney(loan.approvedAmount || loan.requestedAmount) + '</div>' +
+'<div class="secondary-cell">ขอ ฿' + formatMoney(loan.requestedAmount) + '</div></td>' +
+'<td>' + frequencyLabel(loan.frequency) + '</td>' +
+'<td>' + escapeHtml(loan.installments || "—") + '</td>' +
+'<td>' + statusLabel(loan.status) + '</td>' +
+'<td>' + formatDate(loan.appliedAt) + '</td>' +
+'<td><div class="table-actions">' +
+'<button type="button" class="button button-secondary button-sm" data-loan-detail="' +
+escapeHtml(loan.loanId) +
+'">รายละเอียด</button>' +
+(
+pending
+? '<button type="button" class="button button-primary button-sm" data-review-loan="' +
+escapeHtml(loan.loanId) +
+'">พิจารณา</button>'
+: ''
+) +
+(
+accepted
+? '<button type="button" class="button button-success button-sm" data-mark-disbursed="' +
+escapeHtml(loan.loanId) +
+'">บันทึกจ่ายเงิน</button>'
+: ''
+) +
+'</div></td>' +
+'</tr>'
+);
+}).join("") +
+'</tbody>' +
+'</table></div>';
+}
+
+$("#loanSearch").addEventListener("input", renderLoans); $("#loanStatusFilter").addEventListener("change", renderLoans);
+
+document.addEventListener("click", async (event) => {
+const detail = event.target.closest("[data-loan-detail]");
+
+if (detail) {
+openLoanDetail(detail.dataset.loanDetail);
+return;
+}
+
+const review = event.target.closest("[data-review-loan]");
+
+if (review) {
+openLoanReview(review.dataset.reviewLoan);
+return;
+}
+
+const markDisbursed = event.target.closest("[data-mark-disbursed]");
+
+if (markDisbursed) {
+openMarkDisbursed(markDisbursed.dataset.markDisbursed);
+return;
+}
+
+const supplementalReview = event.target.closest("[data-supplemental-review]");
+if (supplementalReview) {
+  openLoanSupplementalReview(supplementalReview.dataset.supplementalReview);
+}
+});
+
+function openLoanDetail(loanId) {
+const loan = state.loans.find((item) => {
+return String(item.loanId) === String(loanId);
+});
+
+if (!loan) {
+showMessage("ไม่พบคำขอ", "ไม่พบรายการคำขอสินเชื่อที่เลือก", "error");
+return;
+}
+
+openModal({
+title: "รายละเอียดคำขอสินเชื่อ",
+large: true,
+body:
+'<div class="form-grid">' +
+detailField("เลขที่สินเชื่อ", loan.loanId) +
+detailField("ผลิตภัณฑ์", loan.productName) +
+detailField("วัตถุประสงค์", loan.purposeDetails || loan.purpose || "—") +
+detailField("ลูกค้า", loan.customerName) +
+detailField("อีเมล", loan.customerEmail) +
+detailField("โทรศัพท์", loan.customerPhone) +
+detailField("สถานะ", loan.status) +
+detailField("วงเงินที่ขอ", "฿" + formatMoney(loan.requestedAmount)) +
+detailField("วงเงินอนุมัติ", "฿" + formatMoney(loan.approvedAmount)) +
+detailField("รอบชำระ", frequencyLabel(loan.frequency)) +
+detailField("รูปแบบรายวัน", loan.dailyMode || "—") +
+detailField("วันประจำสัปดาห์", loan.weeklyDay || "—") +
+detailField("วันที่ชำระรายเดือน", loan.monthlyDay || "—") +
+detailField("งวดแรก", formatDate(loan.firstDueDate)) +
+detailField("จำนวนงวด", loan.installments) +
+detailField("ดอกเบี้ยต่อปี", String(loan.interestRateAnnual || 0) + "%") +
+detailField("วิธีคำนวณ", methodLabel(loan.interestMethod)) +
+detailField("วันที่สมัคร", formatDateTime(loan.appliedAt)) +
+detailField("วันที่พิจารณา", formatDateTime(loan.reviewedAt)) +
+detailField("วันที่ยอมรับข้อเสนอ", formatDateTime(loan.acceptedAt)) +
+detailField("วันที่บันทึกจ่ายเงิน", formatDateTime(loan.disbursedAt)) +
+detailField("ยอดเงินต้นคงค้าง", "฿" + formatMoney(loan.outstandingPrincipal)) +
+detailField("ยอดคงค้างรวม", "฿" + formatMoney(loan.outstandingTotal)) +
+'</div>' +
+'<div class="form-group" style="margin-top:12px;">' +
+'<label class="form-label">หมายเหตุการพิจารณา</label>' +
+'<div class="field" style="min-height:70px;white-space:pre-wrap;">' +
+escapeHtml(loan.decisionNote || "ไม่มีหมายเหตุ") +
+'</div>' +
+'</div>',
+buttons: [
+{ label: "ปิด", className: "button-secondary", onClick: closeModal }
+ ]
+});
+}
+
+function openLoanReview(loanId) {
+const loan = state.loans.find((item) => {
+return String(item.loanId) === String(loanId);
+});
+
+if (!loan) return;
+
+openModal({
+title: "พิจารณาคำขอสินเชื่อ",
+large: true,
+body:
+'<div class="callout" style="margin-bottom:15px;">' +
+'<i class="fa-solid fa-circle-info"></i>' +
+'<div>ตรวจสอบเอกสาร ความสามารถในการชำระหนี้ และนโยบายสินเชื่อก่อนตัดสินใจ ผลที่บันทึกในที่นี้เป็นการตัดสินใจตามระบบหลังบ้าน</div>' +
+'</div>' +
+'<div class="form-grid">' +
+detailField("เลขที่คำขอ", loan.loanId) +
+detailField("ลูกค้า", loan.customerName) +
+detailField("ผลิตภัณฑ์", loan.productName) +
+detailField("วงเงินที่ขอ", "฿" + formatMoney(loan.requestedAmount)) +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="reviewApprovedAmount">วงเงินอนุมัติ (บาท)</label>' +
+'<input id="reviewApprovedAmount" class="field" type="number" min="0.01" max="' +
+escapeHtml(loan.requestedAmount) +
+'" step="0.01" value="' +
+escapeHtml(loan.requestedAmount) +
+'">' +
+'<span class="field-hint">วงเงินอนุมัติต้องไม่เกินวงเงินที่ลูกค้าขอและต้องตรงตามเกณฑ์ผลิตภัณฑ์</span>' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="reviewDecisionNote">เหตุผล/หมายเหตุประกอบการพิจารณา <span class="text-danger">*</span></label>' +
+'<textarea id="reviewDecisionNote" class="field" maxlength="1000" placeholder="บันทึกเหตุผลประกอบผลพิจารณา" required></textarea>' +
+'</div>',
+buttons: [
+{
+label: "ยกเลิก",
+className: "button-secondary",
+onClick: closeModal
+},
+{
+label: "ไม่อนุมัติ",
+className: "button-danger",
+onClick: async () => {
+const note = $("#reviewDecisionNote").value.trim();
+
+if (note.length < 2) {
+showMessage(
+"กรุณาระบุเหตุผล",
+"กรุณากรอกเหตุผลประกอบการไม่อนุมัติ",
+"error"
+);
+return;
+}
+
+closeModal();
+await saveLoanDecision(loanId, "REJECT", 0, note);
+}
+},
+{
+label: "อนุมัติ",
+className: "button-success",
+onClick: async () => {
+const note = $("#reviewDecisionNote").value.trim(); const amount = Number(
+
+$("#reviewApprovedAmount").value);
+
+if (note.length < 2) {
+showMessage(
+"กรุณาระบุเหตุผล",
+"กรุณาบันทึกหมายเหตุประกอบการพิจารณา",
+"error"
+);
+return;
+}
+
+if (
+!Number.isFinite(amount) ||
+amount <= 0 ||
+amount > Number(loan.requestedAmount)
+) {
+showMessage(
+"วงเงินไม่ถูกต้อง",
+"ตรวจสอบวงเงินอนุมัติอีกครั้ง",
+"error"
+);
+return;
+}
+
+closeModal();
+await saveLoanDecision(loanId, "APPROVE", amount, note);
+}
+}
+]
+});
+}
+
+async function saveLoanDecision(loanId, decision, approvedAmount, note) {
+try {
+const result = await api("adminDecideLoan", tokenPayload({
+loanId,
+decision,
+approvedAmount,
+note
+}), {
+loadingTitle: "กำลังบันทึกผลพิจารณา"
+});
+
+showMessage("บันทึกผลพิจารณาแล้ว", result.message, "success");
+await loadLoans();
+
+} catch (error) {
+showApiError(error, "บันทึกผลพิจารณาไม่สำเร็จ");
+}
+}
+
+function openMarkDisbursed(loanId) {
+const loan = state.loans.find((item) => {
+return String(item.loanId) === String(loanId);
+});
+
+if (!loan) return;
+
+openModal({
+title: "บันทึกผลการจ่ายเงินสินเชื่อ",
+body:
+'<div class="callout" style="margin-bottom:15px;">' +
+'<i class="fa-solid fa-triangle-exclamation"></i>' +
+'<div>ใช้เมื่อได้ตรวจสอบการโอนเงินจริงจากบัญชีธุรกิจแล้วเท่านั้น การบันทึกสถานะนี้ไม่ใช่คำสั่งโอนเงินจากธนาคาร</div>' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label">เลขที่สินเชื่อ</label>' +
+'<div class="field" style="background:#f8faff;">' + displaySensitiveId(loan.loanId) + '</div>' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label">ลูกค้า</label>' +
+'<div class="field" style="background:#f8faff;">' + escapeHtml(loan.customerName || "—") + '</div>' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="disbursementReference">เลขอ้างอิงธุรกรรมจ่ายเงิน <span class="text-danger">*</span></label>' +
+'<input id="disbursementReference" class="field" type="text" maxlength="200" placeholder="กรอกเลขอ้างอิงจากธนาคาร" required>' +
+'</div>',
+buttons: [
+{ label: "ยกเลิก", className: "button-secondary", onClick: closeModal },
+{
+label: "ยืนยันบันทึก",
+className: "button-success",
+onClick: async () => {
+const reference = $("#disbursementReference").value.trim();
+
+if (reference.length < 3) {
+showMessage(
+"เลขอ้างอิงไม่ถูกต้อง",
+"กรุณากรอกเลขอ้างอิงธุรกรรมจากธนาคาร",
+"error"
+);
+return;
+}
+
+closeModal();
+
+try {
+const result = await api("adminMarkDisbursed", tokenPayload({
+loanId,
+disbursementRef: reference
+}), {
+loadingTitle: "กำลังบันทึกสถานะการจ่ายเงิน"
+});
+
+showMessage("บันทึกแล้ว", result.message, "success");
+await loadLoans();
+
+} catch (error) {
+showApiError(error, "บันทึกสถานะจ่ายเงินไม่สำเร็จ");
+}
+}
+}
+]
+});
+}
+
+/* ============================================================
+9A. LOAN SUPPLEMENTAL REVIEW MANAGEMENT
+============================================================ */
+
+async function loadSupplementals() {
+  try {
+    const result = await api("adminListLoanSupplementals", tokenPayload({
+      status: $("#supplementalStatusFilter") ? $("#supplementalStatusFilter").value : ""
+    }), { loadingTitle: "กำลังโหลดข้อมูลเพิ่มเติมของผู้กู้" });
+    state.supplementals = Array.isArray(result.supplementals) ? result.supplementals : [];
+    renderSupplementals();
+  } catch (error) {
+    showApiError(error, "โหลดข้อมูลเพิ่มเติมของผู้กู้ไม่สำเร็จ");
+  }
+}
+
+function renderSupplementals() {
+  const container = $("#supplementalsTable");
+  if (!container) return;
+  const query = $("#supplementalSearch").value.trim().toLowerCase();
+  const status = $("#supplementalStatusFilter").value.toUpperCase();
+  let records = state.supplementals.slice();
+  if (status) records = records.filter((item) => String(item.status || "").toUpperCase() === status);
+  if (query) records = records.filter((item) => [item.loanId, item.supplementalId, item.customerName, item.customerEmail, item.productName, item.status].join(" ").toLowerCase().includes(query));
+  $("#supplementalCountLabel").textContent = records.length + " รายการ";
+  if (!records.length) {
+    container.innerHTML = emptyState("ไม่พบข้อมูลเพิ่มเติม", "รายการจะแสดงเมื่อคำขอสินเชื่อได้รับการอนุมัติเบื้องต้นและมีการสร้างแบบฟอร์มข้อมูลเพิ่มเติม", "fa-file-circle-question");
+    return;
+  }
+  container.innerHTML = '<div class="table-wrap"><table class="table"><thead><tr><th>สินเชื่อ / ผู้กู้</th><th>วงเงิน</th><th>รุ่นข้อมูล</th><th>สถานะข้อมูลเพิ่มเติม</th><th>ส่งล่าสุด</th><th>การจัดการ</th></tr></thead><tbody>' + records.map((item) => {
+    return '<tr><td><div class="primary-cell">' + escapeHtml(item.productName || "สินเชื่อ") + '</div><div class="secondary-cell">' + escapeHtml(item.loanId) + '</div><div class="secondary-cell">' + escapeHtml(item.customerName || "—") + (item.customerEmail ? ' · ' + escapeHtml(item.customerEmail) : "") + '</div></td>' +
+      '<td><div class="primary-cell">฿' + formatMoney(item.approvedAmount || item.requestedAmount) + '</div><div class="secondary-cell">ขอ ฿' + formatMoney(item.requestedAmount) + '</div></td>' +
+      '<td>' + escapeHtml(item.version || 0) + '</td><td>' + statusLabel(item.status) + (item.returnedReason ? '<div class="secondary-cell">เหตุผล: ' + escapeHtml(item.returnedReason) + '</div>' : '') + '</td><td>' + formatDateTime(item.submittedAt || item.updatedAt) + '</td>' +
+      '<td><div class="table-actions"><button type="button" class="button button-primary button-sm" data-supplemental-review="' + escapeHtml(item.supplementalId) + '"><i class="fa-solid fa-magnifying-glass"></i> ตรวจข้อมูล</button></div></td></tr>';
+  }).join("") + '</tbody></table></div>';
+}
+
+function supplementalDetailItem(label, value) {
+  const isIdentifier = /(?:\bID\b|รหัส|เลขที่|เลขอ้างอิง|เลขเอกสาร|เลขบัญชี|Snapshot)/i.test(String(label || ""));
+  const safeValue = value === undefined || value === null || value === "" ? "—" : value;
+  const displayValue = isIdentifier ? displaySensitiveId(safeValue) : escapeHtml(safeValue);
+  return '<div class="supplemental-detail-item"><span>' + escapeHtml(label) + '</span><strong>' + displayValue + '</strong></div>';
+}
+
+function supplementalDisplayDate(value) {
+  return value ? formatDateTime(value) : "—";
+}
+
+function renderSupplementalDocuments(docs, signatures) {
+  const combined = (docs || []).map((item) => Object.assign({ kind: "DOCUMENT" }, item)).concat((signatures || []).map((item) => Object.assign({ kind: "SIGNATURE" }, item)));
+  if (!combined.length) return '<p class="muted small">ยังไม่มีเอกสารหรือลายมือชื่อถูกบันทึก</p>';
+  return combined.map((item) => {
+    const label = item.documentName || (item.signatureType === "PRIMARY" ? "ลายมือชื่อผู้กู้" : item.signatureType === "CONFIRMATION" ? "ยืนยันลายมือชื่อ" : item.documentType || "เอกสาร");
+    const type = item.signatureType || item.documentType || "DOCUMENT";
+    const link = item.fileUrl ? '<a class="button button-secondary button-sm" href="' + escapeHtml(item.fileUrl) + '" target="_blank" rel="noopener noreferrer">เปิดไฟล์</a>' : '<span class="muted tiny">ไม่พบลิงก์ไฟล์ หรือไม่มีสิทธิ์เข้าถึง</span>';
+    return '<div class="supplemental-review-doc"><div><strong>' + escapeHtml(label) + '</strong><small>' + escapeHtml(type) + ' · รุ่น ' + escapeHtml(item.version || "—") + ' · ' + escapeHtml(supplementalDisplayDate(item.uploadedAt || item.signedAt)) + '</small>' + (item.reviewNote ? '<small>หมายเหตุ: ' + escapeHtml(item.reviewNote) + '</small>' : '') + '</div><div>' + link + '</div></div>';
+  }).join("");
+}
+
+function renderSupplementalVersions(versions) {
+  if (!versions || !versions.length) return '<p class="muted small">ยังไม่มีภาพข้อมูลฉบับส่งที่บันทึกไว้</p>';
+  return '<div class="table-wrap"><table class="supplemental-diff"><thead><tr><th>รุ่นข้อมูล</th><th>วันเวลาที่ส่ง</th><th>ผู้ส่ง</th><th>สถานที่ทำงาน</th><th>รายได้ต่อเดือน</th><th>ธนาคาร / บัญชี (ปกปิดบางส่วน)</th><th>รหัสตรวจสอบ Snapshot</th></tr></thead><tbody>' + versions.map((item) => {
+    const data = item.data || {};
+    return '<tr><td>' + escapeHtml(item.version || "—") + '</td><td>' + escapeHtml(formatDateTime(item.submittedAt)) + '</td><td>' + escapeHtml(item.submittedBy || "—") + '</td><td>' + escapeHtml(data.employerName || "—") + '</td><td>' + escapeHtml(data.monthlyIncome === undefined ? "—" : ("฿" + formatMoney(data.monthlyIncome))) + '</td><td>' + escapeHtml(data.bankName === "อื่น ๆ" ? ("อื่น ๆ: " + (data.bankOtherName || "")) : (data.bankName || "—")) + '<div class="secondary-cell">' + escapeHtml(data.bankAccountNumber || "—") + '</div></td><td><span class="tiny wrap-anywhere">' + displaySensitiveId(item.snapshotHash || "—") + '</span></td></tr>';
+  }).join("") + '</tbody></table></div>';
+}
+
+function renderSupplementalHistory(history) {
+  if (!history || !history.length) return '<p class="muted small">ยังไม่มีประวัติการเปลี่ยนแปลง</p>';
+  const eventLabels = { FIELD_CHANGED: "แก้ไขข้อมูล", SUBMITTED: "ส่งข้อมูล", DRAFT_SAVED: "บันทึกแบบร่าง", FILE_UPLOADED: "อัปโหลดไฟล์", CREATED: "สร้างแบบฟอร์ม", REVIEW_APPROVE: "อนุมัติข้อมูล", REVIEW_RETURN: "ตีกลับให้แก้ไข", REVIEW_REJECT: "ไม่อนุมัติข้อมูล" };
+  return '<div class="table-wrap"><table class="supplemental-diff"><thead><tr><th>เวลา</th><th>รุ่น</th><th>เหตุการณ์ / ช่อง</th><th>ข้อมูลเดิม</th><th>ข้อมูลใหม่</th><th>เหตุผล</th></tr></thead><tbody>' + history.map((item) => '<tr><td>' + escapeHtml(formatDateTime(item.timestamp)) + '</td><td>' + escapeHtml(item.version || "—") + '</td><td>' + escapeHtml(eventLabels[item.action] || item.action || "—") + (item.fieldName ? '<div class="secondary-cell">' + escapeHtml(item.fieldName) + '</div>' : '') + '</td><td>' + escapeHtml(item.oldValue || "—") + '</td><td>' + escapeHtml(item.newValue || "—") + '</td><td>' + escapeHtml(item.reason || "—") + '</td></tr>').join("") + '</tbody></table></div>';
+}
+
+async function openLoanSupplementalReview(supplementalId) {
+  try {
+    const result = await api("adminGetLoanSupplemental", tokenPayload({ supplementalId: supplementalId }), { loadingTitle: "กำลังโหลดรายละเอียดข้อมูลผู้กู้" });
+    const record = result.supplemental || {};
+    const loan = result.loan || {};
+    const customer = result.customer || {};
+    const data = result.formData || {};
+    const canReview = String(record.status || "").toUpperCase() === "SUBMITTED";
+    const personal = [
+      ["ชื่อผู้กู้", [customer.prefix, customer.fullName].filter(Boolean).join(" ")], ["วันเกิด", customer.dob ? formatDate(customer.dob) : "—"], ["อีเมล", customer.email], ["โทรศัพท์ในบัญชี", customer.phone],
+      ["ประเภทเอกสาร", data.idType === "THAI_ID_CARD" ? "บัตรประชาชน" : data.idType === "PASSPORT" ? "พาสปอร์ต" : data.idType], ["เลขเอกสาร", data.idNumber], ["ที่อยู่ทะเบียนบ้าน", data.registeredAddress], ["ที่อยู่ปัจจุบัน", data.currentAddress], ["ระยะเวลาพักอาศัย", data.residenceDuration], ["สถานภาพสมรส", data.maritalStatus],
+      ["ประเภทอาชีพ", data.occupationType === "EMPLOYED" ? "พนักงานประจำ" : data.occupationType === "BUSINESS" ? "ธุรกิจส่วนตัว" : data.occupationType === "FREELANCE" ? "อาชีพอิสระ" : data.occupationType === "OTHER" ? ("อื่น ๆ: " + (data.occupationOther || "")) : data.occupationType], ["บริษัท/สถานที่ทำงาน", data.employerName], ["ตำแหน่ง/ธุรกิจ", data.jobTitle], ["ระยะเวลาทำงาน", data.workDuration], ["รายได้ต่อเดือน", data.monthlyIncome === undefined ? "" : formatMoney(data.monthlyIncome) + " บาท"], ["รายได้เสริม", data.additionalIncome === undefined ? "" : formatMoney(data.additionalIncome) + " บาท"], ["วันรับรายได้", data.payDate],
+      ["ค่าใช้จ่ายจำเป็น/เดือน", data.monthlyExpenses === undefined ? "" : formatMoney(data.monthlyExpenses) + " บาท"], ["ค่างวดหนี้/เดือน", data.monthlyDebtPayment === undefined ? "" : formatMoney(data.monthlyDebtPayment) + " บาท"], ["รายละเอียดภาระหนี้", data.otherDebtDetails], ["ค่าเลี้ยงดูครอบครัว", data.familySupport === undefined ? "" : formatMoney(data.familySupport) + " บาท"], ["เงินคงเหลือคำนวณ", data.calculatedDisposableIncome === undefined ? "" : formatMoney(data.calculatedDisposableIncome) + " บาท"],
+      ["ธนาคาร", data.bankName === "อื่น ๆ" ? ("อื่น ๆ: " + (data.bankOtherName || "")) : data.bankName], ["ประเภทบัญชี", data.bankAccountType], ["ชื่อบัญชี", data.bankAccountName], ["เลขบัญชี", data.bankAccountNumber]
+    ];
+    const details = personal.map((pair) => supplementalDetailItem(pair[0], pair[1])).join("");
+    const loanHtml = '<div class="supplemental-detail-grid">' + [
+      ["เลขที่สินเชื่อ", loan.loanId], ["ผลิตภัณฑ์", loan.productName], ["สถานะสินเชื่อ", loan.status], ["วงเงินที่ขอ", "฿" + formatMoney(loan.requestedAmount)], ["วงเงินอนุมัติ", "฿" + formatMoney(loan.approvedAmount)], ["จำนวนงวด", loan.installments], ["รอบชำระ", frequencyLabel(loan.frequency)], ["ดอกเบี้ยต่อปี", String(loan.interestRateAnnual || 0) + "%"], ["สถานะข้อมูลเพิ่มเติม", record.status], ["รุ่นข้อมูล", record.version], ["ส่งล่าสุด", supplementalDisplayDate(record.submittedAt)], ["เหตุผลตีกลับล่าสุด", record.returnedReason || "—"]
+    ].map((pair) => supplementalDetailItem(pair[0], pair[1])).join("") + '</div>';
+    const documentHtml = renderSupplementalDocuments(result.documents || [], result.signatures || []);
+    const historyHtml = renderSupplementalHistory(result.history || []);
+    const versionsHtml = renderSupplementalVersions(result.versions || []);
+    const reviewControl = canReview ? '<div class="form-group" style="margin-top:16px;"><label class="form-label" for="supplementalReviewNote">เหตุผล / หมายเหตุจากเจ้าหน้าที่</label><textarea id="supplementalReviewNote" class="field" maxlength="2000" rows="3" placeholder="กรณีตีกลับหรือไม่อนุมัติ ต้องระบุเหตุผลที่ชัดเจน"></textarea></div>' : '<div class="callout" style="margin-top:15px;"><i class="fa-solid fa-circle-info"></i><div>รายการนี้ไม่ได้อยู่ในสถานะรอตรวจสอบ การตัดสินใจทำได้เฉพาะหลังจากผู้กู้ส่งข้อมูลเข้ามาแล้ว</div></div>';
+    openModal({
+      title: "ตรวจสอบข้อมูลเพิ่มเติม",
+      xlarge: true,
+      body: '<div class="callout" style="margin-bottom:14px;"><i class="fa-solid fa-shield-halved"></i><div>ตรวจสอบเอกสารต้นฉบับ ความถูกต้องของข้อมูล และความสามารถในการชำระคืนก่อนเลือกผล หลีกเลี่ยงการบันทึกข้อมูลเต็มของบัตรหรือบัญชีลงในหมายเหตุ</div></div>' +
+        '<h3 style="margin:0 0 8px;font-size:13px;">ข้อมูลสินเชื่อและสถานะ</h3>' + loanHtml +
+        '<div class="supplemental-history-section"><h3>ข้อมูลส่วนบุคคล อาชีพ รายได้ ภาระหนี้ และบัญชีรับเงิน</h3><div class="supplemental-detail-grid">' + details + '</div></div>' +
+        '<div class="supplemental-history-section"><h3>เอกสารประกอบและลายมือชื่อ</h3>' + documentHtml + '</div>' +
+        '<div class="supplemental-history-section"><h3>ภาพข้อมูลที่ส่งแต่ละรุ่น (เก็บแยก ไม่เขียนทับ)</h3>' + versionsHtml + '</div>' +
+        '<div class="supplemental-history-section"><h3>ประวัติการเปลี่ยนแปลง (ข้อมูลเก่า → ข้อมูลใหม่)</h3>' + historyHtml + '</div>' + reviewControl,
+      buttons: [{ label: "ปิด", className: "button-secondary", onClick: closeModal }].concat(canReview ? [
+        { label: "ตีกลับให้แก้ไข", className: "button-warning", onClick: async function () { await submitSupplementalReview(supplementalId, "RETURN"); } },
+        { label: "ไม่อนุมัติ", className: "button-danger", onClick: async function () { await submitSupplementalReview(supplementalId, "REJECT"); } },
+        { label: "อนุมัติข้อมูล", className: "button-success", onClick: async function () { await submitSupplementalReview(supplementalId, "APPROVE"); } }
+      ] : [])
+    });
+  } catch (error) {
+    showApiError(error, "เปิดรายละเอียดข้อมูลเพิ่มเติมไม่สำเร็จ");
+  }
+}
+
+async function submitSupplementalReview(supplementalId, decision) {
+  const noteElement = $("#supplementalReviewNote");
+  const note = noteElement ? noteElement.value.trim() : "";
+  if (decision !== "APPROVE" && note.length < 2) {
+    showMessage("ต้องระบุเหตุผล", "กรุณาระบุเหตุผลที่ชัดเจนเมื่อตีกลับหรือไม่อนุมัติ", "error");
+    return;
+  }
+  closeModal();
+  try {
+    const result = await api("adminReviewLoanSupplemental", tokenPayload({ supplementalId: supplementalId, decision: decision, note: note }), { loadingTitle: "กำลังบันทึกผลการตรวจข้อมูลเพิ่มเติม" });
+    showMessage("บันทึกผลตรวจแล้ว", result.message || "บันทึกผลเรียบร้อย", "success");
+    await Promise.all([loadSupplementals(), loadLoans()]);
+  } catch (error) {
+    showApiError(error, "บันทึกผลตรวจข้อมูลเพิ่มเติมไม่สำเร็จ");
+  }
+}
+
+
+
+/* ============================================================
+10. LOAN PRODUCT MANAGEMENT
+============================================================ */
+
+async function loadProducts() {
+try {
+const result = await api("adminListProducts", tokenPayload(), {
+loadingTitle: "กำลังโหลดผลิตภัณฑ์สินเชื่อ"
+});
+
+state.products = Array.isArray(result.products)
+? result.products
+: [];
+
+renderProducts();
+
+} catch (error) {
+showApiError(error, "โหลดผลิตภัณฑ์ไม่สำเร็จ");
+}
+}
+
+function renderProducts() {
+const container = $("#productsGrid");
+
+if (!state.products.length) {
+container.innerHTML =
+'<div class="panel-card" style="grid-column:1/-1;">' +
+emptyState("ยังไม่มีผลิตภัณฑ์", "เพิ่มผลิตภัณฑ์สินเชื่อเพื่อเริ่มต้นตั้งค่าระบบ", "fa-boxes-stacked") +
+'</div>';
+return;
+}
+
+container.innerHTML = state.products.map((product) => {
+const enabled = Boolean(product.enabled);
+
+const frequencyText = Array.isArray(product.frequencies)
+? product.frequencies.map(frequencyLabel).join(" · ")
+: "—";
+
+return (
+'<article class="product-card">' +
+'<div class="product-card-top">' +
+'<div>' +
+'<h3>' + escapeHtml(product.name) + '</h3>' +
+'<p>' + escapeHtml(product.description || "ไม่มีรายละเอียด") + '</p>' +
+'</div>' +
+statusLabel(enabled ? "TRUE" : "FALSE") +
+'</div>' +
+'<div class="product-numbers">' +
+'<div class="product-number">' +
+'<span>วงเงินขั้นต่ำ</span>' +
+'<strong>฿' + formatMoney(product.minAmount) + '</strong>' +
+'</div>' +
+'<div class="product-number">' +
+'<span>วงเงินสูงสุด</span>' +
+'<strong>฿' + formatMoney(product.maxAmount) + '</strong>' +
+'</div>' +
+'<div class="product-number">' +
+'<span>ดอกเบี้ยต่อปี</span>' +
+'<strong>' + safeNumber(product.interestRateAnnual) + '%</strong>' +
+'</div>' +
+'<div class="product-number">' +
+'<span>จำนวนงวด</span>' +
+'<strong>' + escapeHtml(product.minInstallments) + '–' +
+escapeHtml(product.maxInstallments) + '</strong>' +
+'</div>' +
+'</div>' +
+'<div class="small muted" style="margin-bottom:12px;">' +
+'<div>รอบชำระ: ' + escapeHtml(frequencyText) + '</div>' +
+'<div>วิธีคำนวณ: ' + methodLabel(product.interestMethod) + '</div>' +
+'<div>ตรวจสอบข้อกำกับ: ' +
+statusLabel(product.legalReviewed ? "TRUE" : "FALSE") +
+'</div>' +
+'</div>' +
+'<div class="product-footer">' +
+'<span class="tiny muted wrap-anywhere">' + escapeHtml(product.productId) + '</span>' +
+'<div class="table-actions">' +
+'<button type="button" class="button button-secondary button-sm" data-edit-product="' +
+escapeHtml(product.productId) +
+'"><i class="fa-solid fa-pen"></i> แก้ไข</button>' +
+(
+enabled
+? '<button type="button" class="button button-danger button-sm" data-disable-product="' +
+escapeHtml(product.productId) +
+'">ปิดใช้งาน</button>'
+: ''
+) +
+'</div>' +
+'</div>' +
+'</article>'
+);
+}).join("");
+}
+
+$("#newProductButton").addEventListener("click", () => {
+openProductEditor(null);
+});
+
+document.addEventListener("click", async (event) => {
+const editButton = event.target.closest("[data-edit-product]");
+
+if (editButton) {
+const product = state.products.find((item) => {
+return String(item.productId) === String(editButton.dataset.editProduct);
+});
+
+openProductEditor(product || null);
+return;
+}
+
+const disableButton = event.target.closest("[data-disable-product]");
+
+if (disableButton) {
+await disableProduct(disableButton.dataset.disableProduct);
+}
+});
+
+function openProductEditor(product) {
+const editing = Boolean(product);
+
+const frequencyOptions = [
+["DAILY", "รายวัน"],
+["WEEKLY", "รายสัปดาห์"],
+["MONTHLY", "รายเดือน"]
+];
+
+const selectedFrequencies = Array.isArray(product && product.frequencies)
+? product.frequencies.map((item) => String(item).toUpperCase())
+: ["MONTHLY"];
+
+const frequencyHtml = frequencyOptions.map(([value, label]) => (
+'<label class="check-row">' +
+'<input type="checkbox" name="productFrequency" value="' +
+value +
+'"' +
+(selectedFrequencies.includes(value) ? " checked" : "") +
+'>' +
+'<span>' + label + '</span>' +
+'</label>'
+)).join("");
+
+const body =
+'<form id="productEditorForm" novalidate>' +
+'<input id="productId" type="hidden" value="' +
+escapeHtml(product ? product.productId : "") +
+'">' +
+'<div class="form-grid">' +
+'<div class="form-group span-2">' +
+'<label class="form-label" for="productName">ชื่อผลิตภัณฑ์ <span class="text-danger">*</span></label>' +
+'<input id="productName" class="field" type="text" maxlength="150" required value="' +
+escapeHtml(product ? product.name : "") +
+'">' +
+'</div>' +
+'<div class="form-group span-2">' +
+'<label class="form-label" for="productDescription">รายละเอียด</label>' +
+'<textarea id="productDescription" class="field" maxlength="2000">' +
+escapeHtml(product ? product.description : "") +
+'</textarea>' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="productMinAmount">วงเงินขั้นต่ำ</label>' +
+'<input id="productMinAmount" class="field" type="number" min="1" step=".01" required value="' +
+escapeHtml(product ? product.minAmount : "1000") +
+'">' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="productMaxAmount">วงเงินสูงสุด</label>' +
+'<input id="productMaxAmount" class="field" type="number" min="1" step=".01" required value="' +
+escapeHtml(product ? product.maxAmount : "10000") +
+'">' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="productMinInstallments">งวดขั้นต่ำ</label>' +
+'<input id="productMinInstallments" class="field" type="number" min="1" step="1" required value="' +
+escapeHtml(product ? product.minInstallments : "1") +
+'">' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="productMaxInstallments">งวดสูงสุด</label>' +
+'<input id="productMaxInstallments" class="field" type="number" min="1" step="1" required value="' +
+escapeHtml(product ? product.maxInstallments : "12") +
+'">' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="productRate">อัตราดอกเบี้ยต่อปี (%)</label>' +
+'<input id="productRate" class="field" type="number" min="0" step=".01" required value="' +
+escapeHtml(product ? product.interestRateAnnual : "0") +
+'">' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="productMaxRate">เพดานอัตราที่ผ่านการตรวจสอบ (%)</label>' +
+'<input id="productMaxRate" class="field" type="number" min=".01" step=".01" required value="' +
+escapeHtml(product ? product.maxEffectiveAnnualRate : "25") +
+'">' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="productInterestMethod">วิธีคำนวณดอกเบี้ย</label>' +
+'<select id="productInterestMethod" class="field">' +
+'<option value="REDUCING_BALANCE"' +
+(product && product.interestMethod === "REDUCING_BALANCE" ? " selected" : "") +
+'>ลดต้นลดดอก</option>' +
+'<option value="FLAT"' +
+(product && product.interestMethod === "FLAT" ? " selected" : "") +
+'>ดอกเบี้ยคงที่</option>' +
+'</select>' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="productFixedFee">ค่าธรรมเนียมคงที่ (บาท)</label>' +
+'<input id="productFixedFee" class="field" type="number" min="0" step=".01" value="' +
+escapeHtml(product ? product.feeFixed : "0") +
+'">' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="productPercentFee">ค่าธรรมเนียม (%)</label>' +
+'<input id="productPercentFee" class="field" type="number" min="0" step=".01" value="' +
+escapeHtml(product ? product.feePercent : "0") +
+'">' +
+'</div>' +
+'<div class="form-group span-2">' +
+'<label class="form-label" for="productLicenseType">ประเภทใบอนุญาต/ผลิตภัณฑ์</label>' +
+'<input id="productLicenseType" class="field" type="text" maxlength="200" value="' +
+escapeHtml(product ? product.licenseType : "") +
+'" placeholder="ระบุประเภทผลิตภัณฑ์และใบอนุญาตที่ตรวจสอบแล้ว">' +
+'</div>' +
+'<div class="form-group span-2">' +
+'<label class="form-label">รอบชำระที่รองรับ</label>' +
+'<div style="display:flex;flex-wrap:wrap;gap:16px;">' +
+frequencyHtml +
+'</div>' +
+'</div>' +
+'<div class="form-group span-2">' +
+'<label class="check-row">' +
+'<input id="productLegalReviewed" type="checkbox"' +
+(product && product.legalReviewed ? " checked" : "") +
+'>' +
+'<span>ผ่านการตรวจสอบข้อกำกับสำหรับผลิตภัณฑ์นี้แล้ว</span>' +
+'</label>' +
+'<label class="check-row" style="margin-top:10px;">' +
+'<input id="productEnabled" type="checkbox"' +
+(product && product.enabled ? " checked" : "") +
+'>' +
+'<span>เปิดให้สมัครผลิตภัณฑ์นี้</span>' +
+'</label>' +
+'</div>' +
+'</div>' +
+'<div class="callout">' +
+'<i class="fa-solid fa-triangle-exclamation"></i>' +
+'<div>ระบบบังคับให้ระบุสถานะตรวจสอบข้อกำกับก่อนเปิดผลิตภัณฑ์ การติ๊กช่องนี้เป็นการบันทึกสถานะโดยผู้ดูแล ไม่ใช่การรับรองว่าเป็นไปตามกฎหมายโดยอัตโนมัติ</div>' +
+'</div>' +
+'</form>';
+
+openModal({
+title: editing ? "แก้ไขผลิตภัณฑ์สินเชื่อ" : "เพิ่มผลิตภัณฑ์สินเชื่อ",
+large: true,
+body: body,
+buttons: [
+{ label: "ยกเลิก", className: "button-secondary", onClick: closeModal },
+{
+label: "บันทึกผลิตภัณฑ์",
+className: "button-primary",
+onClick: saveProductFromModal
+}
+ ]
+});
+}
+
+async function saveProductFromModal() {
+const frequencyElements = $('input[name="productFrequency"]:checked', $("#modalBody"));
+const frequencies = frequencyElements.map((input) => input.value);
+
+const name = $("#productName").value.trim(); const minAmount = Number($("#productMinAmount").value);
+const maxAmount = Number($("#productMaxAmount").value); const minInstallments = Number($("#productMinInstallments").value);
+const maxInstallments = Number($("#productMaxInstallments").value); const rate = Number($("#productRate").value);
+const maxRate = Number($("#productMaxRate").value);
+
+if (!name) {
+showMessage("ข้อมูลไม่ครบ", "กรุณากรอกชื่อผลิตภัณฑ์", "error");
+return;
+}
+
+if (
+!Number.isFinite(minAmount) ||
+!Number.isFinite(maxAmount) ||
+minAmount <= 0 ||
+maxAmount < minAmount
+) {
+showMessage("วงเงินไม่ถูกต้อง", "ตรวจสอบวงเงินขั้นต่ำและสูงสุด", "error");
+return;
+}
+
+if (
+!Number.isInteger(minInstallments) ||
+!Number.isInteger(maxInstallments) ||
+minInstallments < 1 ||
+maxInstallments < minInstallments
+) {
+showMessage("จำนวนงวดไม่ถูกต้อง", "ตรวจสอบจำนวนงวดขั้นต่ำและสูงสุด", "error");
+return;
+}
+
+if (!frequencies.length) {
+showMessage("ยังไม่ได้เลือกรอบชำระ", "เลือกอย่างน้อยหนึ่งรอบชำระ", "error");
+return;
+}
+
+if (
+!Number.isFinite(rate) ||
+!Number.isFinite(maxRate) ||
+rate < 0 ||
+maxRate <= 0 ||
+rate > maxRate
+) {
+showMessage("อัตราดอกเบี้ยไม่ถูกต้อง", "ตรวจสอบอัตราที่กำหนดและเพดานที่ใช้", "error");
+return;
+}
+
+const payload = {
+token: getToken(),
+productId: $("#productId").value.trim(), name, description: 
+
+$("#productDescription").value.trim(),
+minAmount,
+maxAmount,
+minInstallments,
+maxInstallments,
+frequencies,
+interestRateAnnual: rate,
+maxEffectiveAnnualRate: maxRate,
+interestMethod: $("#productInterestMethod").value, feeFixed: Number(
+
+$("#productFixedFee").value || 0),
+feePercent: Number($("#productPercentFee").value || 0), licenseType: 
+
+$("#productLicenseType").value.trim(),
+legalReviewed: $("#productLegalReviewed").checked, enabled: 
+
+$("#productEnabled").checked
+};
+
+closeModal();
+
+try {
+const result = await api("adminSaveProduct", payload, {
+loadingTitle: "กำลังบันทึกผลิตภัณฑ์"
+});
+
+showMessage("บันทึกสำเร็จ", result.message, "success");
+await loadProducts();
+
+} catch (error) {
+showApiError(error, "บันทึกผลิตภัณฑ์ไม่สำเร็จ");
+}
+}
+
+async function disableProduct(productId) {
+openModal({
+title: "ปิดใช้งานผลิตภัณฑ์",
+body:
+'<div class="text-center">' +
+'<div class="modal-icon"><i class="fa-solid fa-box-archive"></i></div>' +
+'<p style="color:#56637a;">ต้องการปิดไม่ให้ผลิตภัณฑ์นี้รับสมัครใหม่หรือไม่?</p>' +
+'<p class="small muted">การปิดผลิตภัณฑ์ไม่ควรลบสัญญาหรือข้อมูลสินเชื่อเดิม</p>' +
+'</div>',
+buttons: [
+{ label: "ยกเลิก", className: "button-secondary", onClick: closeModal },
+{
+label: "ปิดผลิตภัณฑ์",
+className: "button-danger",
+onClick: async () => {
+closeModal();
+
+try {
+const result = await api("adminDisableProduct", tokenPayload({
+productId
+}), {
+loadingTitle: "กำลังปิดผลิตภัณฑ์"
+});
+
+showMessage("ดำเนินการสำเร็จ", result.message, "success");
+await loadProducts();
+
+} catch (error) {
+showApiError(error, "ปิดผลิตภัณฑ์ไม่สำเร็จ");
+}
+}
+}
+]
+});
+}
+
+/* ============================================================
+11. PAYMENT RECORDS AND REVIEW
+============================================================ */
+
+async function loadPayments() {
+try {
+const result = await api("adminListPayments", tokenPayload(), {
+loadingTitle: "กำลังโหลดรายการชำระเงิน"
+});
+
+state.payments = Array.isArray(result.payments)
+? result.payments
+: [];
+
+renderPayments();
+
+} catch (error) {
+showApiError(error, "โหลดรายการชำระเงินไม่สำเร็จ");
+}
+}
+
+function renderPayments() {
+const container = $("#paymentsTable"); const query = 
+
+$("#paymentSearch").value.trim().toLowerCase();
+const filterStatus = $("#paymentStatusFilter").value.toUpperCase();
+
+let payments = state.payments.slice();
+
+if (filterStatus) {
+payments = payments.filter((payment) => {
+return String(payment.status).toUpperCase() === filterStatus;
+});
+}
+
+if (query) {
+payments = payments.filter((payment) => {
+const text = [
+payment.paymentId, payment.loanId, payment.customerName,
+payment.customerEmail, payment.slipTransRef, payment.status
+ ].join(" ").toLowerCase();
+
+return text.includes(query);
+});
+}
+
+$("#paymentCountLabel").textContent = payments.length + " รายการ";
+
+if (!payments.length) {
+container.innerHTML = emptyState(
+"ไม่พบรายการชำระเงิน",
+"ลองเปลี่ยนตัวกรองแล้วค้นหาใหม่",
+"fa-money-bill-transfer"
+);
+return;
+}
+
+container.innerHTML =
+'<div class="table-wrap"><table class="table">' +
+'<thead><tr><th>Payment / Loan</th><th>ลูกค้า</th><th>ยอดเงิน</th><th>เลขอ้างอิงสลิป</th><th>สถานะ</th><th>วันที่</th><th>การจัดการ</th></tr></thead>' +
+'<tbody>' +
+payments.map((payment) => {
+const status = String(payment.status).toUpperCase();
+
+const canReview = [
+"REVIEW_REQUIRED",
+"RETRY_REQUIRED"
+ ].includes(status);
+
+return (
+'<tr data-search="' +
+escapeHtml([
+payment.paymentId, payment.loanId,
+payment.customerName, payment.customerEmail,
+payment.slipTransRef, payment.status
+ ].join(" ")) +
+'">' +
+'<td><div class="primary-cell">' + displaySensitiveId(payment.paymentId) + '</div>' +
+'<div class="secondary-cell">' + displaySensitiveId(payment.loanId) + '</div></td>' +
+'<td><div class="primary-cell">' + escapeHtml(payment.customerName || "—") + '</div>' +
+'<div class="secondary-cell">' + escapeHtml(payment.customerEmail || "") + '</div></td>' +
+'<td><div class="primary-cell">฿' + formatMoney(payment.amount) + '</div>' +
+'<div class="secondary-cell">สลิป ฿' + formatMoney(payment.slipAmount) + '</div></td>' +
+'<td><div class="wrap-anywhere">' + displaySensitiveId(payment.slipTransRef || "—") + '</div>' +
+'<div class="secondary-cell">' + escapeHtml(payment.slipSenderBank || "") + '</div></td>' +
+'<td>' + statusLabel(payment.status) + '</td>' +
+'<td>' + formatDateTime(payment.createdAt) + '</td>' +
+'<td><div class="table-actions">' +
+'<button type="button" class="button button-secondary button-sm" data-payment-detail="' +
+escapeHtml(payment.paymentId) +
+'">รายละเอียด</button>' +
+(
+canReview
+? '<button type="button" class="button button-warning button-sm" data-payment-review="' +
+escapeHtml(payment.paymentId) +
+'">ตรวจสอบ</button>'
+: ''
+) +
+'</div></td>' +
+'</tr>'
+);
+}).join("") +
+'</tbody>' +
+'</table></div>';
+}
+
+$("#paymentSearch").addEventListener("input", renderPayments); 
+
+$("#paymentStatusFilter").addEventListener("change", renderPayments);
+
+document.addEventListener("click", async (event) => {
+const detail = event.target.closest("[data-payment-detail]");
+
+if (detail) {
+openPaymentDetail(detail.dataset.paymentDetail);
+return;
+}
+
+const review = event.target.closest("[data-payment-review]");
+
+if (review) {
+openPaymentReview(review.dataset.paymentReview);
+}
+});
+
+function openPaymentDetail(paymentId) {
+const payment = state.payments.find((item) => {
+return String(item.paymentId) === String(paymentId);
+});
+
+if (!payment) return;
+
+openModal({
+title: "รายละเอียดรายการชำระเงิน",
+large: true,
+body:
+'<div class="form-grid">' +
+detailField("Payment ID", payment.paymentId) +
+detailField("Loan ID", payment.loanId) +
+detailField("ลูกค้า", payment.customerName) +
+detailField("อีเมล", payment.customerEmail) +
+detailField("จำนวนเงินที่สร้าง QR", "฿" + formatMoney(payment.amount)) +
+detailField("จำนวนเงินบนสลิป", "฿" + formatMoney(payment.slipAmount)) +
+detailField("ช่องทาง", payment.method) +
+detailField("สกุลเงิน", payment.currency) +
+detailField("สถานะ", payment.status) +
+detailField("เลขอ้างอิงสลิป", payment.slipTransRef) +
+detailField("ธนาคารผู้ส่ง", payment.slipSenderBank) +
+detailField("ธนาคารผู้รับ", payment.slipReceiverBank) +
+detailField("เวลาตรวจสลิป", formatDateTime(payment.slipVerifiedAt)) +
+detailField("สร้างรายการเมื่อ", formatDateTime(payment.createdAt)) +
+detailField("อัปเดตล่าสุด", formatDateTime(payment.updatedAt)) +
+'</div>' +
+'<div class="form-group" style="margin-top:12px;">' +
+'<label class="form-label">ข้อความตรวจสอบ</label>' +
+'<div class="field" style="min-height:70px;white-space:pre-wrap;">' +
+escapeHtml(payment.verificationMessage || "—") +
+'</div>' +
+'</div>' +
+'<div class="callout">' +
+'<i class="fa-solid fa-circle-info"></i>' +
+'<div>API ปัจจุบันไม่ได้เก็บหรือส่งไฟล์สลิปสำหรับแสดงในหลังบ้าน หน้าต่างนี้จะแสดงข้อมูลที่ได้รับจากระบบเท่านั้น</div>' +
+'</div>',
+buttons: [
+{ label: "ปิด", className: "button-secondary", onClick: closeModal }
+ ]
+});
+}
+
+function openPaymentReview(paymentId) {
+const payment = state.payments.find((item) => {
+return String(item.paymentId) === String(paymentId);
+});
+
+if (!payment) return;
+
+openModal({
+title: "ตรวจสอบรายการชำระเงิน",
+body:
+'<div class="callout" style="margin-bottom:14px;">' +
+'<i class="fa-solid fa-shield-halved"></i>' +
+'<div>ใช้เฉพาะเมื่อมีข้อมูลเพียงพอประกอบการตัดสินใจ การปฏิเสธรายการใน API ปัจจุบันเป็นการเปลี่ยนสถานะ ไม่ใช่คำสั่งคืนเงิน</div>' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label">รายการ</label>' +
+'<div class="field wrap-anywhere" style="background:#f8faff;">' + displaySensitiveId(payment.paymentId) + '</div>' +
+'</div>' +
+'<div class="form-grid">' +
+detailField("ยอดที่คาดหวัง", "฿" + formatMoney(payment.amount)) +
+detailField("ยอดบนสลิป", "฿" + formatMoney(payment.slipAmount)) +
+detailField("เลขอ้างอิง", payment.slipTransRef) +
+detailField("สถานะปัจจุบัน", payment.status) +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="paymentReviewNote">หมายเหตุผู้ดูแล</label>' +
+'<textarea id="paymentReviewNote" class="field" maxlength="2000" placeholder="บันทึกเหตุผลและหลักฐานที่ใช้พิจารณา"></textarea>' +
+'</div>',
+buttons: [
+{ label: "ยกเลิก", className: "button-secondary", onClick: closeModal },
+{
+label: "ส่งตรวจใหม่",
+className: "button-warning",
+onClick: async () => {
+const note = $("#paymentReviewNote").value.trim(); closeModal(); await savePaymentReview(paymentId, "RETRY", note); } }, { label: "ปฏิเสธรายการ", className: "button-danger", onClick: async () => { const note = 
+
+$("#paymentReviewNote").value.trim();
+
+if (note.length < 3) {
+showMessage("กรุณาระบุเหตุผล", "กรอกหมายเหตุอย่างน้อย 3 ตัวอักษร", "error");
+return;
+}
+
+closeModal();
+await savePaymentReview(paymentId, "REJECT", note);
+}
+}
+]
+});
+}
+
+async function savePaymentReview(paymentId, decision, note) {
+try {
+const result = await api("adminReviewPayment", tokenPayload({
+paymentId,
+decision,
+note
+}), {
+loadingTitle: "กำลังบันทึกผลตรวจสอบ"
+});
+
+showMessage("ดำเนินการสำเร็จ", result.message, "success");
+await loadPayments();
+
+} catch (error) {
+showApiError(error, "บันทึกผลตรวจสอบไม่สำเร็จ");
+}
+}
+
+/* ============================================================
+12. ANNOUNCEMENT MANAGEMENT
+============================================================ */
+
+async function loadAnnouncements() {
+try {
+const result = await api("adminListAnnouncements", tokenPayload(), {
+loadingTitle: "กำลังโหลดประกาศ"
+});
+
+state.announcements = Array.isArray(result.announcements)
+? result.announcements
+: [];
+
+renderAnnouncements();
+
+} catch (error) {
+showApiError(error, "โหลดประกาศไม่สำเร็จ");
+}
+}
+
+function renderAnnouncements() {
+const container = $("#announcementsList"); const query = 
+
+$("#announcementSearch").value.trim().toLowerCase();
+const status = $("#announcementStatusFilter").value;
+
+let items = state.announcements.slice();
+
+if (status !== "") {
+items = items.filter((item) => {
+return String(Boolean(item.isActive)).toUpperCase() === status;
+});
+}
+
+if (query) {
+items = items.filter((item) => {
+return [
+item.announcementId, item.title, item.placement
+ ].join(" ").toLowerCase().includes(query);
+});
+}
+
+if (!items.length) {
+container.innerHTML = emptyState(
+"ไม่พบประกาศ",
+"กดเพิ่มประกาศเพื่อสร้างเนื้อหาใหม่",
+"fa-bullhorn"
+);
+return;
+}
+
+container.innerHTML = items.map((item) => {
+return (
+'<article class="announcement-item" data-search="' +
+escapeHtml(item.title + " " + item.placement + " " + item.announcementId) +
+'">' +
+'<div class="announcement-item-header">' +
+'<div style="min-width:0;">' +
+'<h3>' + escapeHtml(item.title) + '</h3>' +
+'<div class="announcement-meta">' +
+escapeHtml(item.placement) +
+' · เริ่ม ' + formatDateTime(item.startAt) +
+' · สิ้นสุด ' + formatDateTime(item.endAt) +
+'</div>' +
+'<div style="margin-top:8px;">' + statusLabel(item.isActive ? "TRUE" : "FALSE") + '</div>' +
+'</div>' +
+'<div class="table-actions">' +
+'<button type="button" class="button button-secondary button-sm" data-edit-announcement="' +
+escapeHtml(item.announcementId) +
+'"><i class="fa-solid fa-pen"></i> แก้ไข</button>' +
+(
+item.isActive
+? '<button type="button" class="button button-danger button-sm" data-delete-announcement="' +
+escapeHtml(item.announcementId) +
+'">ปิดประกาศ</button>'
+: ''
+) +
+'</div>' +
+'</div>' +
+(
+item.imageUrl
+? '<img src="' + escapeHtml(item.imageUrl) + '" alt="' + escapeHtml(item.imageAlt || item.title) + '" loading="lazy" referrerpolicy="no-referrer">'
+: ''
+) +
+'<div class="small muted" style="margin-top:10px;">อัปเดต ' +
+formatDateTime(item.updatedAt) +
+'</div>' +
+'</article>'
+);
+}).join("");
+}
+
+$("#announcementSearch").addEventListener("input", renderAnnouncements); $("#announcementStatusFilter").addEventListener("change", renderAnnouncements);
+$("#newAnnouncementButton").addEventListener("click", () => {
+openAnnouncementEditor(null);
+});
+
+document.addEventListener("click", async (event) => {
+const editButton = event.target.closest("[data-edit-announcement]");
+
+if (editButton) {
+const announcement = state.announcements.find((item) => {
+return String(item.announcementId) === String(editButton.dataset.editAnnouncement);
+});
+
+openAnnouncementEditor(announcement || null);
+return;
+}
+
+const deleteButton = event.target.closest("[data-delete-announcement]");
+
+if (deleteButton) {
+await deleteAnnouncement(deleteButton.dataset.deleteAnnouncement);
+}
+});
+
+function localDateTimeValue(value) {
+if (!value) return "";
+
+const date = new Date(value);
+
+if (Number.isNaN(date.getTime())) return "";
+
+const pad = (number) => String(number).padStart(2, "0");
+
+return date.getFullYear() + "-" +
+pad(date.getMonth() + 1) + "-" +
+pad(date.getDate()) + "T" +
+pad(date.getHours()) + ":" +
+pad(date.getMinutes());
+}
+
+function toIsoOrEmpty(value) {
+if (!value) return "";
+
+const date = new Date(value);
+
+return Number.isNaN(date.getTime()) ? "" : date.toISOString();
+}
+
+function openAnnouncementEditor(announcement) {
+const editing = Boolean(announcement);
+
+const title = announcement ? announcement.title : "";
+const placement = announcement ? announcement.placement : "LOGIN_SIGNUP";
+const contentHtml = announcement ? announcement.contentHtml : "";
+const imageUrl = announcement ? announcement.imageUrl : "";
+const imageAlt = announcement ? announcement.imageAlt : "";
+const startAt = localDateTimeValue(announcement && announcement.startAt);
+const endAt = localDateTimeValue(announcement && announcement.endAt);
+const isActive = announcement ? Boolean(announcement.isActive) : true;
+
+const body =
+'<form id="announcementEditorForm" novalidate>' +
+'<input id="announcementId" type="hidden" value="' +
+escapeHtml(announcement ? announcement.announcementId : "") +
+'">' +
+'<div class="form-grid">' +
+'<div class="form-group span-2">' +
+'<label class="form-label" for="announcementTitle">ชื่อประกาศ <span class="text-danger">*</span></label>' +
+'<input id="announcementTitle" class="field" type="text" maxlength="200" required value="' +
+escapeHtml(title) +
+'">' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="announcementPlacement">ตำแหน่งแสดงผล</label>' +
+'<select id="announcementPlacement" class="field">' +
+'<option value="LOGIN"' + (placement === "LOGIN" ? " selected" : "") + '>หน้า Login</option>' +
+'<option value="SIGNUP"' + (placement === "SIGNUP" ? " selected" : "") + '>หน้า Sign up</option>' +
+'<option value="LOGIN_SIGNUP"' + (placement === "LOGIN_SIGNUP" ? " selected" : "") + '>หน้า Login และ Sign up</option>' +
+'<option value="BORROWER_DASHBOARD"' + (placement === "BORROWER_DASHBOARD" ? " selected" : "") + '>Dashboard ผู้กู้</option>' +
+'<option value="ALL"' + (placement === "ALL" ? " selected" : "") + '>ทุกตำแหน่ง</option>' +
+'</select>' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="announcementImageAlt">คำอธิบายภาพ (Alt Text)</label>' +
+'<input id="announcementImageAlt" class="field" type="text" maxlength="300" value="' +
+escapeHtml(imageAlt) +
+'">' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="announcementStart">เริ่มแสดง</label>' +
+'<input id="announcementStart" class="field" type="datetime-local" value="' +
+escapeHtml(startAt) +
+'">' +
+'<span class="field-hint">เว้นว่างหากต้องการให้เริ่มทันที</span>' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="announcementEnd">สิ้นสุดการแสดง</label>' +
+'<input id="announcementEnd" class="field" type="datetime-local" value="' +
+escapeHtml(endAt) +
+'">' +
+'<span class="field-hint">เว้นว่างหากไม่มีวันสิ้นสุด</span>' +
+'</div>' +
+'<div class="form-group span-2">' +
+'<label class="form-label">รูปภาพประกาศ</label>' +
+'<div class="image-upload-row">' +
+'<input id="announcementImageUrl" class="field image-url-field" type="url" placeholder="URL รูปภาพ HTTPS" value="' +
+escapeHtml(imageUrl) +
+'">' +
+'<label class="button button-secondary button-sm" for="announcementImageFile">' +
+'<i class="fa-solid fa-cloud-arrow-up"></i> อัปโหลด ImgBB' +
+'</label>' +
+'<input id="announcementImageFile" type="file" class="hidden" accept="image/jpeg,image/png,image/webp">' +
+'</div>' +
+'<div class="image-size-note">ขนาดแนะนำ 1200 × 500 px · JPG, PNG, WebP · ไม่เกิน 4 MiB · ใช้เฉพาะภาพที่เผยแพร่สู่สาธารณะได้</div>' +
+'<div id="announcementImageUploadStatus" class="field-hint"></div>' +
+'</div>' +
+'<div class="form-group span-2">' +
+'<label class="form-label" for="announcementContentHtml">เนื้อหา HTML</label>' +
+'<textarea id="announcementContentHtml" class="field html-editor" maxlength="100000" placeholder="<p>เนื้อหาประกาศของ FINORA</p>">' +
+escapeHtml(contentHtml) +
+'</textarea>' +
+'<span class="field-hint">รองรับหัวข้อ ย่อหน้า ตัวหนา ตัวเอียง รายการ ลิงก์ และภาพภายนอก HTTPS ระบบจะกรองแท็กอันตรายก่อนบันทึก</span>' +
+'</div>' +
+'<div class="form-group span-2">' +
+'<div class="panel-heading">' +
+'<h2>ตัวอย่าง Preview</h2>' +
+'<button id="refreshAnnouncementPreview" type="button" class="button button-secondary button-sm">' +
+'<i class="fa-solid fa-eye"></i> อัปเดตตัวอย่าง' +
+'</button>' +
+'</div>' +
+'<div id="announcementPreview" class="preview-box"></div>' +
+'</div>' +
+'<div class="form-group span-2">' +
+'<label class="check-row">' +
+'<input id="announcementIsActive" type="checkbox"' +
+(isActive ? " checked" : "") +
+'>' +
+'<span>เปิดใช้งานประกาศ</span>' +
+'</label>' +
+'</div>' +
+'</div>' +
+'</form>';
+
+openModal({
+title: editing ? "แก้ไขประกาศ" : "สร้างประกาศใหม่",
+xlarge: true,
+body: body,
+buttons: [
+{ label: "ยกเลิก", className: "button-secondary", onClick: closeModal },
+{
+label: "บันทึกประกาศ",
+className: "button-primary",
+onClick: saveAnnouncementFromModal
+}
+ ],
+onOpen: () => {
+const contentInput = $("#announcementContentHtml"); const imageInput = 
+
+$("#announcementImageUrl");
+const fileInput = $("#announcementImageFile"); const preview = 
+
+$("#announcementPreview");
+
+function updatePreview() {
+const html = contentInput.value;
+const imageUrlValue = imageInput.value.trim();
+
+preview.innerHTML = safeHtmlPreview(html);
+
+if (imageUrlValue && /^https:\/\//i.test(imageUrlValue)) {
+const image = document.createElement("img");
+
+image.src = imageUrlValue;
+image.alt = $("#announcementImageAlt").value || "ภาพประกาศ";
+image.loading = "lazy";
+image.style.cssText = "display:block;max-width:100%;max-height:180px;object-fit:contain;margin:0 auto 12px;border-radius:9px;";
+
+preview.prepend(image);
+}
+}
+
+contentInput.addEventListener("input", updatePreview);
+imageInput.addEventListener("input", updatePreview);
+$("#announcementImageAlt").addEventListener("input", updatePreview); $("#refreshAnnouncementPreview").addEventListener("click", updatePreview);
+
+fileInput.addEventListener("change", async () => {
+const file = fileInput.files && fileInput.files[0]
+? fileInput.files[0]
+: null;
+
+if (!file) return;
+
+const allowed = ["image/jpeg", "image/png", "image/webp"];
+
+if (!allowed.includes(file.type)) {
+showMessage(
+"ไฟล์ภาพไม่ถูกต้อง",
+"เลือก JPG, PNG หรือ WebP เท่านั้น",
+"error"
+);
+fileInput.value = "";
+return;
+}
+
+if (file.size > 4 * 1024 * 1024) {
+showMessage(
+"ไฟล์ใหญ่เกินไป",
+"รูปภาพประกาศต้องมีขนาดไม่เกิน 4 MiB",
+"error"
+);
+fileInput.value = "";
+return;
+}
+
+try {
+$("#announcementImageUploadStatus").textContent = "กำลังอัปโหลดภาพไปยัง ImgBB...";
+
+const imageData = await readFileAsDataUrl(file);
+
+const result = await api("uploadAnnouncementImage", tokenPayload({
+imageData
+}), {
+loadingTitle: "กำลังอัปโหลดรูปภาพประกาศ"
+});
+
+$("#announcementImageUrl").value = result.imageUrl; 
+
+$("#announcementImageUploadStatus").textContent =
+"อัปโหลดภาพสำเร็จ · " + Math.round(result.estimatedBytes / 1024) + " KiB";
+
+updatePreview();
+
+} catch (error) {
+$("#announcementImageUploadStatus").textContent = "อัปโหลดไม่สำเร็จ";
+showApiError(error, "อัปโหลดรูปภาพไม่สำเร็จ");
+
+} finally {
+fileInput.value = "";
+}
+});
+
+updatePreview();
+}
+});
+}
+
+function readFileAsDataUrl(file) {
+return new Promise((resolve, reject) => {
+const reader = new FileReader();
+
+reader.onload = () => {
+if (typeof reader.result !== "string") {
+reject(new Error("อ่านไฟล์ภาพไม่สำเร็จ"));
+return;
+}
+
+resolve(reader.result);
+};
+
+reader.onerror = () => {
+reject(new Error("อ่านไฟล์ภาพไม่สำเร็จ"));
+};
+
+reader.readAsDataURL(file);
+});
+}
+
+async function saveAnnouncementFromModal() {
+const title = $("#announcementTitle").value.trim(); const placement = $("#announcementPlacement").value;
+const imageUrl = $("#announcementImageUrl").value.trim(); const startAt = $("#announcementStart").value;
+const endAt = $("#announcementEnd").value; const imageAlt = $("#announcementImageAlt").value.trim();
+const contentHtml = $("#announcementContentHtml").value; const isActive = $("#announcementIsActive").checked;
+
+if (!title) {
+showMessage("ข้อมูลไม่ครบ", "กรุณากรอกชื่อประกาศ", "error");
+return;
+}
+
+if (imageUrl && !/^https:\/\/\S+$/i.test(imageUrl)) {
+showMessage("URL ภาพไม่ถูกต้อง", "URL รูปภาพต้องเป็น HTTPS", "error");
+return;
+}
+
+if (startAt && endAt && new Date(startAt).getTime() > new Date(endAt).getTime()) {
+showMessage("ช่วงเวลาไม่ถูกต้อง", "วันสิ้นสุดต้องไม่ก่อนวันเริ่ม", "error");
+return;
+}
+
+const payload = tokenPayload({
+announcementId: $("#announcementId").value.trim(),
+title,
+placement,
+imageUrl,
+imageAlt,
+contentHtml,
+startAt: toIsoOrEmpty(startAt),
+endAt: toIsoOrEmpty(endAt),
+isActive
+});
+
+closeModal();
+
+try {
+const result = await api("adminSaveAnnouncement", payload, {
+loadingTitle: "กำลังบันทึกประกาศ"
+});
+
+showMessage("บันทึกประกาศแล้ว", result.message, "success");
+await loadAnnouncements();
+
+} catch (error) {
+showApiError(error, "บันทึกประกาศไม่สำเร็จ");
+}
+}
+
+async function deleteAnnouncement(announcementId) {
+const announcement = state.announcements.find((item) => {
+return String(item.announcementId) === String(announcementId);
+});
+
+if (!announcement) return;
+
+openModal({
+title: "ปิดประกาศ",
+body:
+'<div class="text-center">' +
+'<div class="modal-icon"><i class="fa-solid fa-bullhorn"></i></div>' +
+'<p style="color:#56637a;">ต้องการปิดประกาศ <strong>' +
+escapeHtml(announcement.title) +
+'</strong> ใช่หรือไม่?</p>' +
+'<p class="small muted">ระบบจะปิดใช้งานประกาศ ไม่ลบแถวข้อมูลเดิม</p>' +
+'</div>',
+buttons: [
+{ label: "ยกเลิก", className: "button-secondary", onClick: closeModal },
+{
+label: "ปิดประกาศ",
+className: "button-danger",
+onClick: async () => {
+closeModal();
+
+try {
+const result = await api("adminDeleteAnnouncement", tokenPayload({
+announcementId
+}), {
+loadingTitle: "กำลังปิดประกาศ"
+});
+
+showMessage("ดำเนินการสำเร็จ", result.message, "success");
+await loadAnnouncements();
+
+} catch (error) {
+showApiError(error, "ปิดประกาศไม่สำเร็จ");
+}
+}
+}
+]
+});
+}
+
+/* ============================================================
+13. CUSTOMER SUPPORT TICKETS
+============================================================ */
+
+async function loadTickets() {
+try {
+const result = await api("adminListTickets", tokenPayload(), {
+loadingTitle: "กำลังโหลดคำร้องลูกค้า"
+});
+
+state.tickets = Array.isArray(result.tickets)
+? result.tickets
+: [];
+
+renderTickets();
+
+} catch (error) {
+showApiError(error, "โหลดคำร้องลูกค้าไม่สำเร็จ");
+}
+}
+
+function renderTickets() {
+const container = $("#ticketsTable"); const query = $("#ticketSearch").value.trim().toLowerCase();
+const filterStatus = $("#ticketStatusFilter").value.toUpperCase();
+
+let tickets = state.tickets.slice();
+
+if (filterStatus) {
+tickets = tickets.filter((ticket) => {
+return String(ticket.status).toUpperCase() === filterStatus;
+});
+}
+
+if (query) {
+tickets = tickets.filter((ticket) => {
+return [
+ticket.ticketId, ticket.subject, ticket.customerName,
+ticket.customerEmail, ticket.category, ticket.status
+ ].join(" ").toLowerCase().includes(query);
+});
+}
+
+if (!tickets.length) {
+container.innerHTML = emptyState(
+"ไม่มีคำร้อง",
+"รายการคำร้องจากลูกค้าจะแสดงในตารางนี้",
+"fa-headset"
+);
+return;
+}
+
+container.innerHTML =
+'<div class="table-wrap"><table class="table">' +
+'<thead><tr><th>Ticket</th><th>ลูกค้า</th><th>หมวดหมู่</th><th>สถานะ</th><th>สร้างเมื่อ</th><th>การจัดการ</th></tr></thead>' +
+'<tbody>' +
+tickets.map((ticket) => (
+'<tr data-search="' +
+escapeHtml([
+ticket.ticketId, ticket.subject, ticket.customerName,
+ticket.customerEmail, ticket.category
+ ].join(" ")) +
+'">' +
+'<td><div class="primary-cell">' + escapeHtml(ticket.subject) + '</div>' +
+'<div class="secondary-cell">' + displaySensitiveId(ticket.ticketId) + '</div></td>' +
+'<td><div class="primary-cell">' + escapeHtml(ticket.customerName || "—") + '</div>' +
+'<div class="secondary-cell">' + escapeHtml(ticket.customerEmail || "") + '</div></td>' +
+'<td>' + escapeHtml(ticket.category) + '</td>' +
+'<td>' + statusLabel(ticket.status) + '</td>' +
+'<td>' + formatDateTime(ticket.createdAt) + '</td>' +
+'<td><button type="button" class="button button-secondary button-sm" data-ticket-detail="' +
+escapeHtml(ticket.ticketId) +
+'">เปิดคำร้อง</button></td>' +
+'</tr>'
+)).join("") +
+'</tbody>' +
+'</table></div>';
+}
+
+$("#ticketSearch").addEventListener("input", renderTickets); 
+
+$("#ticketStatusFilter").addEventListener("change", renderTickets);
+
+document.addEventListener("click", (event) => {
+const button = event.target.closest("[data-ticket-detail]");
+
+if (button) {
+openTicketEditor(button.dataset.ticketDetail);
+}
+});
+
+function openTicketEditor(ticketId) {
+const ticket = state.tickets.find((item) => {
+return String(item.ticketId) === String(ticketId);
+});
+
+if (!ticket) return;
+
+openModal({
+title: "ดูแลคำร้องลูกค้า",
+large: true,
+body:
+'<div class="form-grid">' +
+detailField("เลขที่ Ticket", ticket.ticketId) +
+detailField("สถานะปัจจุบัน", ticket.status) +
+detailField("ลูกค้า", ticket.customerName) +
+detailField("อีเมล", ticket.customerEmail) +
+detailField("หมวดหมู่", ticket.category) +
+detailField("สร้างเมื่อ", formatDateTime(ticket.createdAt)) +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label">หัวข้อ</label>' +
+'<div class="field" style="background:#f8faff;">' +
+escapeHtml(ticket.subject) +
+'</div>' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label">รายละเอียดจากลูกค้า</label>' +
+'<div class="field" style="min-height:90px;white-space:pre-wrap;">' +
+escapeHtml(ticket.message) +
+'</div>' +
+'</div>' +
+'<div class="form-grid">' +
+'<div class="form-group">' +
+'<label class="form-label" for="ticketNewStatus">เปลี่ยนสถานะ</label>' +
+'<select id="ticketNewStatus" class="field">' +
+'<option value="OPEN"' + (ticket.status === "OPEN" ? " selected" : "") + '>เปิดคำร้อง</option>' +
+'<option value="IN_PROGRESS"' + (ticket.status === "IN_PROGRESS" ? " selected" : "") + '>กำลังดำเนินการ</option>' +
+'<option value="WAITING_CUSTOMER"' + (ticket.status === "WAITING_CUSTOMER" ? " selected" : "") + '>รอข้อมูลลูกค้า</option>' +
+'<option value="RESOLVED"' + (ticket.status === "RESOLVED" ? " selected" : "") + '>แก้ไขแล้ว</option>' +
+'<option value="CLOSED"' + (ticket.status === "CLOSED" ? " selected" : "") + '>ปิดคำร้อง</option>' +
+'</select>' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="ticketAssignedTo">ผู้รับผิดชอบ</label>' +
+'<input id="ticketAssignedTo" class="field" type="text" maxlength="200" value="' +
+escapeHtml(ticket.assignedTo || state.admin.userId || "") +
+'">' +
+'</div>' +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label" for="ticketStaffNote">หมายเหตุภายใน</label>' +
+'<textarea id="ticketStaffNote" class="field" maxlength="10000">' +
+escapeHtml(ticket.staffNote || "") +
+'</textarea>' +
+'</div>',
+buttons: [
+{ label: "ยกเลิก", className: "button-secondary", onClick: closeModal },
+{
+label: "บันทึกการเปลี่ยนแปลง",
+className: "button-primary",
+onClick: async () => {
+const status = $("#ticketNewStatus").value; const assignedTo = 
+
+$("#ticketAssignedTo").value.trim();
+const staffNote = $("#ticketStaffNote").value.trim();
+
+closeModal();
+
+try {
+const result = await api("adminUpdateTicket", tokenPayload({
+ticketId,
+status,
+assignedTo,
+staffNote
+}), {
+loadingTitle: "กำลังอัปเดตคำร้อง"
+});
+
+showMessage("อัปเดตคำร้องแล้ว", result.message, "success");
+await loadTickets();
+
+} catch (error) {
+showApiError(error, "อัปเดตคำร้องไม่สำเร็จ");
+}
+}
+}
+]
+});
+}
+
+/* ============================================================
+14. AUDIT LOG
+============================================================ */
+
+async function loadAudit() {
+try {
+const result = await api("adminListLogs", tokenPayload({
+limit: 100
+}), {
+loadingTitle: "กำลังโหลด Audit Log"
+});
+
+state.logs = Array.isArray(result.logs) ? result.logs : [];
+
+renderAudit();
+
+} catch (error) {
+showApiError(error, "โหลด Audit Log ไม่สำเร็จ");
+}
+}
+
+function renderAudit() {
+const container = $("#auditTable"); const query = $("#auditSearch").value.trim().toLowerCase();
+
+let logs = state.logs.slice();
+
+if (query) {
+logs = logs.filter((log) => {
+return [
+log.logId, log.actorUserId, log.action,
+log.entityType, log.entityId, log.detailsJson
+ ].join(" ").toLowerCase().includes(query);
+});
+}
+
+$("#auditCountLabel").textContent = logs.length + " รายการ";
+
+if (!logs.length) {
+container.innerHTML = emptyState(
+"ยังไม่มีประวัติระบบ",
+"เมื่อมีเหตุการณ์ที่บันทึกไว้จะแสดงที่นี่",
+"fa-clipboard-list"
+);
+return;
+}
+
+container.innerHTML =
+'<div class="table-wrap"><table class="table">' +
+'<thead><tr><th>เวลา</th><th>ผู้ดำเนินการ</th><th>เหตุการณ์</th><th>Entity</th><th>รายละเอียด</th></tr></thead>' +
+'<tbody>' +
+logs.map((log) => (
+'<tr data-search="' +
+escapeHtml([
+log.actorUserId, log.action, log.entityType,
+log.entityId, log.detailsJson
+ ].join(" ")) +
+'">' +
+'<td>' + formatDateTime(log.createdAt) + '</td>' +
+'<td><div class="wrap-anywhere">' + displaySensitiveId(log.actorUserId) + '</div></td>' +
+'<td><div class="primary-cell">' + escapeHtml(log.action) + '</div>' +
+'<div class="secondary-cell">' + displaySensitiveId(log.logId) + '</div></td>' +
+'<td><div>' + escapeHtml(log.entityType) + '</div>' +
+'<div class="secondary-cell">' + displaySensitiveId(log.entityId) + '</div></td>' +
+'<td><button type="button" class="button button-secondary button-sm" data-log-detail="' +
+escapeHtml(log.logId) +
+'">ดูรายละเอียด</button></td>' +
+'</tr>'
+)).join("") +
+'</tbody>' +
+'</table></div>';
+}
+
+$("#auditSearch").addEventListener("input", renderAudit);
+
+document.addEventListener("click", (event) => {
+const button = event.target.closest("[data-log-detail]");
+
+if (!button) return;
+
+const log = state.logs.find((item) => {
+return String(item.logId) === String(button.dataset.logDetail);
+});
+
+if (!log) return;
+
+let prettyDetails = log.detailsJson || "{}";
+
+try {
+prettyDetails = JSON.stringify(JSON.parse(prettyDetails), null, 2);
+} catch (error) {
+// Keep the original text if JSON parsing fails.
+}
+
+openModal({
+title: "รายละเอียด Audit Log",
+large: true,
+body:
+'<div class="form-grid">' +
+detailField("Log ID", log.logId) +
+detailField("Actor ID", log.actorUserId) +
+detailField("Action", log.action) +
+detailField("Entity Type", log.entityType) +
+detailField("Entity ID", log.entityId) +
+detailField("เวลา", formatDateTime(log.createdAt)) +
+'</div>' +
+'<div class="form-group">' +
+'<label class="form-label">รายละเอียดข้อมูล</label>' +
+'<pre style="padding:13px;overflow:auto;border:1px solid var(--line);border-radius:10px;background:#f7f9fc;font-family:monospace;font-size:10px;white-space:pre-wrap;overflow-wrap:anywhere;">' +
+escapeHtml(prettyDetails) +
+'</pre>' +
+'</div>',
+buttons: [
+{ label: "ปิด", className: "button-secondary", onClick: closeModal }
+ ]
+});
+});
+
+/* ============================================================
+14. TEMPORARY MAINTENANCE MODE
+============================================================ */
+
+function updateMaintenanceStatusLabel(data) {
+const label = $("#maintenanceStatus");
+if (data && typeof data.maintenanceActive === "boolean") {
+  label.innerHTML = data.maintenanceActive
+    ? '<i class="fa-solid fa-triangle-exclamation"></i><div><strong>ระบบปิดปรับปรุงอยู่ในขณะนี้</strong><br><span class="small">ผู้ใช้งานจะเห็นหน้าประกาศแทนหน้า Login</span></div>'
+    : '<i class="fa-solid fa-circle-check"></i><div><strong>ระบบเปิดให้บริการตามปกติในขณะนี้</strong><br><span class="small">ตรวจสอบช่วงเวลาที่ตั้งไว้ด้านล่าง</span></div>';
+  return;
+}
+const enabled = $("#maintenanceEnabled").checked;
+const start = $("#maintenanceStart").value;
+const end = $("#maintenanceEnd").value;
+const now = Date.now();
+const active = enabled && (!start || new Date(start).getTime() <= now) && (!end || new Date(end).getTime() > now);
+label.innerHTML = active
+  ? '<i class="fa-solid fa-triangle-exclamation"></i><div><strong>ตั้งค่าให้ระบบปิดอยู่ในขณะนี้</strong></div>'
+  : '<i class="fa-solid fa-circle-info"></i><div><strong>' + (enabled ? 'ตั้งเวลาเปิด/ปิดระบบไว้แล้ว' : 'ยังไม่ได้เปิดใช้การปิดระบบ') + '</strong></div>';
+}
+
+function renderMaintenancePreview() {
+const title = escapeHtml($("#maintenanceTitle").value.trim() || "ระบบกำลังปรับปรุงชั่วคราว");
+const imageUrl = $("#maintenanceImageUrl").value.trim();
+const imageAlt = escapeHtml($("#maintenanceImageAlt").value.trim() || "ประกาศปิดปรับปรุงระบบ");
+const imageHtml = /^https:\/\/\S+$/i.test(imageUrl)
+  ? '<img src="' + escapeHtml(imageUrl) + '" alt="' + imageAlt + '" style="width:100%;max-height:280px;object-fit:cover;border-radius:14px;margin-bottom:20px;">'
+  : "";
+const html = $("#maintenanceMessageHtml").value.trim() || "<p>ขออภัยในความไม่สะดวก ระบบอยู่ระหว่างการปรับปรุง กรุณากลับมาใช้งานอีกครั้งภายหลัง</p>";
+const frame = $("#maintenancePreview");
+frame.srcdoc = '<!doctype html><html lang="th"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><body style="margin:0;padding:24px;background:#f3f7fd;font-family:Arial,Tahoma,sans-serif;color:#526581;line-height:1.8"><main style="max-width:760px;margin:0 auto;padding:24px;background:white;border:1px solid #dce7f6;border-radius:18px;text-align:center">' + imageHtml + '<h1 style="color:#173b8f;font-size:26px;line-height:1.4">' + title + '</h1><div style="text-align:left">' + html + '</div><p style="margin-top:24px;font-size:12px;color:#718096">FINORA | Your Finance, Your Future.</p></main></body></html>';
+updateMaintenanceStatusLabel();
+}
+
+async function loadMaintenance() {
+try {
+const result = await api("adminGetMaintenance", tokenPayload(), { loadingTitle: "กำลังโหลดการตั้งค่าปิดระบบ" });
+const data = result.maintenance || {};
+state.maintenance = data;
+$("#maintenanceEnabled").checked = data.enabled === true;
+$("#maintenanceStart").value = localDateTimeValue(data.startAt);
+$("#maintenanceEnd").value = localDateTimeValue(data.endAt);
+$("#maintenanceTitle").value = data.title || "ระบบกำลังปรับปรุงชั่วคราว";
+$("#maintenanceImageUrl").value = data.imageUrl || "";
+$("#maintenanceImageAlt").value = data.imageAlt || "";
+$("#maintenanceMessageHtml").value = data.messageHtml || "<p>ขออภัยในความไม่สะดวก ระบบอยู่ระหว่างการปรับปรุง กรุณากลับมาใช้งานอีกครั้งภายหลัง</p>";
+updateMaintenanceStatusLabel(data);
+renderMaintenancePreview();
+} catch (error) {
+showApiError(error, "โหลดการตั้งค่าปิดระบบไม่สำเร็จ");
+}
+}
+
+async function saveMaintenance() {
+const start = $("#maintenanceStart").value;
+const end = $("#maintenanceEnd").value;
+if (start && end && new Date(start).getTime() >= new Date(end).getTime()) {
+  showMessage("ช่วงเวลาไม่ถูกต้อง", "เวลาเปิดระบบกลับต้องอยู่หลังเวลาเริ่มปิดระบบ", "error");
+  return;
+}
+const imageUrl = $("#maintenanceImageUrl").value.trim();
+if (imageUrl && !/^https:\/\/\S+$/i.test(imageUrl)) {
+  showMessage("URL รูปภาพไม่ถูกต้อง", "URL รูปภาพต้องขึ้นต้นด้วย HTTPS", "error");
+  return;
+}
+const title = $("#maintenanceTitle").value.trim();
+if (title.length < 2) {
+  showMessage("ข้อมูลไม่ครบ", "กรุณาระบุหัวข้อประกาศ", "error");
+  return;
+}
+try {
+const result = await api("adminSaveMaintenance", tokenPayload({
+  enabled: $("#maintenanceEnabled").checked,
+  startAt: toIsoOrEmpty(start),
+  endAt: toIsoOrEmpty(end),
+  title,
+  imageUrl,
+  imageAlt: $("#maintenanceImageAlt").value.trim(),
+  messageHtml: $("#maintenanceMessageHtml").value
+}), { loadingTitle: "กำลังบันทึกการตั้งค่าปิดระบบ" });
+state.maintenance = result.maintenance || null;
+updateMaintenanceStatusLabel(state.maintenance);
+showMessage("บันทึกการตั้งค่าแล้ว", result.message || "บันทึกการตั้งค่าปิดระบบแล้ว", "success");
+await loadMaintenance();
+} catch (error) {
+showApiError(error, "บันทึกการตั้งค่าปิดระบบไม่สำเร็จ");
+}
+}
+
+async function uploadMaintenanceImage() {
+const input = $("#maintenanceImageFile");
+const file = input.files && input.files[0] ? input.files[0] : null;
+if (!file) return;
+if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+  showMessage("ไฟล์ภาพไม่ถูกต้อง", "เลือก JPG, PNG หรือ WebP เท่านั้น", "error");
+  input.value = "";
+  return;
+}
+if (file.size > 4 * 1024 * 1024) {
+  showMessage("ไฟล์ใหญ่เกินไป", "รูปภาพต้องมีขนาดไม่เกิน 4 MiB", "error");
+  input.value = "";
+  return;
+}
+try {
+const imageData = await readFileAsDataUrl(file);
+const result = await api("uploadAnnouncementImage", tokenPayload({ imageData }), { loadingTitle: "กำลังอัปโหลดรูปภาพประกาศปิดระบบ" });
+$("#maintenanceImageUrl").value = result.imageUrl || "";
+renderMaintenancePreview();
+showMessage("อัปโหลดรูปภาพสำเร็จ", "นำ URL รูปภาพมาใส่ในประกาศแล้ว", "success");
+} catch (error) {
+showApiError(error, "อัปโหลดรูปภาพไม่สำเร็จ");
+} finally {
+input.value = "";
+}
+}
+
+/* ============================================================
+15. SYSTEM HEALTH
+============================================================ */
+
+async function loadHealth() {
+try {
+const result = await api("adminSystemHealth", tokenPayload(), {
+loadingTitle: "กำลังตรวจสอบสถานะระบบ"
+});
+
+state.health = result;
+renderHealth();
+
+} catch (error) {
+showApiError(error, "ตรวจสอบสถานะระบบไม่สำเร็จ");
+}
+}
+
+function renderHealth() {
+const result = state.health || {};
+const summary = $("#healthSummary"); const container = $("#healthProperties");
+const checks = result.requiredProperties || {};
+
+const missing = Array.isArray(result.missingRequired)
+? result.missingRequired
+: [];
+
+summary.innerHTML =
+'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;">' +
+'<div>' +
+'<div class="panel-heading" style="margin-bottom:7px;">' +
+'<h2>สถานะการตั้งค่าระบบ</h2>' +
+'</div>' +
+'<p class="muted small" style="margin:0;">ตรวจล่าสุด ' +
+formatDateTime(result.timestamp) +
+'</p>' +
+'<p class="muted small" style="margin:4px 0 0;">Timezone: ' +
+escapeHtml(result.scriptTimezone || "—") +
+'</p>' +
+'</div>' +
+'<div>' +
+(
+result.healthy
+? '<span class="status-badge success"><i class="fa-solid fa-circle-check"></i> Properties ที่จำเป็นครบ</span>'
+: '<span class="status-badge danger"><i class="fa-solid fa-triangle-exclamation"></i> ต้องตรวจสอบการตั้งค่า</span>'
+) +
+'</div>' +
+'</div>' +
+(
+missing.length
+? '<div class="callout" style="margin-top:15px;border-color:#f4d3d9;background:#fff7f8;">' +
+'<i class="fa-solid fa-circle-exclamation" style="color:var(--danger);"></i>' +
+'<div><strong>Properties ที่ยังขาด:</strong> ' +
+escapeHtml(missing.join(", ")) +
+'</div>' +
+'</div>'
+: '<div class="callout" style="margin-top:15px;"><i class="fa-solid fa-check-circle"></i><div>ไม่พบ Property ที่จำเป็นขาดหายตามรายการตรวจสอบของ API</div></div>'
+);
+
+const entries = Object.entries(checks);
+
+if (!entries.length) {
+container.innerHTML = emptyState(
+"ไม่มีข้อมูลตรวจสอบ",
+"ตรวจสอบ API และ Script Properties",
+"fa-heart-pulse"
+);
+return;
+}
+
+container.innerHTML = entries.map(([name, ok]) => (
+'<div class="health-item">' +
+'<span>' + escapeHtml(name) + '</span>' +
+'<span class="' + (ok ? "health-check" : "health-missing") + '">' +
+'<i class="fa-solid ' + (ok ? "fa-circle-check" : "fa-circle-xmark") + '"></i> ' +
+(ok ? "ตั้งค่าแล้ว" : "ยังไม่ตั้งค่า") +
+'</span>' +
+'</div>'
+)).join("");
+}
+
+/* ============================================================
+16. SEARCH BINDINGS
+============================================================ */
+
+$("#userSearch").addEventListener("input", renderUsers); $("#loanSearch").addEventListener("input", renderLoans);
+$("#supplementalSearch").addEventListener("input", renderSupplementals);
+$("#supplementalStatusFilter").addEventListener("change", renderSupplementals);
+$("#paymentSearch").addEventListener("input", renderPayments); $("#announcementSearch").addEventListener("input", renderAnnouncements);
+$("#ticketSearch").addEventListener("input", renderTickets);
+$("#auditSearch").addEventListener("input", renderAudit);
+
+$("#maintenanceLoadButton").addEventListener("click", loadMaintenance);
+$("#maintenanceSaveButton").addEventListener("click", saveMaintenance);
+$("#maintenancePreviewButton").addEventListener("click", renderMaintenancePreview);
+$("#maintenanceUploadImageButton").addEventListener("click", () => $("#maintenanceImageFile").click());
+$("#maintenanceImageFile").addEventListener("change", uploadMaintenanceImage);
+["maintenanceEnabled", "maintenanceStart", "maintenanceEnd", "maintenanceTitle", "maintenanceImageUrl", "maintenanceImageAlt", "maintenanceMessageHtml"].forEach((id) => {
+$("#" + id).addEventListener("input", renderMaintenancePreview);
+});
+
+/* ============================================================
+17. STARTUP
+============================================================ */
+
+initializeAdmin();
+</script>
+</body>
+</html>
