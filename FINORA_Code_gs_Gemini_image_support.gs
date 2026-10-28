@@ -2284,7 +2284,7 @@ var rawIds = Array.isArray(p.userIds) ? p.userIds : [];
 var ids = Array.from(new Set(rawIds.map(function(id) {
 return String(id || '').trim();
 }))).filter(function(id) {
-return /^U[a-f0-9]{32}$``/i.test(id);
+return /^U[a-f0-9]{32}$/i.test(id);
 });
 
 if (!ids.length) {
@@ -3500,7 +3500,7 @@ channelId: channelId,
 loadingSeconds: 60
 });
 } catch (loadingError) {
-logSystem('WARN', 'processMessageEvent_', 'Early loading animation failed', {
+logSystem_('WARN', 'processMessageEvent_', 'Early loading animation failed', {
 error: safeError_(loadingError)
 });
 }
@@ -3629,7 +3629,15 @@ imageForAI = getLineImageForGemini_(message.id, channelId);
 logError_('getLineImageForGemini_', imageError);
 var imageFailureText = 'ขออภัยครับ/ค่ะ ขณะนี้ระบบอ่านรูปภาพนี้ไม่สำเร็จ กรุณาส่งภาพอีกครั้งโดยให้ภาพชัดเจนและมีขนาดไม่เกิน 8 MB';
 if (event.replyToken) {
+try {
 sendReplyToken_(event.replyToken, { type: 'text', text: imageFailureText }, channelId);
+} catch (replyImageError) {
+if (event.source && event.source.type === 'user') {
+lineApi_('/v2/bot/message/push', 'post', { to: userId, messages: [{ type: 'text', text: imageFailureText }] }, channelId);
+} else {
+throw replyImageError;
+}
+}
 logChat_({
 userId: userId, displayName: displayName, direction: 'outbound',
 messageType: 'text', text: imageFailureText, source: 'ai', status: 'sent', channelId: channelId
@@ -3639,11 +3647,39 @@ return { ok: false, handledBy: 'image_error', error: safeError_(imageError) };
 }
 }
 
-var generated = generateAIReply_(isImage ? (text || 'ช่วยอ่านข้อความและวิเคราะห์รูปภาพที่ลูกค้าส่งมา') : text, {
+var generated;
+try {
+generated = generateAIReply_(isImage ? (text || 'ช่วยอ่านข้อความและวิเคราะห์รูปภาพที่ลูกค้าส่งมา') : text, {
 userId: userId,
 includeKnowledge: true,
 image: imageForAI
 });
+} catch (aiError) {
+logError_('generateAIReply_(' + (isImage ? 'image' : 'text') + ')', aiError);
+var aiFailureText = isImage
+? 'ขออภัยครับ/ค่ะ ระบบวิเคราะห์รูปภาพขัดข้องชั่วคราว กรุณาลองส่งภาพอีกครั้งในอีกสักครู่'
+: 'ขออภัยครับ/ค่ะ ขณะนี้ระบบตอบกลับขัดข้องชั่วคราว กรุณาลองส่งข้อความอีกครั้งในอีกสักครู่';
+try {
+if (event.replyToken) {
+sendReplyToken_(event.replyToken, { type: 'text', text: aiFailureText }, channelId);
+} else if (event.source && event.source.type === 'user') {
+lineApi_('/v2/bot/message/push', 'post', { to: userId, messages: [{ type: 'text', text: aiFailureText }] }, channelId);
+}
+} catch (sendFailureError) {
+try {
+if (event.source && event.source.type === 'user') {
+lineApi_('/v2/bot/message/push', 'post', { to: userId, messages: [{ type: 'text', text: aiFailureText }] }, channelId);
+}
+} catch (pushFailureError) {
+logError_('AI failure notification', pushFailureError);
+}
+}
+logChat_({
+userId: userId, displayName: displayName, direction: 'outbound',
+messageType: 'text', text: aiFailureText, source: 'system', status: 'failed', channelId: channelId
+});
+return { ok: false, handledBy: 'ai_error', error: safeError_(aiError) };
+}
 
 if (event.replyToken) {
 var replyMessage = {
@@ -3653,11 +3689,11 @@ text: generated.text.substring(0, APP.MAX_TEXT_LENGTH)
 try {
 sendReplyToken_(event.replyToken, replyMessage, channelId);
 } catch (replyError) {
-// Image analysis can take longer than LINE's reply-token validity window.
-// For one-to-one chats only, fall back to a push message if the reply token expired.
-if (!isImage || !event.source || event.source.type !== 'user') throw replyError;
-logSystem_('WARN', 'processMessageEvent_', 'Image reply token failed; trying push message', {
-error: safeError_(replyError), userId: userId
+// Asynchronous Worker processing can outlast LINE's short reply-token window.
+// For one-to-one user chats, fall back to push for both text and image replies.
+if (!event.source || event.source.type !== 'user') throw replyError;
+logSystem_('WARN', 'processMessageEvent_', 'Reply token failed; trying push message', {
+error: safeError_(replyError), userId: userId, messageType: isImage ? 'image' : 'text'
 });
 lineApi_('/v2/bot/message/push', 'post', {
 to: userId,

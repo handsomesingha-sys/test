@@ -104,8 +104,8 @@ async function startLoadingForWebhookEvent(event, env) {
     event.source.type !== "user" ||
     !event.source.userId ||
     !event.message ||
-    event.message.type !== "text" ||
-    !String(event.message.text || "").trim()
+    !["text", "image"].includes(event.message.type) ||
+    (event.message.type === "text" && !String(event.message.text || "").trim())
   ) {
     return false;
   }
@@ -258,8 +258,22 @@ export default {
           body: webhookBody
         }, env).then(async response => {
           const responseText = await response.text();
-          if (!response.ok) {
-            console.error("Apps Script webhook processing failed", response.status, responseText.slice(0, 1000));
+          let data = null;
+          try { data = JSON.parse(responseText); } catch (_) {}
+          const eventErrors = data && data.result && Array.isArray(data.result.results)
+            ? data.result.results.filter(item => item && item.ok === false)
+            : [];
+          if (!response.ok || (data && data.ok === false) || eventErrors.length) {
+            console.error("Apps Script webhook processing reported an error", JSON.stringify({
+              httpStatus: response.status,
+              response: responseText.slice(0, 3000),
+              eventErrors: eventErrors.slice(0, 10)
+            }));
+          } else {
+            console.log("Apps Script webhook processed", JSON.stringify({
+              httpStatus: response.status,
+              events: data && data.result ? data.result.processed : undefined
+            }));
           }
         }).catch(error => {
           console.error("Apps Script webhook forwarding failed", String(error.message || error));
